@@ -3,6 +3,8 @@ Project repo for the course TNM095
 
 ## Install
 
+Install Haxe from http://haxe.org/download/
+
 ```
 haxelib install flixel
 haxelib install flixel-tools
