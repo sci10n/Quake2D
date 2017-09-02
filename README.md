@@ -3,18 +3,7 @@ Project repo for the course TNM095
 
 ## Install
 
-Install Haxe from http://haxe.org/download/
-
-```
-haxelib install flixel
-haxelib install flixel-tools
-haxelib run lime setup
-```
-
-## Run
-
-Replace `neko` with your target of choice.
-
-```
-lime test neko
-```
+- Eclipse with Gradle plugin from https://www.eclipse.org/
+- Import as gradle project
+- Run from quake2d-desktop as JavaApplication
+- Set run configuration to run from core asset folder
