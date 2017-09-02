@@ -54,11 +54,8 @@ public class ComputeShader implements Disposable{
 	private int computeShader;
 	private int computeProgram;
 	private Texture outputBuffer;
-	public ComputeShader(){
-		
-	}
 	
-	public void init(String path, int width, int height){
+	public ComputeShader(String path, int width, int height){
 		outputBuffer = new Texture(width, height, Format.RGBA8888);
 		computeShader = glCreateShader(GL_COMPUTE_SHADER);
 		

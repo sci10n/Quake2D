@@ -5,7 +5,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 
 import se.sciion.quake2d.graphics.RenderModel;
+import se.sciion.quake2d.level.Entity;
 
+/**
+ * Physical body of entity.
+ * @author sciion
+ *
+ */
 public class PhysicsComponent extends EntityComponent{
 	
 	// Keep track of all stuff physics
@@ -23,6 +29,7 @@ public class PhysicsComponent extends EntityComponent{
 	@Override
 	public void tick(float delta) {
 		
+		// Update sprite location if such is attached to entity
 		SpriteComponent sprite = getParent().getComponent(ComponentTypes.Sprite);
 		if(sprite != null) {
 			Sprite s = sprite.getSprite();
@@ -37,6 +44,12 @@ public class PhysicsComponent extends EntityComponent{
 		return ComponentTypes.Physics;
 	}
 	
+	// Override to add parent as userData for body
+	@Override
+	public void setParent(Entity parent) {
+		super.setParent(parent);
+		body.setUserData(parent);
+	}
 	public Body getBody() {
 		return body;
 	}

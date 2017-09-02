@@ -9,6 +9,11 @@ import com.badlogic.gdx.physics.box2d.Body;
 
 import se.sciion.quake2d.graphics.RenderModel;
 
+/**
+ * Dispatches all events and logic based on player input
+ * @author sciion
+ *
+ */
 public class PlayerInputComponent extends EntityComponent{
 
 	private OrthographicCamera camera;
@@ -58,7 +63,9 @@ public class PlayerInputComponent extends EntityComponent{
 		
 		headingDirection.sub(body.getPosition());
 		
+		// Fixate rotation such that external forces doesn't count
 		body.setFixedRotation(true);
+		
 		body.setTransform(body.getPosition(), headingDirection.angleRad());
 	}
 

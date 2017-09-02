@@ -4,6 +4,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 
+/**
+ * Wrapper around render methods using both sprite and primitives.
+ * Not very nice!
+ * @author sciion
+ *
+ */
 public class RenderModel {
 
 	public ShapeRenderer primitiveRenderer;

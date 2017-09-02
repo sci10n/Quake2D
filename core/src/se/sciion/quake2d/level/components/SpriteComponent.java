@@ -6,6 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import se.sciion.quake2d.graphics.RenderModel;
 
+/**
+ * Attach sprite to entity
+ * @author sciion
+ *
+ */
 public class SpriteComponent extends EntityComponent{
 
 	private Sprite sprite;

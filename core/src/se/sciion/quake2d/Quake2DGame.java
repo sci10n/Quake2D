@@ -28,7 +28,6 @@ public class Quake2DGame extends ApplicationAdapter {
 	public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
-		
 	}
 	
 	@Override

@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -36,6 +37,8 @@ public class LevelSandbox extends ApplicationAdapter{
 	public void create () {
 		
 		// Set up level object
+		Gdx.graphics.setSystemCursor(SystemCursor.Crosshair);
+
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Gdx.graphics.getWidth() / 32.0f, Gdx.graphics.getHeight() / 32.0f);
 		model = new RenderModel();
@@ -96,7 +99,6 @@ public class LevelSandbox extends ApplicationAdapter{
 	
 	@Override
 	public void render () {
-		
 		camera.update();
 		
 		level.tick(Gdx.graphics.getDeltaTime());
@@ -108,6 +110,8 @@ public class LevelSandbox extends ApplicationAdapter{
 		model.begin();
 		level.render(model);
 		model.end();
+		
+		// Currently only Box2D debug renderer
 		physicsSystem.render(camera.combined);
 
 	}

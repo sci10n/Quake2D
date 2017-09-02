@@ -19,8 +19,7 @@ public class ComputeShaderSandbox  extends ApplicationAdapter{
 		camera = new OrthographicCamera();
 		batch = new SpriteBatch();
 		
-		shader = new ComputeShader();
-		shader.init("shader.comp", Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		shader = new ComputeShader("shader.comp", Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	@Override
