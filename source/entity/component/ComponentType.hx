@@ -4,4 +4,5 @@ enum ComponentType {
     None;
     Sprite;
     PlayerInput;
+    Physics;
 }

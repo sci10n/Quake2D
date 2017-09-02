@@ -7,11 +7,14 @@ import flixel.util.FlxColor;
 class Sprite extends Component {
 
     private var sprite:FlxSprite;
+    private var scl:Int = 1;
 
-    public function new(world:FlxState) 
+    public function new(world:FlxState, w:Float,h:Float) 
     {
         sprite = new FlxSprite();
-        sprite.makeGraphic(32, 32, FlxColor.WHITE);
+        var color:FlxColor = new FlxColor();
+        color.setRGBFloat(Math.random(),Math.random(),Math.random(),1.0);
+        sprite.makeGraphic(cast(w), cast(h), color);
         world.add(sprite);
     }
 

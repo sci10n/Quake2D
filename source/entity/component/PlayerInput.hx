@@ -1,8 +1,7 @@
 package entity.component;
 
 import flixel.FlxG;
-import flixel.FlxSprite;
-
+import nape.phys.Body;
 class PlayerInput extends Component
 {
 
@@ -20,7 +19,7 @@ class PlayerInput extends Component
     { 
 
         // Updates sprite velocity based on keyboard input
-        var scl:Float = 32.0;
+        var scl:Float = 4.0;
         var dx:Float = 0.0;
         var dy:Float = 0.0;
 
@@ -42,18 +41,18 @@ class PlayerInput extends Component
             dx = 1;
         }
 
-        var sprite:Sprite = cast(parent.get_component(Sprite));
 
-        if(sprite != null)
-        {
-            var s:FlxSprite = sprite.get_sprite();
-            var len:Float = Math.sqrt(dx*dx + dy*dy); 
-            if(len != 0)
-                len = 1.0/len;
-            trace(len);
-            s.velocity.x = dx;
-            s.velocity.y = dy;
-            s.velocity.scale(scl * len);
+        var physics:Physics = cast(parent.get_component(Physics));
+
+        if(physics != null) {
+            var b:Body = physics.get_body();
+            var len:Float = Math.sqrt(dx*dx + dy*dy);
+
+            if(len == 0)
+                b.velocity.setxy(dx,dy);
+            else
+                b.velocity.setxy((dx/len) * scl,(dy/len) * scl);
         }
+        
     }
 }
