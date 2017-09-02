@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import se.sciion.quake2d.graphics.RenderModel;
+
 public class SpriteComponent extends EntityComponent{
 
 	private Sprite sprite;
@@ -16,8 +18,8 @@ public class SpriteComponent extends EntityComponent{
 	}
 	
 	@Override
-	public void render(SpriteBatch batch) {
-		sprite.draw(batch);
+	public void render(RenderModel batch) {
+		//sprite.draw(batch.spriteRenderer);
 	}
 
 	@Override

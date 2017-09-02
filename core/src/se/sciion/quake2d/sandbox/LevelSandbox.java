@@ -10,28 +10,37 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 
+import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.HardcodedLevel;
+import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.components.PlayerInputComponent;
 import se.sciion.quake2d.level.components.SpriteComponent;
+import se.sciion.quake2d.level.system.PhysicsSystem;
 
 public class LevelSandbox extends ApplicationAdapter{
 
 	OrthographicCamera camera;
-	SpriteBatch batch;
 	
 	private HardcodedLevel level;
 	private AssetManager assets;
 	
-	
+	private PhysicsSystem physicsSystem;
+	private RenderModel model;
 	@Override
 	public void create () {
 		
 		// Set up level object
 		camera = new OrthographicCamera();
-		batch = new SpriteBatch();
+		camera.setToOrtho(false, Gdx.graphics.getWidth() / 32.0f, Gdx.graphics.getHeight() / 32.0f);
+		model = new RenderModel();
+		physicsSystem = new PhysicsSystem();
+		
 		loadAssets();
 		
 		// Bag of entities
@@ -39,13 +48,35 @@ public class LevelSandbox extends ApplicationAdapter{
 		
 		Entity playerEntity = new Entity();
 		
-		SpriteComponent playerSprite = new SpriteComponent(0, 0, 1, 1, assets.get("textures/Dummy.png", Texture.class));
-		PlayerInputComponent playerMovement = new PlayerInputComponent();
+		// Player components
+		PlayerInputComponent playerMovement = new PlayerInputComponent(camera);
 		
-		playerEntity.addComponent(playerSprite);
+		// Require polygonal shape for physics component
+		CircleShape shape = new CircleShape();
+		shape.setRadius(0.5f);
+		PhysicsComponent playerPhysics = new PhysicsComponent(physicsSystem.createBody(10.0f, 10.0f,BodyType.DynamicBody,shape));
+		
+		playerEntity.addComponent(playerPhysics);
 		playerEntity.addComponent(playerMovement);
-		
 		entities.add(playerEntity);
+		
+		// Static level entity
+		Entity obstacleEntity = new Entity();
+		
+		PolygonShape boxShape = new PolygonShape();
+		boxShape.setAsBox(2f, 4f);
+		PhysicsComponent obstaclePhysics = new PhysicsComponent(physicsSystem.createBody(2, 2, BodyType.StaticBody, boxShape));
+		
+		obstacleEntity.addComponent(obstaclePhysics);
+		entities.add(obstacleEntity);
+		
+		// Static level entity #2
+		Entity obstacle2Entity = new Entity();
+
+		PhysicsComponent obstacle2Physics = new PhysicsComponent(physicsSystem.createBody(7, 7, BodyType.StaticBody, boxShape));
+		
+		obstacleEntity.addComponent(obstacle2Physics);
+		entities.add(obstacle2Entity);
 		
 		level = new HardcodedLevel(entities);
 	}
@@ -53,9 +84,7 @@ public class LevelSandbox extends ApplicationAdapter{
 	public void loadAssets(){
 		assets = new AssetManager();
 		assets.setLoader(Texture.class, new TextureLoader(new InternalFileHandleResolver()));
-		
 		assets.load("textures/Dummy.png", Texture.class);
-		
 		assets.finishLoading();
 	}
 	
@@ -69,14 +98,18 @@ public class LevelSandbox extends ApplicationAdapter{
 	public void render () {
 		
 		camera.update();
+		
 		level.tick(Gdx.graphics.getDeltaTime());
+		physicsSystem.update(Gdx.graphics.getDeltaTime());
 		
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		level.render(batch);
-		batch.end();
+		model.setProjectionMatrix(camera.combined);
+		model.begin();
+		level.render(model);
+		model.end();
+		physicsSystem.render(camera.combined);
+
 	}
 	
 	@Override

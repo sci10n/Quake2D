@@ -3,6 +3,8 @@ package se.sciion.quake2d.level;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 
+import se.sciion.quake2d.graphics.RenderModel;
+
 public abstract class Level {
 
 	protected Array<Entity> entities;
@@ -17,9 +19,9 @@ public abstract class Level {
 		}
 	}
 	
-	public void render(SpriteBatch batch){
+	public void render(RenderModel model){
 		for(int i = 0; i < entities.size; i++){
-			entities.get(i).render(batch);
+			entities.get(i).render(model);
 		}
 	}
 }

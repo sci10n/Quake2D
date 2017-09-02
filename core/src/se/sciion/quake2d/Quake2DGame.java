@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 
 public class Quake2DGame extends ApplicationAdapter {
 	
+	
 	OrthographicCamera camera;
 	
 	

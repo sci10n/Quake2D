@@ -3,6 +3,7 @@ package se.sciion.quake2d.level;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 
+import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.components.ComponentTypes;
 import se.sciion.quake2d.level.components.EntityComponent;
 
@@ -16,7 +17,7 @@ public class Entity {
 		active = true;
 	}
 	
-	public void render(SpriteBatch batch){
+	public void render(RenderModel batch){
 		if(!active)
 			return;
 		
