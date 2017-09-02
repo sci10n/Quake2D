@@ -7,5 +7,3 @@ Project repo for the course TNM095
 - Import as gradle project
 - Run from quake2d-desktop as JavaApplication
 - Set run configuration to run from core asset folder
-
-## Run
