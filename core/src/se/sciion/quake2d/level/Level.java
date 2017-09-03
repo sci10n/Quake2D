@@ -1,14 +1,14 @@
 package se.sciion.quake2d.level;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.graphics.RenderModel;
+import se.sciion.quake2d.level.events.Request;
 
 public abstract class Level {
 
 	protected Array<Entity> entities;
-	
+
 	public Level(){
 		entities = new Array<Entity>(true, 16);
 	}
@@ -24,4 +24,9 @@ public abstract class Level {
 			entities.get(i).render(model);
 		}
 	}
+	
+	public Array<Entity> getEntities() {
+		return entities;
+	}
+
 }

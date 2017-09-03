@@ -3,8 +3,8 @@ package se.sciion.quake2d.level;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 
+import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
-import se.sciion.quake2d.level.components.ComponentTypes;
 import se.sciion.quake2d.level.components.EntityComponent;
 
 public class Entity {

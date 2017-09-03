@@ -10,7 +10,7 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -19,9 +19,11 @@ import com.badlogic.gdx.utils.Array;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.HardcodedLevel;
+import se.sciion.quake2d.level.RequestQueue;
 import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.components.PlayerInputComponent;
-import se.sciion.quake2d.level.components.SpriteComponent;
+import se.sciion.quake2d.level.events.CreateBullet;
+import se.sciion.quake2d.level.system.BulletFactory;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
 public class LevelSandbox extends ApplicationAdapter{
@@ -31,6 +33,9 @@ public class LevelSandbox extends ApplicationAdapter{
 	private HardcodedLevel level;
 	private AssetManager assets;
 	
+	// Request queue for inter-entity/system communication.
+	private RequestQueue levelRequests;
+
 	private PhysicsSystem physicsSystem;
 	private RenderModel model;
 	@Override
@@ -38,7 +43,8 @@ public class LevelSandbox extends ApplicationAdapter{
 		
 		// Set up level object
 		Gdx.graphics.setSystemCursor(SystemCursor.Crosshair);
-
+		
+		levelRequests = new RequestQueue();
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Gdx.graphics.getWidth() / 32.0f, Gdx.graphics.getHeight() / 32.0f);
 		model = new RenderModel();
@@ -52,7 +58,7 @@ public class LevelSandbox extends ApplicationAdapter{
 		Entity playerEntity = new Entity();
 		
 		// Player components
-		PlayerInputComponent playerMovement = new PlayerInputComponent(camera);
+		PlayerInputComponent playerMovement = new PlayerInputComponent(camera, levelRequests);
 		
 		// Require polygonal shape for physics component
 		CircleShape shape = new CircleShape();
@@ -82,6 +88,10 @@ public class LevelSandbox extends ApplicationAdapter{
 		entities.add(obstacle2Entity);
 		
 		level = new HardcodedLevel(entities);
+		
+		// Create bullets on CreateBullet requests
+		levelRequests.subscribe(new BulletFactory(level,physicsSystem));
+		
 	}
 	
 	public void loadAssets(){

@@ -1,6 +1,7 @@
 package se.sciion.quake2d.level.system;
 
 import com.badlogic.gdx.math.Matrix4;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -13,6 +14,12 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import se.sciion.quake2d.level.Entity;
+
+/**
+ * Deals with keeping track of physics world and bodies, no body destruction or cleanup implemented yet
+ * @author sciion
+ *
+ */
 public class PhysicsSystem{
 	
 	private class EntityRayCast implements RayCastCallback{

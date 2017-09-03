@@ -1,4 +1,4 @@
-package se.sciion.quake2d.level.components;
+package se.sciion.quake2d.enums;
 
 public enum ComponentTypes {
 	Sprite,
