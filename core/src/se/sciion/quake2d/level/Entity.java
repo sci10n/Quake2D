@@ -62,6 +62,7 @@ public class Entity {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public <T extends EntityComponent> T  getComponent(ComponentTypes type){
 		for(int i = 0; i < components.size; i++){
 			if(components.get(i).getType() == type){
@@ -80,7 +81,7 @@ public class Entity {
 		this.active = active;
 	}
 	
-	public boolean getActive(){
+	public boolean isActive(){
 		return active;
 	}
 }

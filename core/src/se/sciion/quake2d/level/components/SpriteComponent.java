@@ -25,7 +25,7 @@ public class SpriteComponent extends EntityComponent{
 	
 	@Override
 	public void render(RenderModel batch) {
-		//sprite.draw(batch.spriteRenderer);
+
 	}
 
 	@Override

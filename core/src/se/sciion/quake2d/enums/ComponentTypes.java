@@ -5,5 +5,8 @@ public enum ComponentTypes {
 	PlayerInput,
 	Physics,
 	Weapon,
-	BotInput
+	BotInput,
+	Health,
+	Damage,
+	Projectile
 }

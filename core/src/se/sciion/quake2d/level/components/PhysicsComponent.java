@@ -24,7 +24,7 @@ public class PhysicsComponent extends EntityComponent{
 	
 	@Override
 	public void render(RenderModel batch) {
-		//batch.primitiveRenderer.circle( body.getPosition().x,  body.getPosition().y, 0.5f, 32);
+
 	}
 
 	@Override
@@ -50,6 +50,12 @@ public class PhysicsComponent extends EntityComponent{
 	public void setParent(Entity parent) {
 		super.setParent(parent);
 		body.setUserData(parent);
+	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+		body.getWorld().destroyBody(body);
+		super.finalize();
 	}
 	
 	public Body getBody() {

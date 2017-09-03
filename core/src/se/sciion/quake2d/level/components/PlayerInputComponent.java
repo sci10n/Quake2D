@@ -44,7 +44,6 @@ public class PlayerInputComponent extends EntityComponent{
 		Body body = spriteComponent.getBody();
 		
 		Vector2 vel = body.getLinearVelocity();
-		Vector2 pos = body.getPosition();
 		
 		if(Gdx.input.isKeyPressed(Keys.W) && vel.y < 4.0f){
 			body.setLinearVelocity(vel.add(0, 1.9f));

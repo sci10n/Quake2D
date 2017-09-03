@@ -10,7 +10,6 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -20,13 +19,14 @@ import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.HardcodedLevel;
 import se.sciion.quake2d.level.components.BotInputComponent;
+import se.sciion.quake2d.level.components.HealthComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.components.PlayerInputComponent;
 import se.sciion.quake2d.level.components.WeaponComponent;
 import se.sciion.quake2d.level.items.Weapons;
-import se.sciion.quake2d.level.requests.CreateBullet;
 import se.sciion.quake2d.level.requests.RequestQueue;
 import se.sciion.quake2d.level.system.BulletFactory;
+import se.sciion.quake2d.level.system.EntityContactResolver;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
 public class LevelSandbox extends ApplicationAdapter{
@@ -40,6 +40,9 @@ public class LevelSandbox extends ApplicationAdapter{
 	private RequestQueue levelRequests;
 
 	private PhysicsSystem physicsSystem;
+	private EntityContactResolver contactResolver;
+
+	
 	private RenderModel model;
 	@Override
 	public void create () {
@@ -47,12 +50,15 @@ public class LevelSandbox extends ApplicationAdapter{
 		// Set up level object
 		Gdx.graphics.setSystemCursor(SystemCursor.Crosshair);
 		
+		// Bad generic!
 		levelRequests = new RequestQueue();
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Gdx.graphics.getWidth() / 32.0f, Gdx.graphics.getHeight() / 32.0f);
 		model = new RenderModel();
-		physicsSystem = new PhysicsSystem();
 		
+		physicsSystem = new PhysicsSystem();
+		contactResolver = new EntityContactResolver(physicsSystem);
+
 		loadAssets();
 		
 		// Bag of entities
@@ -67,8 +73,12 @@ public class LevelSandbox extends ApplicationAdapter{
 			CircleShape shape = new CircleShape();
 			shape.setRadius(0.5f);
 			PhysicsComponent playerPhysics = new PhysicsComponent(physicsSystem.createBody(10.0f, 10.0f,BodyType.DynamicBody,shape));
-			WeaponComponent playerWeapon = new WeaponComponent(Weapons.Sniper, levelRequests);
+			WeaponComponent playerWeapon = new WeaponComponent(Weapons.Shotgun, levelRequests);
 			
+			HealthComponent playerHealth = new HealthComponent(10);
+			contactResolver.addCollisionCallback(playerHealth, playerEntity);
+			
+			playerEntity.addComponent(playerHealth);
 			playerEntity.addComponent(playerPhysics);
 			playerEntity.addComponent(playerMovement);
 			playerEntity.addComponent(playerWeapon);
@@ -83,10 +93,12 @@ public class LevelSandbox extends ApplicationAdapter{
 			shape.setRadius(0.5f);
 			PhysicsComponent botPhysics = new PhysicsComponent(physicsSystem.createBody(12.0f, 4.0f,BodyType.DynamicBody,shape));
 			WeaponComponent botWeapon = new WeaponComponent(Weapons.Shotgun, levelRequests);
-			
+			HealthComponent botHealth = new HealthComponent(10);
+			contactResolver.addCollisionCallback(botHealth, botEntity);
+
 			// This should be waay more complex
 			BotInputComponent botInput = new BotInputComponent();
-			
+			botEntity.addComponent(botHealth);
 			botEntity.addComponent(botPhysics);
 			botEntity.addComponent(botWeapon);
 			botEntity.addComponent(botInput);
@@ -114,8 +126,8 @@ public class LevelSandbox extends ApplicationAdapter{
 		level = new HardcodedLevel(entities);
 		
 		// Create bullets on CreateBullet requests
-		levelRequests.subscribe(new BulletFactory(level,physicsSystem));
-		
+		levelRequests.subscribe(new BulletFactory(level,physicsSystem,levelRequests,contactResolver));
+		levelRequests.subscribe(physicsSystem);
 	}
 	
 	public void loadAssets(){
