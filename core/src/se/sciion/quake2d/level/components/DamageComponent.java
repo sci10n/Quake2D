@@ -3,6 +3,11 @@ package se.sciion.quake2d.level.components;
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 
+/**
+ * Add to all entities which should cause damage on contact.
+ * @author sciion
+ *
+ */
 public class DamageComponent extends EntityComponent{
 	
 	private int damage;

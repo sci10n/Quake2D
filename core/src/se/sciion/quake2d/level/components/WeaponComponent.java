@@ -10,6 +10,11 @@ import se.sciion.quake2d.level.items.Weapon;
 import se.sciion.quake2d.level.requests.CreateBullet;
 import se.sciion.quake2d.level.requests.RequestQueue;
 
+/**
+ * Keep track of cooldowns related to weapons.
+ * @author sciion
+ *
+ */
 public class WeaponComponent extends EntityComponent{
 
 	private Weapon currentWeapon;
@@ -71,10 +76,11 @@ public class WeaponComponent extends EntityComponent{
 				request.send(new CreateBullet(origin.cpy().add(bulletHeading), bulletHeading, currentWeapon.speed, 1));
 			}
 			
+			// Push player backwards
 			PhysicsComponent physics = getParent().getComponent(ComponentTypes.Physics);
 			if(physics != null){
 				Vector2 vel = physics.getBody().getLinearVelocity();
-				vel.add(heading.scl(-currentWeapon.nockback));
+				vel.add(heading.scl(-currentWeapon.knockback));
 				physics.getBody().setLinearVelocity(vel);
 			}
 			cooldown = currentWeapon.cooldown;

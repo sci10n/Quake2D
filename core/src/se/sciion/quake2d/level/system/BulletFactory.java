@@ -23,15 +23,13 @@ public class BulletFactory implements Subscriber<CreateBullet>{
 
 	private Level level;
 	private PhysicsSystem physics;
-	private EntityContactResolver resolver;
 	private RequestQueue<DestroyBody> requests;
 	
 	// Pooling of bullets could be usefull
 	
-	public BulletFactory(Level level, PhysicsSystem physics, RequestQueue<DestroyBody> requests, EntityContactResolver resolver) {
+	public BulletFactory(Level level, PhysicsSystem physics, RequestQueue<DestroyBody> requests) {
 		this.level = level;
 		this.physics = physics;
-		this.resolver = resolver;
 		this.requests = requests;
 	}
 
@@ -48,7 +46,7 @@ public class BulletFactory implements Subscriber<CreateBullet>{
 		bullet.addComponent(bulletPhysics);
 		
 		ProjectileComponent bulletPhysicsResolver = new ProjectileComponent(requests);
-		resolver.addCollisionCallback(bulletPhysicsResolver, bullet);
+		physics.getContactResolver().addCollisionCallback(bulletPhysicsResolver, bullet);
 		bullet.addComponent(bulletPhysicsResolver);
 		DamageComponent bulletDamage = new DamageComponent(r.getDamage());
 		bullet.addComponent(bulletDamage);

@@ -14,9 +14,8 @@ public class EntityContactResolver implements ContactListener{
 	
 	private ObjectMap<Entity,Array<CollisionCallback>> collisionCallbacks;
 
-	public EntityContactResolver(PhysicsSystem system) {
+	public EntityContactResolver() {
 		collisionCallbacks = new ObjectMap<Entity,Array<CollisionCallback>>();
-		system.getWorld().setContactListener(this);
 	}
 	
 	public void addCollisionCallback(CollisionCallback callback, Entity e){

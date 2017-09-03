@@ -9,6 +9,11 @@ import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.requests.RequestQueue;
 import se.sciion.quake2d.level.system.CollisionCallback;
 
+/**
+ * Add to entities which should take damage.
+ * @author sciion
+ *
+ */
 public class HealthComponent extends EntityComponent implements CollisionCallback{
 
 	

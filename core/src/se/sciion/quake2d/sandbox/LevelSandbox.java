@@ -26,7 +26,6 @@ import se.sciion.quake2d.level.components.WeaponComponent;
 import se.sciion.quake2d.level.items.Weapons;
 import se.sciion.quake2d.level.requests.RequestQueue;
 import se.sciion.quake2d.level.system.BulletFactory;
-import se.sciion.quake2d.level.system.EntityContactResolver;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
 public class LevelSandbox extends ApplicationAdapter{
@@ -37,28 +36,28 @@ public class LevelSandbox extends ApplicationAdapter{
 	private AssetManager assets;
 	
 	// Request queue for inter-entity/system communication.
+	@SuppressWarnings("rawtypes")
 	private RequestQueue levelRequests;
-
 	private PhysicsSystem physicsSystem;
-	private EntityContactResolver contactResolver;
-
-	
 	private RenderModel model;
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void create () {
 		
 		// Set up level object
 		Gdx.graphics.setSystemCursor(SystemCursor.Crosshair);
 		
-		// Bad generic!
-		levelRequests = new RequestQueue();
+
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Gdx.graphics.getWidth() / 32.0f, Gdx.graphics.getHeight() / 32.0f);
-		model = new RenderModel();
 		
+		model = new RenderModel();
 		physicsSystem = new PhysicsSystem();
-		contactResolver = new EntityContactResolver(physicsSystem);
-
+		// Bad generic!
+		levelRequests = new RequestQueue();
+		
+		
 		loadAssets();
 		
 		// Bag of entities
@@ -76,7 +75,7 @@ public class LevelSandbox extends ApplicationAdapter{
 			WeaponComponent playerWeapon = new WeaponComponent(Weapons.Shotgun, levelRequests);
 			
 			HealthComponent playerHealth = new HealthComponent(10);
-			contactResolver.addCollisionCallback(playerHealth, playerEntity);
+			physicsSystem.getContactResolver().addCollisionCallback(playerHealth, playerEntity);
 			
 			playerEntity.addComponent(playerHealth);
 			playerEntity.addComponent(playerPhysics);
@@ -94,7 +93,7 @@ public class LevelSandbox extends ApplicationAdapter{
 			PhysicsComponent botPhysics = new PhysicsComponent(physicsSystem.createBody(12.0f, 4.0f,BodyType.DynamicBody,shape));
 			WeaponComponent botWeapon = new WeaponComponent(Weapons.Shotgun, levelRequests);
 			HealthComponent botHealth = new HealthComponent(10);
-			contactResolver.addCollisionCallback(botHealth, botEntity);
+			physicsSystem.getContactResolver().addCollisionCallback(botHealth, botEntity);
 
 			// This should be waay more complex
 			BotInputComponent botInput = new BotInputComponent();
@@ -126,21 +125,21 @@ public class LevelSandbox extends ApplicationAdapter{
 		level = new HardcodedLevel(entities);
 		
 		// Create bullets on CreateBullet requests
-		levelRequests.subscribe(new BulletFactory(level,physicsSystem,levelRequests,contactResolver));
+		levelRequests.subscribe(new BulletFactory(level,physicsSystem,levelRequests));
 		levelRequests.subscribe(physicsSystem);
 	}
 	
 	public void loadAssets(){
 		assets = new AssetManager();
 		assets.setLoader(Texture.class, new TextureLoader(new InternalFileHandleResolver()));
-		assets.load("textures/Dummy.png", Texture.class);
+//		assets.load("textures/Dummy.png", Texture.class);
 		assets.finishLoading();
 	}
 	
 	@Override
 	public void resize(int width, int height) {
-		camera.setToOrtho(false, width / 32.0f, height / 32.0f);
 		super.resize(width, height);
+		camera.setToOrtho(false, width / 32.0f, height / 32.0f);
 	}
 	
 	@Override

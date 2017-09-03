@@ -49,16 +49,22 @@ public class PhysicsSystem implements Subscriber<DestroyBody> {
 	}
 
 	private EntityRayCast rayCastCallback;
+	private EntityContactResolver contactResolver;
 	private World world;
-
 	private Array<Body> removalList;
-
-	Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
+	private Box2DDebugRenderer debugRenderer;
 
 	public PhysicsSystem() {
 		world = new World(new Vector2(0, 0), true);
 		rayCastCallback = new EntityRayCast();
 		removalList = new Array<Body>();
+		contactResolver = new EntityContactResolver();
+		world.setContactListener(contactResolver);
+		debugRenderer = new Box2DDebugRenderer();
+	}
+
+	public EntityContactResolver getContactResolver() {
+		return contactResolver;
 	}
 
 	public void render(Matrix4 combined) {
@@ -68,7 +74,6 @@ public class PhysicsSystem implements Subscriber<DestroyBody> {
 	public void update(float delta) {
 		world.step(delta, 10, 10);
 		if (!world.isLocked()) {
-			
 			for (int i = 0; i < removalList.size; i++) {
 				if(world.getBodyCount() > 0){					
 					world.destroyBody(removalList.get(i));
@@ -76,7 +81,6 @@ public class PhysicsSystem implements Subscriber<DestroyBody> {
 			}
 			removalList.clear();
 		}
-
 	}
 
 	// Use for raycasting against entities
@@ -86,6 +90,7 @@ public class PhysicsSystem implements Subscriber<DestroyBody> {
 		return rayCastCallback.target;
 	}
 
+	// Create body on logical coordinates and register it with the world.
 	public Body createBody(float x, float y, BodyType type, Shape shape) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = type;
@@ -104,10 +109,7 @@ public class PhysicsSystem implements Subscriber<DestroyBody> {
 		return body;
 	}
 
-	public void scheduleRemoval(Body body) {
-		removalList.add(body);
-	}
-
+	// Stuff related to RequestQueue
 	@Override
 	public RequestType getType() {
 		return RequestType.DestroyBody;
@@ -115,7 +117,8 @@ public class PhysicsSystem implements Subscriber<DestroyBody> {
 
 	@Override
 	public boolean process(DestroyBody t) {
-		System.out.println(t);
+		
+		// Make sure we don't remove body already removed.
 		if(t.getBodyRef().getUserData().equals("REMOVAL"))
 			return true;
 		
@@ -124,10 +127,6 @@ public class PhysicsSystem implements Subscriber<DestroyBody> {
 			removalList.add(t.getBodyRef());
 		}
 		return true;
-	}
-
-	public World getWorld() {
-		return world;
 	}
 
 }

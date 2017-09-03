@@ -24,11 +24,6 @@ public class RequestQueue<T extends Request> {
 		subscribers.removeValue(s,true);
 	}
 	
-	/**
-	 * Synchronously process request
-	 * @param r
-	 * @return
-	 */
 	public boolean send(T t){
 		for(Subscriber<T> s: subscribers){
 			if(s.getType() == t.getRequestType()){
