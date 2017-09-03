@@ -1,4 +1,4 @@
-package se.sciion.quake2d.level.events;
+package se.sciion.quake2d.level.requests;
 
 import com.badlogic.gdx.math.Vector2;
 

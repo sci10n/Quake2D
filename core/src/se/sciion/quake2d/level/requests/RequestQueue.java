@@ -1,26 +1,26 @@
-package se.sciion.quake2d.level;
+package se.sciion.quake2d.level.requests;
 
 import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.enums.RequestType;
-import se.sciion.quake2d.level.events.Request;
 
-public class RequestQueue {
+// Someone should deal with theses generic inference types :/
+public class RequestQueue<T extends Request> {
 
-	private Array<Subscriber> subscribers;
+	private Array<Subscriber<T>> subscribers;
 	
 	
 	public RequestQueue() {
-		subscribers = new Array<Subscriber>();
+		subscribers = new Array<Subscriber<T>>();
 	}
 	
-	public void subscribe(Subscriber s){
+	public void subscribe(Subscriber<T> s){
 		if(!subscribers.contains(s, true)){
 			subscribers.add(s);
 		}
 	}
 	
-	public void unsubscribe(Subscriber s){
+	public void unsubscribe(Subscriber<T> s){
 		subscribers.removeValue(s,true);
 	}
 	
@@ -29,10 +29,10 @@ public class RequestQueue {
 	 * @param r
 	 * @return
 	 */
-	public boolean send(Request r){
-		for(Subscriber s: subscribers){
-			if(s.getType() == r.getRequestType() && s.process(r)){
-				return true;
+	public boolean send(T t){
+		for(Subscriber<T> s: subscribers){
+			if(s.getType() == t.getRequestType()){
+				return s.process(t);
 			}
 		}
 		return false;

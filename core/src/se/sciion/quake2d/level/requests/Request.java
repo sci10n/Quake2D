@@ -1,4 +1,4 @@
-package se.sciion.quake2d.level.events;
+package se.sciion.quake2d.level.requests;
 
 import se.sciion.quake2d.enums.RequestType;
 

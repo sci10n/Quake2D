@@ -19,10 +19,13 @@ import com.badlogic.gdx.utils.Array;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.HardcodedLevel;
-import se.sciion.quake2d.level.RequestQueue;
+import se.sciion.quake2d.level.components.BotInputComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.components.PlayerInputComponent;
-import se.sciion.quake2d.level.events.CreateBullet;
+import se.sciion.quake2d.level.components.WeaponComponent;
+import se.sciion.quake2d.level.items.Weapons;
+import se.sciion.quake2d.level.requests.CreateBullet;
+import se.sciion.quake2d.level.requests.RequestQueue;
 import se.sciion.quake2d.level.system.BulletFactory;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
@@ -55,37 +58,58 @@ public class LevelSandbox extends ApplicationAdapter{
 		// Bag of entities
 		Array<Entity> entities = new Array<Entity>();
 		
-		Entity playerEntity = new Entity();
+		{
+			Entity playerEntity = new Entity();
+			// Player components
+			PlayerInputComponent playerMovement = new PlayerInputComponent(camera, levelRequests);
+			
+			// Require polygonal shape for physics component
+			CircleShape shape = new CircleShape();
+			shape.setRadius(0.5f);
+			PhysicsComponent playerPhysics = new PhysicsComponent(physicsSystem.createBody(10.0f, 10.0f,BodyType.DynamicBody,shape));
+			WeaponComponent playerWeapon = new WeaponComponent(Weapons.Sniper, levelRequests);
+			
+			playerEntity.addComponent(playerPhysics);
+			playerEntity.addComponent(playerMovement);
+			playerEntity.addComponent(playerWeapon);
+			entities.add(playerEntity);
+		}
 		
-		// Player components
-		PlayerInputComponent playerMovement = new PlayerInputComponent(camera, levelRequests);
-		
-		// Require polygonal shape for physics component
-		CircleShape shape = new CircleShape();
-		shape.setRadius(0.5f);
-		PhysicsComponent playerPhysics = new PhysicsComponent(physicsSystem.createBody(10.0f, 10.0f,BodyType.DynamicBody,shape));
-		
-		playerEntity.addComponent(playerPhysics);
-		playerEntity.addComponent(playerMovement);
-		entities.add(playerEntity);
+		// Bot dummy
+		{
+			Entity botEntity = new Entity();
+			
+			CircleShape shape = new CircleShape();
+			shape.setRadius(0.5f);
+			PhysicsComponent botPhysics = new PhysicsComponent(physicsSystem.createBody(12.0f, 4.0f,BodyType.DynamicBody,shape));
+			WeaponComponent botWeapon = new WeaponComponent(Weapons.Shotgun, levelRequests);
+			
+			// This should be waay more complex
+			BotInputComponent botInput = new BotInputComponent();
+			
+			botEntity.addComponent(botPhysics);
+			botEntity.addComponent(botWeapon);
+			botEntity.addComponent(botInput);
+			entities.add(botEntity);
+		}
 		
 		// Static level entity
-		Entity obstacleEntity = new Entity();
-		
-		PolygonShape boxShape = new PolygonShape();
-		boxShape.setAsBox(2f, 4f);
-		PhysicsComponent obstaclePhysics = new PhysicsComponent(physicsSystem.createBody(2, 2, BodyType.StaticBody, boxShape));
-		
-		obstacleEntity.addComponent(obstaclePhysics);
-		entities.add(obstacleEntity);
-		
-		// Static level entity #2
-		Entity obstacle2Entity = new Entity();
+		{
+			Entity obstacleEntity = new Entity();
+			Entity obstacle2Entity = new Entity();
 
-		PhysicsComponent obstacle2Physics = new PhysicsComponent(physicsSystem.createBody(7, 7, BodyType.StaticBody, boxShape));
-		
-		obstacleEntity.addComponent(obstacle2Physics);
-		entities.add(obstacle2Entity);
+			PolygonShape boxShape = new PolygonShape();
+			boxShape.setAsBox(2f, 4f);
+			
+			PhysicsComponent obstaclePhysics = new PhysicsComponent(physicsSystem.createBody(2, 2, BodyType.StaticBody, boxShape));
+			PhysicsComponent obstacle2Physics = new PhysicsComponent(physicsSystem.createBody(7, 7, BodyType.StaticBody, boxShape));
+			
+			obstacleEntity.addComponent(obstaclePhysics);
+			obstacleEntity.addComponent(obstacle2Physics);
+			
+			entities.add(obstacleEntity);
+			entities.add(obstacle2Entity);
+		}
 		
 		level = new HardcodedLevel(entities);
 		

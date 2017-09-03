@@ -3,7 +3,7 @@ package se.sciion.quake2d.level;
 import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.graphics.RenderModel;
-import se.sciion.quake2d.level.events.Request;
+import se.sciion.quake2d.level.requests.Request;
 
 public abstract class Level {
 

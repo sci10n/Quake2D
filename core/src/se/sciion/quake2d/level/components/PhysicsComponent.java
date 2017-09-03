@@ -51,6 +51,7 @@ public class PhysicsComponent extends EntityComponent{
 		super.setParent(parent);
 		body.setUserData(parent);
 	}
+	
 	public Body getBody() {
 		return body;
 	}

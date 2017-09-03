@@ -4,7 +4,7 @@ import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
 
-public abstract class EntityComponent {
+public abstract class EntityComponent{
 
 	private Entity parent;
 	

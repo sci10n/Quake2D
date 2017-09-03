@@ -1,11 +1,10 @@
-package se.sciion.quake2d.level;
+package se.sciion.quake2d.level.requests;
 
 import se.sciion.quake2d.enums.RequestType;
-import se.sciion.quake2d.level.events.Request;
 
 public interface Subscriber<T extends Request> {
 	
 	public RequestType getType(); 
-	public boolean process(T request);
+	public boolean process(T t);
 
 }

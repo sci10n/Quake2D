@@ -13,14 +13,17 @@ import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
+import se.sciion.quake2d.enums.RequestType;
 import se.sciion.quake2d.level.Entity;
+import se.sciion.quake2d.level.requests.DestroyBody;
+import se.sciion.quake2d.level.requests.Subscriber;
 
 /**
  * Deals with keeping track of physics world and bodies, no body destruction or cleanup implemented yet
  * @author sciion
  *
  */
-public class PhysicsSystem{
+public class PhysicsSystem implements Subscriber<DestroyBody>{
 	
 	private class EntityRayCast implements RayCastCallback{
 		
@@ -57,6 +60,7 @@ public class PhysicsSystem{
 		world.step(delta, 10, 10);
 	}
 	
+	// Use for raycasting against entities
 	public Entity rayCast(Vector2 origin, Vector2 direction){		
 		// 300 units should be enough for this project.
 		world.rayCast(rayCastCallback, origin,origin.cpy().add(direction).scl(300));
@@ -80,6 +84,17 @@ public class PhysicsSystem{
 		Fixture fixture = body.createFixture(fixtureDef);
 		
 		return body;
+	}
+
+	@Override
+	public RequestType getType() {
+		return RequestType.DestroyBody;
+	}
+
+	@Override
+	public boolean process(DestroyBody t) {
+		world.destroyBody(t.getBodyRef());
+		return true;
 	}
 	
 	
