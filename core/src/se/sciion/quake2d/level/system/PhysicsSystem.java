@@ -26,7 +26,9 @@ public class PhysicsSystem{
 		public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
 			try{
 				target = (Entity) fixture.getBody().getUserData();
-			}catch(NullPointerException | ClassCastException e2){
+			}catch(NullPointerException e1){
+				
+			}catch(ClassCastException e2){
 				
 			}
 			return 0;
