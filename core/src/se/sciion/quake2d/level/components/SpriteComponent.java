@@ -4,10 +4,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 
 /**
- * Attach sprite to entity
+ * Attach sprite to entity. Currently not used due to complications when used in conjunction to Primitive Renderer
  * @author sciion
  *
  */
@@ -24,7 +25,7 @@ public class SpriteComponent extends EntityComponent{
 	
 	@Override
 	public void render(RenderModel batch) {
-		//sprite.draw(batch.spriteRenderer);
+
 	}
 
 	@Override

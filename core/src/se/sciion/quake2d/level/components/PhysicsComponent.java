@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 
+import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
 
@@ -23,7 +24,7 @@ public class PhysicsComponent extends EntityComponent{
 	
 	@Override
 	public void render(RenderModel batch) {
-		//batch.primitiveRenderer.circle( body.getPosition().x,  body.getPosition().y, 0.5f, 32);
+
 	}
 
 	@Override
@@ -50,6 +51,13 @@ public class PhysicsComponent extends EntityComponent{
 		super.setParent(parent);
 		body.setUserData(parent);
 	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+		body.getWorld().destroyBody(body);
+		super.finalize();
+	}
+	
 	public Body getBody() {
 		return body;
 	}
