@@ -1,12 +1,9 @@
 package se.sciion.quake2d;
 
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
-
+// Real game. Should be designed once Level Sandbox is done
 public class Quake2DGame extends ApplicationAdapter {
 	
 	
@@ -26,8 +23,7 @@ public class Quake2DGame extends ApplicationAdapter {
 	
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
+
 	}
 	
 	@Override

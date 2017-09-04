@@ -3,8 +3,8 @@ package se.sciion.quake2d.level;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 
+import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
-import se.sciion.quake2d.level.components.ComponentTypes;
 import se.sciion.quake2d.level.components.EntityComponent;
 
 public class Entity {
@@ -62,6 +62,7 @@ public class Entity {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public <T extends EntityComponent> T  getComponent(ComponentTypes type){
 		for(int i = 0; i < components.size; i++){
 			if(components.get(i).getType() == type){
@@ -80,7 +81,7 @@ public class Entity {
 		this.active = active;
 	}
 	
-	public boolean getActive(){
+	public boolean isActive(){
 		return active;
 	}
 }
