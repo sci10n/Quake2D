@@ -1,7 +1,6 @@
 package se.sciion.quake2d.level.system;
 
 import com.badlogic.gdx.math.Matrix4;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -13,7 +12,6 @@ import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap;
 
 import se.sciion.quake2d.enums.RequestType;
 import se.sciion.quake2d.level.Entity;

@@ -5,7 +5,7 @@ public class BehaviourTree {
 
     // Wrapper for the BehaviourTree. It is usually
     // easier to using BehaviourTreeBuilder though.
-    public BehaivourTree(BehaviourNode behaviour) {
+    public BehaviourTree(BehaviourNode behaviour) {
         root = behaviour;
     }
 
