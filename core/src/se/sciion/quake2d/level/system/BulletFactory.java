@@ -25,7 +25,7 @@ public class BulletFactory implements Subscriber<CreateBullet>{
 	private PhysicsSystem physics;
 	private RequestQueue<DestroyBody> requests;
 	
-	// Pooling of bullets could be usefull
+	// Pooling of bullets could be useful
 	
 	public BulletFactory(Level level, PhysicsSystem physics, RequestQueue<DestroyBody> requests) {
 		this.level = level;

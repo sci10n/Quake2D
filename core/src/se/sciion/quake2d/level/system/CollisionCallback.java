@@ -4,6 +4,6 @@ import se.sciion.quake2d.level.Entity;
 
 public interface CollisionCallback {
 	
-	public abstract void process(Entity target);
+	void process(Entity target);
 	
 }

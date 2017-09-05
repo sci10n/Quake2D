@@ -10,9 +10,13 @@ public abstract class BehaviourNode {
     // running, but just recently left it, the we left behaviour.
     // If otherwise, we just update the behaviour for traversing.
 
-    protected void onEnter() {  }
+    protected void onEnter() {
+    }
+
     protected abstract BehaviourStatus onUpdate();
-    protected void onLeave() {  }
+
+    protected void onLeave() {
+    }
 
     public BehaviourStatus tick() {
         if (status != BehaviourStatus.RUNNING) onEnter();
