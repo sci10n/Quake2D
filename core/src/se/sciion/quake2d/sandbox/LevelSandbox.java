@@ -20,12 +20,14 @@ import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.HardcodedLevel;
 import se.sciion.quake2d.level.components.BotInputComponent;
 import se.sciion.quake2d.level.components.HealthComponent;
+import se.sciion.quake2d.level.components.LineOfSightComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.components.PlayerInputComponent;
 import se.sciion.quake2d.level.components.WeaponComponent;
 import se.sciion.quake2d.level.items.Weapons;
 import se.sciion.quake2d.level.requests.RequestQueue;
 import se.sciion.quake2d.level.system.BulletFactory;
+import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
 public class LevelSandbox extends ApplicationAdapter{
@@ -40,6 +42,7 @@ public class LevelSandbox extends ApplicationAdapter{
 	private RequestQueue levelRequests;
 	private PhysicsSystem physicsSystem;
 	private RenderModel model;
+	private Pathfinding pathfinding;
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
@@ -57,6 +60,7 @@ public class LevelSandbox extends ApplicationAdapter{
 		// Bad generic!
 		levelRequests = new RequestQueue();
 		
+		pathfinding = new Pathfinding(32,32);
 		
 		loadAssets();
 		
@@ -66,7 +70,7 @@ public class LevelSandbox extends ApplicationAdapter{
 		{
 			Entity playerEntity = new Entity();
 			// Player components
-			PlayerInputComponent playerMovement = new PlayerInputComponent(camera, levelRequests);
+			PlayerInputComponent playerMovement = new PlayerInputComponent(camera, levelRequests,pathfinding);
 			
 			// Require polygonal shape for physics component
 			CircleShape shape = new CircleShape();
@@ -81,6 +85,7 @@ public class LevelSandbox extends ApplicationAdapter{
 			playerEntity.addComponent(playerPhysics);
 			playerEntity.addComponent(playerMovement);
 			playerEntity.addComponent(playerWeapon);
+			playerEntity.addComponent(new LineOfSightComponent(pathfinding));
 			entities.add(playerEntity);
 		}
 		
@@ -96,7 +101,7 @@ public class LevelSandbox extends ApplicationAdapter{
 			physicsSystem.getContactResolver().addCollisionCallback(botHealth, botEntity);
 
 			// This should be waay more complex
-			BotInputComponent botInput = new BotInputComponent();
+			BotInputComponent botInput = new BotInputComponent(pathfinding);
 			botEntity.addComponent(botHealth);
 			botEntity.addComponent(botPhysics);
 			botEntity.addComponent(botWeapon);
@@ -108,18 +113,33 @@ public class LevelSandbox extends ApplicationAdapter{
 		{
 			Entity obstacleEntity = new Entity();
 			Entity obstacle2Entity = new Entity();
+			Entity obstacle3Entity = new Entity();
+			Entity obstacle4Entity = new Entity();
+			Entity obstacle5Entity = new Entity();
 
 			PolygonShape boxShape = new PolygonShape();
-			boxShape.setAsBox(2f, 4f);
+			boxShape.setAsBox(5f, 5f);
 			
-			PhysicsComponent obstaclePhysics = new PhysicsComponent(physicsSystem.createBody(2, 2, BodyType.StaticBody, boxShape));
-			PhysicsComponent obstacle2Physics = new PhysicsComponent(physicsSystem.createBody(7, 7, BodyType.StaticBody, boxShape));
+			PolygonShape boxShape2 = new PolygonShape();
+			boxShape2.setAsBox(5f, 1f);
 			
+			PhysicsComponent obstaclePhysics = new PhysicsComponent(physicsSystem.createBody(15, 15, BodyType.StaticBody, boxShape));
+			PhysicsComponent obstacle2Physics = new PhysicsComponent(physicsSystem.createBody(5, 5, BodyType.StaticBody, boxShape2));
+//			PhysicsComponent obstacle3Physics = new PhysicsComponent(physicsSystem.createBody(12, 24, BodyType.StaticBody, boxShape2));
+//			PhysicsComponent obstacle4Physics = new PhysicsComponent(physicsSystem.createBody(8, 24, BodyType.StaticBody, boxShape));
+//			PhysicsComponent obstacle5Physics = new PhysicsComponent(physicsSystem.createBody(28, 2, BodyType.StaticBody, boxShape2));
+
 			obstacleEntity.addComponent(obstaclePhysics);
-			obstacleEntity.addComponent(obstacle2Physics);
-			
+			obstacle2Entity.addComponent(obstacle2Physics);
+//			obstacle3Entity.addComponent(obstacle3Physics);
+//			obstacle4Entity.addComponent(obstacle4Physics);
+//			obstacle5Entity.addComponent(obstacle5Physics);
+
 			entities.add(obstacleEntity);
 			entities.add(obstacle2Entity);
+			//entities.add(obstacle3Entity);
+			//entities.add(obstacle4Entity);
+			//entities.add(obstacle5Entity);
 		}
 		
 		level = new HardcodedLevel(entities);
@@ -127,6 +147,8 @@ public class LevelSandbox extends ApplicationAdapter{
 		// Create bullets on CreateBullet requests
 		levelRequests.subscribe(new BulletFactory(level,physicsSystem,levelRequests));
 		levelRequests.subscribe(physicsSystem);
+		
+		pathfinding.update(physicsSystem);
 	}
 	
 	public void loadAssets(){
@@ -144,6 +166,7 @@ public class LevelSandbox extends ApplicationAdapter{
 	
 	@Override
 	public void render () {
+		camera.zoom = 1.25f;
 		camera.update();
 		
 		level.tick(Gdx.graphics.getDeltaTime());
@@ -152,10 +175,15 @@ public class LevelSandbox extends ApplicationAdapter{
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 		model.setProjectionMatrix(camera.combined);
+		
+		pathfinding.render(model);
+
+		
 		model.begin();
 		level.render(model);
 		model.end();
 		
+
 		// Currently only Box2D debug renderer
 		physicsSystem.render(camera.combined);
 
