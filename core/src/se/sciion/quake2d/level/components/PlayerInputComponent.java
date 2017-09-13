@@ -74,11 +74,11 @@ public class PlayerInputComponent extends EntityComponent{
 		headingDirection.sub(body.getPosition()).nor();
 		
 		// Fixate rotation such that external forces doesn't count
-		body.setFixedRotation(true);
+		//body.setFixedRotation(true);
 		
 		body.setTransform(body.getPosition(), headingDirection.angleRad());
-		camera.position.set(body.getPosition(), 0);
-		camera.update();
+		//camera.position.set(body.getPosition(), 0);
+		//camera.update();
 		
 		// Test bullet creation. Should be moved to separate component like Weapon or similar
 		if(Gdx.input.isKeyJustPressed(Keys.SPACE)){

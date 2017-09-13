@@ -147,8 +147,8 @@ public class PhysicsSystem implements Subscriber<DestroyBody> {
 
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
-		fixtureDef.density = 0;
-		fixtureDef.friction = 0;
+		fixtureDef.density = 1;
+		fixtureDef.friction = 0.2f;
 		fixtureDef.restitution = 0;
 
 		body.createFixture(fixtureDef);

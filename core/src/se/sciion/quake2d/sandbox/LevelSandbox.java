@@ -20,8 +20,10 @@ import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.HardcodedLevel;
 import se.sciion.quake2d.level.components.BotInputComponent;
 import se.sciion.quake2d.level.components.HealthComponent;
+import se.sciion.quake2d.level.components.InventoryComponent;
 import se.sciion.quake2d.level.components.LineOfSightComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
+import se.sciion.quake2d.level.components.PickupComponent;
 import se.sciion.quake2d.level.components.PlayerInputComponent;
 import se.sciion.quake2d.level.components.WeaponComponent;
 import se.sciion.quake2d.level.items.Weapons;
@@ -53,7 +55,7 @@ public class LevelSandbox extends ApplicationAdapter{
 		
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, Gdx.graphics.getWidth() / 32.0f, Gdx.graphics.getHeight() / 32.0f);
+		camera.setToOrtho(false, 32,32);
 		
 		model = new RenderModel();
 		physicsSystem = new PhysicsSystem();
@@ -76,7 +78,7 @@ public class LevelSandbox extends ApplicationAdapter{
 			CircleShape shape = new CircleShape();
 			shape.setRadius(0.5f);
 			PhysicsComponent playerPhysics = new PhysicsComponent(physicsSystem.createBody(10.0f, 10.0f,BodyType.DynamicBody,shape));
-			WeaponComponent playerWeapon = new WeaponComponent(Weapons.Shotgun, levelRequests);
+			WeaponComponent playerWeapon = new WeaponComponent(levelRequests);
 			
 			HealthComponent playerHealth = new HealthComponent(10);
 			physicsSystem.getContactResolver().addCollisionCallback(playerHealth, playerEntity);
@@ -85,6 +87,7 @@ public class LevelSandbox extends ApplicationAdapter{
 			playerEntity.addComponent(playerPhysics);
 			playerEntity.addComponent(playerMovement);
 			playerEntity.addComponent(playerWeapon);
+			playerEntity.addComponent(new InventoryComponent(Weapons.Shotgun));
 			playerEntity.addComponent(new LineOfSightComponent(pathfinding));
 			entities.add(playerEntity);
 		}
@@ -96,7 +99,7 @@ public class LevelSandbox extends ApplicationAdapter{
 			CircleShape shape = new CircleShape();
 			shape.setRadius(0.5f);
 			PhysicsComponent botPhysics = new PhysicsComponent(physicsSystem.createBody(12.0f, 4.0f,BodyType.DynamicBody,shape));
-			WeaponComponent botWeapon = new WeaponComponent(Weapons.Shotgun, levelRequests);
+			WeaponComponent botWeapon = new WeaponComponent(levelRequests);
 			HealthComponent botHealth = new HealthComponent(10);
 			physicsSystem.getContactResolver().addCollisionCallback(botHealth, botEntity);
 
@@ -107,6 +110,39 @@ public class LevelSandbox extends ApplicationAdapter{
 			botEntity.addComponent(botWeapon);
 			botEntity.addComponent(botInput);
 			entities.add(botEntity);
+		}
+		// Sniper weapon pickup
+		{
+			Entity sniperPickup = new Entity();
+			PolygonShape boxShape = new PolygonShape();
+			boxShape.setAsBox(0.5f, 0.5f);
+			PhysicsComponent pickupPhysics = new PhysicsComponent(physicsSystem.createBody(10, 18, BodyType.DynamicBody, boxShape));
+			sniperPickup.addComponent(pickupPhysics);
+			pickupPhysics.getBody().setLinearDamping(5);
+			PickupComponent pickup = new PickupComponent(levelRequests,Weapons.Sniper);
+			//physicsSystem.getContactResolver().addCollisionCallback(pickup, sniperPickup);
+			
+			sniperPickup.addComponent(pickup);
+			
+			entities.add(sniperPickup);
+		}
+		
+		// Sniper weapon pickup
+		{
+			Entity shutgunPickup = new Entity();
+			PolygonShape boxShape = new PolygonShape();
+			boxShape.setAsBox(0.5f, 0.5f);
+			PhysicsComponent pickupPhysics = new PhysicsComponent(physicsSystem.createBody(2, 8, BodyType.DynamicBody, boxShape));
+			//pickupPhysics.getBody().setLinearDamping(5);
+
+			shutgunPickup.addComponent(pickupPhysics);
+			
+			PickupComponent pickup = new PickupComponent(levelRequests,Weapons.Shotgun);
+			//physicsSystem.getContactResolver().addCollisionCallback(pickup, shutgunPickup);
+			
+			shutgunPickup.addComponent(pickup);
+			
+			entities.add(shutgunPickup);
 		}
 		
 		// Static level entity
@@ -160,13 +196,12 @@ public class LevelSandbox extends ApplicationAdapter{
 	
 	@Override
 	public void resize(int width, int height) {
-		super.resize(width, height);
-		camera.setToOrtho(false, width / 32.0f, height / 32.0f);
+		//super.resize(width, height);
+		//camera.setToOrtho(false, width / 32.0f, height / 32.0f);
 	}
 	
 	@Override
 	public void render () {
-		camera.zoom = 1.25f;
 		camera.update();
 		
 		level.tick(Gdx.graphics.getDeltaTime());
@@ -176,7 +211,7 @@ public class LevelSandbox extends ApplicationAdapter{
 		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 		model.setProjectionMatrix(camera.combined);
 		
-		pathfinding.render(model);
+		//pathfinding.render(model);
 
 		
 		model.begin();

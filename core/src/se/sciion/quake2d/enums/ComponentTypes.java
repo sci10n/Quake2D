@@ -9,5 +9,7 @@ public enum ComponentTypes {
 	Health,
 	Damage,
 	Projectile,
-	LineOfSight
+	LineOfSight,
+	Inventory,
+	Pickup
 }

@@ -38,7 +38,7 @@ public class BulletFactory implements Subscriber<CreateBullet>{
 		Entity bullet = new Entity();
 		
 		CircleShape circle = new CircleShape();
-		circle.setRadius(0.02f);
+		circle.setRadius(0.2f);
 		PhysicsComponent bulletPhysics = new PhysicsComponent(physics.createBody(r.getOrigin().x,r.getOrigin().y,BodyType.DynamicBody,circle));
 		bulletPhysics.getBody().setLinearVelocity(r.getDirection().cpy().scl(r.getSpeed()));
 		bulletPhysics.getBody().setBullet(true);
