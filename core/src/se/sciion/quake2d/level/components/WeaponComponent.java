@@ -32,6 +32,8 @@ public class WeaponComponent extends EntityComponent{
 		if(inventory == null)
 			return;
 		Weapon currentWeapon = inventory.getItem(Weapon.class);
+		if(currentWeapon == null)
+			return;
 		
 		PhysicsComponent physics = getParent().getComponent(ComponentTypes.Physics);
 		if(physics != null ){

@@ -1,25 +1,32 @@
 package se.sciion.quake2d.level.components;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
+import se.sciion.quake2d.level.items.Items;
 import se.sciion.quake2d.level.system.Pathfinding;
 
 public class BotInputComponent extends EntityComponent {
-
+	
+	private enum BotState{
+		PickupWeapon,
+		HuntPlayer
+	}
+	
+	private BotState state;
+	
 	private Pathfinding pathfinding;
 	private Vector2 targetPosition;
 	private Array<Vector2> currentPath;
-
+	
 	public BotInputComponent(Pathfinding pathfinding) {
 		this.pathfinding = pathfinding;
 		currentPath = new Array<Vector2>();
-		targetPosition = new Vector2();
+		state = BotState.PickupWeapon;
 	}
 
 	@Override
@@ -43,15 +50,22 @@ public class BotInputComponent extends EntityComponent {
 
 	}
 
+
 	@Override
 	public void tick(float delta) {
+		
 
-		if (currentPath.size < 2) {
-			targetPosition = new Vector2(MathUtils.random(32), MathUtils.random(32));
-			while (!pathfinding.reachable(targetPosition))
-				targetPosition = new Vector2(MathUtils.random(32), MathUtils.random(32));
+		if(targetPosition == null && state == BotState.PickupWeapon) {
+				targetPosition = pathfinding.getItemLocation(Items.Shotgun);
 		}
-
+		else if(state == BotState.HuntPlayer){
+			targetPosition = pathfinding.playerPosition();
+		}
+		
+		if(currentPath.size == 0 && targetPosition != null){
+			state = BotState.HuntPlayer;
+			System.out.println("HELLO WORLD");
+		}
 		// Update sprite location
 		PhysicsComponent spriteComponent = getParent().getComponent(ComponentTypes.Physics);
 		if (spriteComponent == null)
@@ -59,16 +73,19 @@ public class BotInputComponent extends EntityComponent {
 
 		Body body = spriteComponent.getBody();
 		Vector2 origin = body.getPosition();
-
-		Array<Vector2> path = pathfinding.findPath(new Vector2((int) (origin.x), (int) (origin.y)), targetPosition);
-		path.pop(); // Current position;
-		currentPath = path;
-		if(currentPath.size < 2) {
-			return;
-		} 
 		
-		Vector2 closestPoint = currentPath.pop();
-		Vector2 direction = closestPoint.cpy().add(0.5f, 0.5f).sub(origin).nor().scl(5.0f);
+		//if(MathUtils.randomBoolean(chance)) {			
+			Array<Vector2> path = pathfinding.findPath(new Vector2((int) (origin.x), (int) (origin.y)), targetPosition);
+			if(path.size > 1)
+				path.pop(); // Current position;
+			currentPath = path; 
+
+		
+		Vector2 closestPoint = currentPath.peek();
+		if(closestPoint.cpy().sub(origin).len2() < 0.5f){
+			currentPath.pop();
+		}
+		Vector2 direction = closestPoint.cpy().add(0.5f, 0.5f).sub(origin).nor().scl(10.0f);
 		body.setLinearVelocity(direction);
 		body.setLinearVelocity(body.getLinearVelocity().scl(0.49f));
 

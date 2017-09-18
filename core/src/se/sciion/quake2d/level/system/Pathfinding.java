@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.graphics.RenderModel;
+import se.sciion.quake2d.level.Entity;
+import se.sciion.quake2d.level.items.Item;
 
 public class Pathfinding {
 
@@ -21,10 +23,14 @@ public class Pathfinding {
 	private PhysicsSystem physics;
 	private Vector2 playerPosition;
 	
+	// Items of interest for pathfinders
+	private HashMap<Item,Vector2> items;
+	
 	public Pathfinding(int width, int height) {
 		WIDTH = width;
 		HEIGHT = height;
 		grid = new Vector2[WIDTH][HEIGHT];
+		items = new HashMap<Item,Vector2>();
 	}
 	
 	public void render(RenderModel model) { 
@@ -88,6 +94,17 @@ public class Pathfinding {
 		return n;
 	}
 	
+	
+	// Returns the last node in the list which has direct line of sight from start node
+	private int smooth(Array<Vector2> path, int startIndex){
+		for(int i = Math.max(path.size-1,0); i > startIndex; i--){
+			if(physics.lineOfSight(path.get(startIndex), path.get(i))){
+				return i;
+			}
+		}
+		return startIndex;
+	}
+	
 	private Array<Vector2> reconstruct(HashMap<Vector2,Vector2> cameFrom, Vector2 start) {
 		Array<Vector2> path = new Array<Vector2>();
 		path.add(start);
@@ -96,8 +113,17 @@ public class Pathfinding {
 			current = cameFrom.get(current);
 			if(current == null)
 				break;
-			path.add(current);
+				path.add(current);
 		}
+		
+		// Remove redundant nodes
+//		Array<Vector2> smoothedPath = new Array<Vector2>(path.size);
+//		smoothedPath.add(path.first());
+//		for(int i = 0; i < path.size; i++){
+//			int nextIndex = smooth(path, i);
+//			smoothedPath.add(path.get(nextIndex));
+//			i = nextIndex;
+//		}
 		return path;
 	}
 	
@@ -108,16 +134,16 @@ public class Pathfinding {
 		HashMap<Vector2,Float> gScore = new HashMap<Vector2, Float>();
 		HashMap<Vector2,Float> fScore = new HashMap<Vector2, Float>();
 		
-		PriorityQueue<Vector2> closedSet =  new PriorityQueue<Vector2>((Vector2 v1, Vector2 v2) -> (int) Math.signum((fScore.get(v1) - fScore.get(v2))));
-		PriorityQueue<Vector2> openSet = new PriorityQueue<Vector2>((Vector2 v1, Vector2 v2) -> (int) Math.signum((fScore.get(v1) - fScore.get(v2))));
+		PriorityQueue<Vector2> closedSet =  new PriorityQueue<Vector2>((Vector2 v1, Vector2 v2) -> (int) Math.signum((gScore.get(v1) - gScore.get(v2))));
+		PriorityQueue<Vector2> openSet = new PriorityQueue<Vector2>((Vector2 v1, Vector2 v2) -> (int) Math.signum((gScore.get(v1) - gScore.get(v2))));
 		
 		openSet.add(start);
 		for(int x = 0; x < WIDTH; x++){
 			for(int y = 0; y < HEIGHT; y++){
 				if(grid[x][y] == null)
 					continue;
-				gScore.put(grid[x][y], 9999.0f);
-				fScore.put(grid[x][y], 9999.0f);
+				gScore.put(grid[x][y], 999999.0f);
+				fScore.put(grid[x][y], 999999.0f);
 			}
 		}
 		
@@ -167,6 +193,23 @@ public class Pathfinding {
 		}catch(IndexOutOfBoundsException e){
 		}
 		return false;
+	}
+	
+	
+	public void addItemLocation(Item e, Vector2 origin){
+		items.put(e, origin);
+	}
+	
+	// Get Vector2 location of item.
+	public Vector2 getItemLocation(Item e){
+		if(items.containsKey(e)){
+			return items.get(e);
+		}
+		return null;
+	}
+		
+	public Vector2 playerPosition(){
+		return playerPosition;
 	}
 	
 	// Update graph. Should only be called after static objects have been removed/added/modified

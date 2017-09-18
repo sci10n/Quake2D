@@ -32,19 +32,16 @@ public class Weapon extends Item {
 
 	@Override
 	public void tick(float delta) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void render(RenderModel model) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public ItemType getType() {
-		// TODO Auto-generated method stub
 		return ItemType.Weapon;
 	}	
 }
