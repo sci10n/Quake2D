@@ -16,6 +16,9 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 
+import se.sciion.quake2d.ai.behaviour.BehaviourTree;
+import se.sciion.quake2d.ai.behaviour.SequenceNode;
+import se.sciion.quake2d.ai.behaviour.nodes.PickupItem;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.HardcodedLevel;
@@ -46,6 +49,7 @@ public class LevelSandbox extends ApplicationAdapter{
 	private PhysicsSystem physicsSystem;
 	private RenderModel model;
 	private Pathfinding pathfinding;
+	private BehaviourTree tree;
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
@@ -94,6 +98,7 @@ public class LevelSandbox extends ApplicationAdapter{
 		
 		// Bot dummy
 		{
+
 			Entity botEntity = new Entity();
 			
 			CircleShape shape = new CircleShape();
@@ -111,6 +116,11 @@ public class LevelSandbox extends ApplicationAdapter{
 			botEntity.addComponent(new InventoryComponent());
 			botEntity.addComponent(botInput);
 			entities.add(botEntity);
+			
+			PickupItem node1 = new PickupItem(Items.Shotgun, pathfinding, botInput);
+			PickupItem node2 = new PickupItem(Items.Sniper, pathfinding, botInput);
+			SequenceNode sequence = new SequenceNode(node1,node2);
+			tree = new BehaviourTree(sequence);
 		}
 		// Sniper weapon pickup
 		{
@@ -121,7 +131,7 @@ public class LevelSandbox extends ApplicationAdapter{
 
 			PhysicsComponent pickupPhysics = new PhysicsComponent(physicsSystem.createBody(origin.x,origin.y, BodyType.KinematicBody, boxShape));
 			sniperPickup.addComponent(pickupPhysics);
-			PickupComponent pickup = new PickupComponent(levelRequests,Items.Sniper);
+			PickupComponent pickup = new PickupComponent(pathfinding,levelRequests,Items.Sniper);
 			physicsSystem.getContactResolver().addCollisionCallback(pickup, sniperPickup);
 			sniperPickup.addComponent(pickup);
 			entities.add(sniperPickup);
@@ -138,7 +148,7 @@ public class LevelSandbox extends ApplicationAdapter{
 			Vector2 origin = new Vector2(5, 25);
 			PhysicsComponent pickupPhysics = new PhysicsComponent(physicsSystem.createBody(origin.x, origin.y, BodyType.KinematicBody, boxShape));
 			shutgunPickup.addComponent(pickupPhysics);
-			PickupComponent pickup = new PickupComponent(levelRequests,Items.Shotgun);
+			PickupComponent pickup = new PickupComponent(pathfinding, levelRequests,Items.Shotgun);
 			physicsSystem.getContactResolver().addCollisionCallback(pickup, shutgunPickup);
 			shutgunPickup.addComponent(pickup);
 			entities.add(shutgunPickup);
@@ -242,7 +252,7 @@ public class LevelSandbox extends ApplicationAdapter{
 	@Override
 	public void render () {
 		camera.update();
-		
+		tree.tick();
 		level.tick(Gdx.graphics.getDeltaTime());
 		physicsSystem.update(Gdx.graphics.getDeltaTime());
 		
@@ -250,7 +260,7 @@ public class LevelSandbox extends ApplicationAdapter{
 		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 		model.setProjectionMatrix(camera.combined);
 		
-		//pathfinding.render(model);
+		pathfinding.render(model);
 
 		model.begin();
 		level.render(model);

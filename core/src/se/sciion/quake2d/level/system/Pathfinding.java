@@ -167,7 +167,7 @@ public class Pathfinding {
 				// Should not be concerned with player position. Should be moved to sepparate function.
 				float extraScore = 1;
 				if(physics.lineOfSight(playerPosition,n)){
-					extraScore += 100;
+					extraScore += 4;
 				}
 				float tentative_gScore = gScore.get(c) + c.cpy().sub(n).len2() + extraScore;
 				
@@ -207,7 +207,13 @@ public class Pathfinding {
 		}
 		return null;
 	}
+	
+	public void removeItemLocation(Item e){
+		if(items.containsKey(e)){
+			items.remove(e);
+		}
 		
+	}
 	public Vector2 playerPosition(){
 		return playerPosition;
 	}

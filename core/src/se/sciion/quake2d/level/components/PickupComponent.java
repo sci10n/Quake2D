@@ -9,14 +9,19 @@ import se.sciion.quake2d.level.items.Item;
 import se.sciion.quake2d.level.requests.DestroyBody;
 import se.sciion.quake2d.level.requests.RequestQueue;
 import se.sciion.quake2d.level.system.CollisionCallback;
+import se.sciion.quake2d.level.system.Pathfinding;
 
 public class PickupComponent extends EntityComponent implements CollisionCallback{
 
 	private Array<Item> items;
 	private RequestQueue<DestroyBody> request;
-	public PickupComponent(RequestQueue<DestroyBody> requests, Item ... items) {
+	private Pathfinding pathfinder;
+	
+	public PickupComponent(Pathfinding pathfinder, RequestQueue<DestroyBody> requests, Item ... items) {
 		this.items = Array.with(items);
 		this.request = requests;
+		this.pathfinder = pathfinder;
+		
 	}
 	
 	@Override
@@ -42,6 +47,7 @@ public class PickupComponent extends EntityComponent implements CollisionCallbac
 		
 		for(int i = 0; i < items.size; i++) {
 			inventory.addItem(items.get(i));
+			pathfinder.removeItemLocation(items.get(i));
 		}
 		items.clear();
 		

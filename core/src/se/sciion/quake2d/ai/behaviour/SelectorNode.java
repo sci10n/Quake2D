@@ -1,5 +1,6 @@
 package se.sciion.quake2d.ai.behaviour;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,24 +18,21 @@ public class SelectorNode extends CompositeBehaviour{
 		super(behaviours);
 		currentChild = 0;
 	}
+	public SelectorNode(BehaviourNode ...behaviourNodes){
+		super(Arrays.asList(behaviourNodes));
+		currentChild = 0;
 
+	}
 	@Override
 	protected BehaviourStatus onUpdate() {
-		switch(children.get(currentChild).onUpdate() ){
-		case FAILURE:
+		status = children.get(currentChild).tick();
+		if(status == BehaviourStatus.FAILURE){
 			if(currentChild < children.size()) {
 				++currentChild;
 				return onUpdate();
 			}
-			return BehaviourStatus.FAILURE;
-		case SUCCESS:
-			return BehaviourStatus.SUCCESS;
-		case RUNNING:
-			return BehaviourStatus.RUNNING;
-		case UNDEFINED:
-			return BehaviourStatus.UNDEFINED;
 		}
-		return BehaviourStatus.UNDEFINED;
+		return status;
 	}
 
 }
