@@ -17,18 +17,23 @@ import se.sciion.quake2d.level.requests.RequestQueue;
  */
 public class WeaponComponent extends EntityComponent{
 
-	private Weapon currentWeapon;
 	private float cooldown;
 	private RequestQueue<CreateBullet> request;
 	
-	public WeaponComponent(Weapon currentWeapon, RequestQueue<CreateBullet> requests) {
-		this.currentWeapon = currentWeapon;
+	public WeaponComponent(RequestQueue<CreateBullet> requests) {
 		cooldown = 0;
 		this.request = requests;
 	}
 	
 	@Override
 	public void render(RenderModel batch) {
+		
+		InventoryComponent inventory = getParent().getComponent(ComponentTypes.Inventory);
+		if(inventory == null)
+			return;
+		Weapon currentWeapon = inventory.getItem(Weapon.class);
+		if(currentWeapon == null)
+			return;
 		
 		PhysicsComponent physics = getParent().getComponent(ComponentTypes.Physics);
 		if(physics != null ){
@@ -67,6 +72,10 @@ public class WeaponComponent extends EntityComponent{
 	// Used for now to fire weapon. Should perhaps be internal logic
 	public void fire(Vector2 heading, Vector2 origin){
 		if(cooldown <= 0.0f){
+			InventoryComponent inventory = getParent().getComponent(ComponentTypes.Inventory);
+			if(inventory == null)
+				return;
+			Weapon currentWeapon = inventory.getItem(Weapon.class);
 			
 			// Create bullets
 			for(int i = 0; i < currentWeapon.bullets; i++){

@@ -1,7 +1,9 @@
 package se.sciion.quake2d.level.items;
 
+import se.sciion.quake2d.enums.ItemType;
+import se.sciion.quake2d.graphics.RenderModel;
 
-public class Weapon {
+public class Weapon extends Item {
 	public final float cooldown;
 	public final int bullets;
 	public final int capacity;
@@ -26,5 +28,20 @@ public class Weapon {
 		this.knockback = knockback;
 		this.spread = spread;
 		this.speed = speed;
+	}
+
+	@Override
+	public void tick(float delta) {
+		
+	}
+
+	@Override
+	public void render(RenderModel model) {
+		
+	}
+
+	@Override
+	public ItemType getType() {
+		return ItemType.Weapon;
 	}	
 }

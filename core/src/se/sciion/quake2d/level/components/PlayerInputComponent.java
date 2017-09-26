@@ -2,16 +2,19 @@ package se.sciion.quake2d.level.components;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.requests.CreateBullet;
 import se.sciion.quake2d.level.requests.RequestQueue;
+import se.sciion.quake2d.level.system.Pathfinding;
 
 /**
  * Dispatches all events and logic based on player input
@@ -22,15 +25,17 @@ public class PlayerInputComponent extends EntityComponent{
 
 	private OrthographicCamera camera;
 	private RequestQueue levelRequests;
-	
-	public PlayerInputComponent(OrthographicCamera camera, RequestQueue levelRequests) {
+	private Pathfinding pathfinding;
+
+	public PlayerInputComponent(OrthographicCamera camera, RequestQueue levelRequests, Pathfinding pathfinding) {
 		this.camera = camera;
 		this.levelRequests = levelRequests;
+		this.pathfinding = pathfinding;
 	}
 	
 	@Override
 	public void render(RenderModel batch) {
-
+		
 	}
 
 	@Override
@@ -69,10 +74,11 @@ public class PlayerInputComponent extends EntityComponent{
 		headingDirection.sub(body.getPosition()).nor();
 		
 		// Fixate rotation such that external forces doesn't count
-		body.setFixedRotation(true);
+		//body.setFixedRotation(true);
 		
 		body.setTransform(body.getPosition(), headingDirection.angleRad());
-		
+		//camera.position.set(body.getPosition(), 0);
+		//camera.update();
 		
 		// Test bullet creation. Should be moved to separate component like Weapon or similar
 		if(Gdx.input.isKeyJustPressed(Keys.SPACE)){

@@ -8,5 +8,8 @@ public enum ComponentTypes {
 	BotInput,
 	Health,
 	Damage,
-	Projectile
+	Projectile,
+	LineOfSight,
+	Inventory,
+	Pickup
 }
