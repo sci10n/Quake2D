@@ -23,17 +23,24 @@ public class SequenceNode extends CompositeBehaviour{
 	}
 	
 	@Override
+	protected void onEnter() {
+		currentChild = 0;
+		status = BehaviourStatus.RUNNING;
+		super.onEnter();
+	}
+	
+	@Override
 	protected BehaviourStatus onUpdate() {
-		status = children.get(currentChild).tick();
-		if(status == BehaviourStatus.SUCCESS){
-			++currentChild;
-			System.out.println(status);
-
-			if(currentChild < children.size()) {
-				return onUpdate();
+		if (currentChild < children.size() && !children.isEmpty()) {
+			status = children.get(currentChild).tick();
+			if(status == BehaviourStatus.SUCCESS){
+				++currentChild;
+				if(currentChild < children.size() && !children.isEmpty()) {
+					System.out.println(currentChild);
+					return onUpdate();
+				}
 			}
 		}
-		
 		return status;
 	}
 

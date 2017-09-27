@@ -66,7 +66,10 @@ public class BotInputComponent extends EntityComponent {
 		if (path.size > 1)
 			path.pop(); // Current position;
 		currentPath = path;
-
+		
+		if(currentPath.size <= 0)
+			return;
+		
 		Vector2 closestPoint = currentPath.peek();
 		if (closestPoint.cpy().sub(origin).len2() < 0.5f) {
 			currentPath.pop();
@@ -77,7 +80,21 @@ public class BotInputComponent extends EntityComponent {
 		body.setLinearVelocity(body.getLinearVelocity().scl(0.49f));
 
 	}
-
+	
+	public boolean fire(Vector2 heading) {
+		PhysicsComponent physics = getParent().getComponent(ComponentTypes.Physics);
+		if(physics == null) {
+			return false;
+		}
+		
+		WeaponComponent weapon = getParent().getComponent(ComponentTypes.Weapon);
+		if(weapon != null){
+			return weapon.fire(heading, physics.getBody().getPosition());
+			
+		}
+		return false;
+	}
+	
 	public Array<Vector2> getCurrentPath() {
 		return currentPath;
 	}

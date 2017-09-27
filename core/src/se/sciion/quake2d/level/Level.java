@@ -23,6 +23,7 @@ public abstract class Level {
 		}
 		
 		for(int i = 0; i < removalList.size; i++){
+			removalList.get(i).clear();
 			entities.removeValue(removalList.get(i), true);
 			
 		}

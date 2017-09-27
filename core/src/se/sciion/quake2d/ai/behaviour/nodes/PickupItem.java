@@ -33,30 +33,29 @@ public class PickupItem extends BehaviourNode{
 	@Override
 	protected BehaviourStatus onUpdate() {
 
-		PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
-		if(physics == null){
-			status = BehaviourStatus.FAILURE;
-			return status;
-		}
-		
-		Vector2 fromLoc = physics.getBody().getPosition();
-		Vector2 itemLoc = pathfinder.getItemLocation(item);
-		
-		InventoryComponent inventory = input.getParent().getComponent(ComponentTypes.Inventory);
-		if (inventory.getItem(item.getClass()) != null && pathfinder.getItemLocation(item) == null){
-			
-			status = BehaviourStatus.SUCCESS;
-		}
-		else if(inventory.getItem(item.getClass()) == null&& pathfinder.getItemLocation(item) == null){
-			status = BehaviourStatus.FAILURE;
-		}
-		else{
-			status = BehaviourStatus.RUNNING;
-		}
-		input.setTarget(itemLoc);
-		System.out.println(status);
+//		PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
+//		if(physics == null){
+//			status = BehaviourStatus.FAILURE;
+//			return status;
+//		}
+//		
+//		Vector2 fromLoc = physics.getBody().getPosition();
+//		Vector2 itemLoc = pathfinder.getItemLocation(item);
+//		
+//		InventoryComponent inventory = input.getParent().getComponent(ComponentTypes.Inventory);
+//		if (inventory.containsItem(item) && pathfinder.getItemLocation(item) == null){
+//			
+//			status = BehaviourStatus.SUCCESS;
+//		}
+//		else if(!inventory.containsItem(item) && pathfinder.getItemLocation(item) == null){
+//			status = BehaviourStatus.FAILURE;
+//		}
+//		else{
+//			status = BehaviourStatus.RUNNING;
+//		}
+//		input.setTarget(itemLoc);
 
-		return status;
+		return BehaviourStatus.FAILURE;
 	}
 
 }

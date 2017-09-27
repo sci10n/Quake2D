@@ -70,15 +70,19 @@ public class WeaponComponent extends EntityComponent{
 	}
 	
 	// Used for now to fire weapon. Should perhaps be internal logic
-	public void fire(Vector2 heading, Vector2 origin){
+	public boolean fire(Vector2 heading, Vector2 origin){
 		if(cooldown <= 0.0f){
 			InventoryComponent inventory = getParent().getComponent(ComponentTypes.Inventory);
 			if(inventory == null)
-				return;
+				return false;
 			Weapon currentWeapon = inventory.getItem(Weapon.class);
+			if(currentWeapon == null) {
+				return false;
+			}
 			
 			// Create bullets
 			for(int i = 0; i < currentWeapon.bullets; i++){
+				System.out.println(i);
 				Vector2 bulletHeading = heading.cpy();
 				float angle = bulletHeading.angle();
 				bulletHeading.setAngle(angle + MathUtils.random(-currentWeapon.spread/2.0f,currentWeapon.spread/2.0f));
@@ -93,7 +97,9 @@ public class WeaponComponent extends EntityComponent{
 				physics.getBody().setLinearVelocity(vel);
 			}
 			cooldown = currentWeapon.cooldown;
+			return true;
 		}
+		return false;
 	}
 
 }

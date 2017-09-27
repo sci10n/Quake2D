@@ -30,14 +30,20 @@ public class InventoryComponent extends EntityComponent {
 			if(i.getType() == item.getType()) {
 				items.removeValue(i,true);
 				items.add(item);
+				return;
 			}
 		}
+		items.add(item);
 	}
 	
 	public void removeItem(Item item) {
 		if(items.contains(item, true)) {
 			items.removeValue(item,true);
 		}
+	}
+	
+	public boolean containsItem(Item item) {
+		return items.contains(item, false);
 	}
 	
 	@SuppressWarnings("unchecked")

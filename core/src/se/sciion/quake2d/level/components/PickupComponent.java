@@ -47,7 +47,6 @@ public class PickupComponent extends EntityComponent implements CollisionCallbac
 		
 		for(int i = 0; i < items.size; i++) {
 			inventory.addItem(items.get(i));
-			pathfinder.removeItemLocation(items.get(i));
 		}
 		items.clear();
 		

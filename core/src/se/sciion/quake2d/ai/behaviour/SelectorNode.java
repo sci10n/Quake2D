@@ -4,32 +4,44 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * COntinue processing until ail children are attempted or one succeeds.
+ * Continue processing until ail children are attempted or one succeeds.
+ * 
  * @author sciion
  *
  */
-public class SelectorNode extends CompositeBehaviour{
+public class SelectorNode extends CompositeBehaviour {
 
 	public SelectorNode() {
 		super();
 	}
-	
+
 	public SelectorNode(List<BehaviourNode> behaviours) {
 		super(behaviours);
 		currentChild = 0;
 	}
-	public SelectorNode(BehaviourNode ...behaviourNodes){
+
+	public SelectorNode(BehaviourNode... behaviourNodes) {
 		super(Arrays.asList(behaviourNodes));
 		currentChild = 0;
 
 	}
+
+	@Override
+	protected void onEnter() {
+		super.onEnter();
+		status = BehaviourStatus.RUNNING;
+		currentChild = 0;
+	}
+
 	@Override
 	protected BehaviourStatus onUpdate() {
-		status = children.get(currentChild).tick();
-		if(status == BehaviourStatus.FAILURE){
-			if(currentChild < children.size()) {
-				++currentChild;
-				return onUpdate();
+		if (currentChild < children.size() && !children.isEmpty()) {
+			status = children.get(currentChild).tick();
+			if (status == BehaviourStatus.FAILURE) {
+				if (currentChild < children.size()) {
+					++currentChild;
+					return onUpdate();
+				}
 			}
 		}
 		return status;

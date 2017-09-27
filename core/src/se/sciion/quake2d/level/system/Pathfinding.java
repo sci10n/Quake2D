@@ -9,8 +9,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
+import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.items.Item;
 
 public class Pathfinding {
@@ -24,13 +26,13 @@ public class Pathfinding {
 	private Vector2 playerPosition;
 	
 	// Items of interest for pathfinders
-	private HashMap<Item,Vector2> items;
+	private HashMap<Entity,Vector2> entities;
 	
 	public Pathfinding(int width, int height) {
 		WIDTH = width;
 		HEIGHT = height;
 		grid = new Vector2[WIDTH][HEIGHT];
-		items = new HashMap<Item,Vector2>();
+		entities = new HashMap<Entity,Vector2>();
 	}
 	
 	public void render(RenderModel model) { 
@@ -196,21 +198,21 @@ public class Pathfinding {
 	}
 	
 	
-	public void addItemLocation(Item e, Vector2 origin){
-		items.put(e, origin);
+	public void addEntity(Entity e, Vector2 origin){
+		entities.put(e, origin);
 	}
 	
 	// Get Vector2 location of item.
-	public Vector2 getItemLocation(Item e){
-		if(items.containsKey(e)){
-			return items.get(e);
+	public Vector2 getEntityLocation(Entity e){
+		if(entities.containsKey(e)){
+			return entities.get(e);
 		}
 		return null;
 	}
 	
-	public void removeItemLocation(Item e){
-		if(items.containsKey(e)){
-			items.remove(e);
+	public void removeEntity(Entity e){
+		if(entities.containsKey(e)){
+			entities.remove(e);
 		}
 		
 	}
@@ -232,5 +234,16 @@ public class Pathfinding {
 			}
 		}
 	}
+
+	// Update all positions
+	public void tick() {
+		for(Entity e: entities.keySet()) {
+			PhysicsComponent physics = e.getComponent(ComponentTypes.Physics);
+			if(physics != null) {
+				entities.put(e, physics.getBody().getPosition());
+			}
+		}
+	}
+
 	
 }

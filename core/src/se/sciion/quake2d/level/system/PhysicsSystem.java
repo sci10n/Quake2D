@@ -82,6 +82,7 @@ public class PhysicsSystem implements Subscriber<DestroyBody> {
 	
 	private World world;
 	private Array<Body> removalList;
+	
 	private Box2DDebugRenderer debugRenderer;
 
 	public PhysicsSystem() {
