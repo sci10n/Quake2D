@@ -36,11 +36,6 @@ public class Weapon extends Item {
 	}
 
 	@Override
-	public void render(RenderModel model) {
-		
-	}
-
-	@Override
 	public ItemType getType() {
 		return ItemType.Weapon;
 	}	

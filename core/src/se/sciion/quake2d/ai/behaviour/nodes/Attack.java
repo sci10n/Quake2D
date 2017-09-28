@@ -23,7 +23,6 @@ public class Attack extends BehaviourNode{
 	protected void onEnter() {
 		super.onEnter();
 		status = BehaviourStatus.RUNNING;
-		System.out.println("Enter Attack");
 	}
 	
 	@Override
@@ -33,19 +32,18 @@ public class Attack extends BehaviourNode{
 		PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
 		if(targetPhysics == null || physics == null) {
 			status = BehaviourStatus.FAILURE;
-			System.out.println("Attack: Target does not have physics");
 			return status;
 		}
-		System.out.println("Direction: ");
+		
+
 		Vector2 direction = targetPhysics.getBody().getPosition().cpy().sub(physics.getBody().getPosition());
 		if(input.fire(direction.nor())) {
-			System.out.println("Attack: " + status);
 			status = BehaviourStatus.SUCCESS;
 		}
 		else {
-			System.out.println("Attack: " + status);
 			status = BehaviourStatus.FAILURE;
 		}
+		
 		return status;
 	}
 

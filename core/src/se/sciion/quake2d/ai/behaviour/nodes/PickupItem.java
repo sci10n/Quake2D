@@ -1,14 +1,8 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
-
 import se.sciion.quake2d.ai.behaviour.BehaviourNode;
 import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
-import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.level.components.BotInputComponent;
-import se.sciion.quake2d.level.components.InventoryComponent;
-import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.items.Item;
 import se.sciion.quake2d.level.system.Pathfinding;
 

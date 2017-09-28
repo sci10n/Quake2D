@@ -3,12 +3,15 @@ package se.sciion.quake2d.level.components;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
+import se.sciion.quake2d.level.Entity;
+import se.sciion.quake2d.level.Level;
 import se.sciion.quake2d.level.items.Weapon;
-import se.sciion.quake2d.level.requests.CreateBullet;
-import se.sciion.quake2d.level.requests.RequestQueue;
+import se.sciion.quake2d.level.system.PhysicsSystem;
 
 /**
  * Keep track of cooldowns related to weapons.
@@ -18,11 +21,13 @@ import se.sciion.quake2d.level.requests.RequestQueue;
 public class WeaponComponent extends EntityComponent{
 
 	private float cooldown;
-	private RequestQueue<CreateBullet> request;
+	private PhysicsSystem physicsSystem;
+	private Level level;
 	
-	public WeaponComponent(RequestQueue<CreateBullet> requests) {
+	public WeaponComponent(Level level, PhysicsSystem physicsSystem) {
 		cooldown = 0;
-		this.request = requests;
+		this.physicsSystem = physicsSystem;
+		this.level = level;
 	}
 	
 	@Override
@@ -82,11 +87,27 @@ public class WeaponComponent extends EntityComponent{
 			
 			// Create bullets
 			for(int i = 0; i < currentWeapon.bullets; i++){
-				System.out.println(i);
 				Vector2 bulletHeading = heading.cpy();
 				float angle = bulletHeading.angle();
 				bulletHeading.setAngle(angle + MathUtils.random(-currentWeapon.spread/2.0f,currentWeapon.spread/2.0f));
-				request.send(new CreateBullet(origin.cpy().add(bulletHeading), bulletHeading, currentWeapon.speed, 1));
+				{
+					float x = origin.x + bulletHeading.x;
+					float y = origin.y + bulletHeading.y;
+					Entity e = level.createEntity();
+					CircleShape circle = new CircleShape();
+					circle.setRadius(0.2f);
+					PhysicsComponent bulletPhysics = physicsSystem.createComponent(x, y, BodyType.DynamicBody, circle);
+					e.addComponent(bulletPhysics);
+					
+					ProjectileComponent projectile = new ProjectileComponent(bulletHeading.cpy().scl(currentWeapon.speed));
+					e.addComponent(projectile);
+					
+					DamageComponent damage = new DamageComponent(1);
+					e.addComponent(damage);
+					
+					physicsSystem.registerCallback(projectile,e);
+					
+				}
 			}
 			
 			// Push player backwards

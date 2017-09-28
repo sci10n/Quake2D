@@ -2,18 +2,13 @@ package se.sciion.quake2d.level.components;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
-import se.sciion.quake2d.level.requests.CreateBullet;
-import se.sciion.quake2d.level.requests.RequestQueue;
 import se.sciion.quake2d.level.system.Pathfinding;
 
 /**
@@ -24,12 +19,10 @@ import se.sciion.quake2d.level.system.Pathfinding;
 public class PlayerInputComponent extends EntityComponent{
 
 	private OrthographicCamera camera;
-	private RequestQueue levelRequests;
 	private Pathfinding pathfinding;
 
-	public PlayerInputComponent(OrthographicCamera camera, RequestQueue levelRequests, Pathfinding pathfinding) {
+	public PlayerInputComponent(OrthographicCamera camera, Pathfinding pathfinding) {
 		this.camera = camera;
-		this.levelRequests = levelRequests;
 		this.pathfinding = pathfinding;
 	}
 	
@@ -42,30 +35,30 @@ public class PlayerInputComponent extends EntityComponent{
 	public void tick(float delta) {
 		
 		// Update sprite location
-		PhysicsComponent spriteComponent = getParent().getComponent(ComponentTypes.Physics);
-		if(spriteComponent == null)
+		PhysicsComponent physicsComponent = getParent().getComponent(ComponentTypes.Physics);
+		if(physicsComponent == null)
 			return;
 		
-		Body body = spriteComponent.getBody();
+		Body body = physicsComponent.getBody();
 		
 		Vector2 vel = body.getLinearVelocity();
 		
-		if(Gdx.input.isKeyPressed(Keys.W) && vel.y < 4.0f){
-			body.setLinearVelocity(vel.add(0, 1.9f));
+		if(Gdx.input.isKeyPressed(Keys.W) && vel.y < 7.0f){
+			body.setLinearVelocity(vel.add(0, 3.9f));
 		} 
-		else if(Gdx.input.isKeyPressed(Keys.S) && vel.y > -4.0f){
-			body.setLinearVelocity(vel.add(0, -1.9f));
+		else if(Gdx.input.isKeyPressed(Keys.S) && vel.y > -7.0f){
+			body.setLinearVelocity(vel.add(0, -3.9f));
 		}
 		
-		if(Gdx.input.isKeyPressed(Keys.A) && vel.x > -4.0f){
-			body.setLinearVelocity(vel.add(-1.9f,0.0f));
+		if(Gdx.input.isKeyPressed(Keys.A) && vel.x > -7.0f){
+			body.setLinearVelocity(vel.add(-3.9f,0.0f));
 		} 
-		else if(Gdx.input.isKeyPressed(Keys.D) && vel.x < 4.0f){
-			body.setLinearVelocity(vel.add(1.9f,0.0f));
+		else if(Gdx.input.isKeyPressed(Keys.D) && vel.x < 7.0f){
+			body.setLinearVelocity(vel.add(3.9f,0.0f));
 		}
 		
 		float len = body.getLinearVelocity().len();
-		body.setLinearVelocity(body.getLinearVelocity().nor().scl(0.89f * len));
+		body.setLinearVelocity(body.getLinearVelocity().nor().scl(0.79f * len));
 		
 		// Get direction player is looking based on mouse position. Takes into account camera scaling, viewport and translation.
 		Vector3 tmp = camera.unproject(new Vector3(Gdx.input.getX(),Gdx.input.getY(),0));
@@ -87,6 +80,9 @@ public class PlayerInputComponent extends EntityComponent{
 				weapon.fire(headingDirection, body.getPosition());
 			}
 		}
+		
+		// Set to weight pathfinding
+		//pathfinding.setPlayerPosition(body.getPosition());
 	}
 
 	@Override
