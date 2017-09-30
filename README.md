@@ -34,3 +34,9 @@ Most of this will be fetched automatically by `gradlew`, but in case you want to
 - libGDX 1.9.6
 
 ## Acknowledgements
+
+All our assets are taken from elsewhere, since we are programmers, we suck at making art and audio. Luckily some people have released some good quality assets for free and under a permissive license (creative commons). This enables us to still keep our MIT license for the game.
+
+- Kenney's Game Assets (CC 3.0)
+- Sounds by the SFXR Tool (MIT License)
+- A Drop A Day - As Far as it Gets (CC 3.0)
