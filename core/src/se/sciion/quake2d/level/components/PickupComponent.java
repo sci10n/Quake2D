@@ -11,9 +11,10 @@ import se.sciion.quake2d.level.system.CollisionCallback;
 public class PickupComponent extends EntityComponent implements CollisionCallback{
 
 	private Array<Item> items;
-	
+	private Array<Item> removalList;
 	public PickupComponent(Item ... items) {
 		this.items = Array.with(items);
+		removalList = new Array<Item>();
 		
 	}
 	
@@ -34,18 +35,15 @@ public class PickupComponent extends EntityComponent implements CollisionCallbac
 
 	@Override
 	public void process(Entity target) {
-		InventoryComponent inventory = target.getComponent(ComponentTypes.Inventory);
-		if(inventory == null)
-			return;
 		
 		for(int i = 0; i < items.size; i++) {
-			inventory.addItem(items.get(i));
+			if(items.get(i).accepted(target)){
+				removalList.add(i);
+			}
 		}
-		items.clear();
-		
-		PhysicsComponent physics = getParent().getComponent(ComponentTypes.Physics);
-		if(physics == null)
-			return;
+		for(int i : removalList){
+			items.removeIndex(i);
+		}
 		
 		parent.setActive(false);
 

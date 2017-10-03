@@ -33,6 +33,7 @@ import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.components.PickupComponent;
 import se.sciion.quake2d.level.components.PlayerInputComponent;
 import se.sciion.quake2d.level.components.WeaponComponent;
+import se.sciion.quake2d.level.items.Consumable;
 import se.sciion.quake2d.level.items.Items;
 import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
@@ -112,13 +113,36 @@ public class LevelSandbox extends ApplicationAdapter {
 			boxShape.setAsBox(0.5f, 0.5f);
 
 			Vector2 origin = new Vector2(5, 25);
-			PhysicsComponent pickupPhysics = physicsSystem.createComponent(origin.x, origin.y, BodyType.DynamicBody,
-					boxShape);
+			PhysicsComponent pickupPhysics = physicsSystem.createComponent(origin.x, origin.y, BodyType.DynamicBody,boxShape);
 			shotgunPickup.addComponent(pickupPhysics);
 			PickupComponent pickup = new PickupComponent(Items.Shotgun);
 			physicsSystem.registerCallback(pickup, shotgunPickup);
 			shotgunPickup.addComponent(pickup);
 
+		}
+		{
+			Entity healthPickup = level.createEntity("health");
+			PolygonShape boxShape = new PolygonShape();
+			boxShape.setAsBox(0.5f, 0.5f);
+
+			Vector2 origin = new Vector2(20, 25);
+			PhysicsComponent pickupPhysics = physicsSystem.createComponent(origin.x, origin.y, BodyType.DynamicBody,boxShape);
+			healthPickup.addComponent(pickupPhysics);
+			PickupComponent pickup = new PickupComponent(new Consumable(1, 0));
+			physicsSystem.registerCallback(pickup, healthPickup);
+			healthPickup.addComponent(pickup);
+		}
+		{
+			Entity healthPickup = level.createEntity("health");
+			PolygonShape boxShape = new PolygonShape();
+			boxShape.setAsBox(0.5f, 0.5f);
+
+			Vector2 origin = new Vector2(21, 25);
+			PhysicsComponent pickupPhysics = physicsSystem.createComponent(origin.x, origin.y, BodyType.DynamicBody,boxShape);
+			healthPickup.addComponent(pickupPhysics);
+			PickupComponent pickup = new PickupComponent(new Consumable(1, 0));
+			physicsSystem.registerCallback(pickup, healthPickup);
+			healthPickup.addComponent(pickup);
 		}
 		// Bot dummy
 		{

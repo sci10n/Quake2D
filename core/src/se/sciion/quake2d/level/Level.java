@@ -8,11 +8,12 @@ import se.sciion.quake2d.graphics.RenderModel;
 
 public class Level {
 
-	
 	protected Array<Entity> entities;
 	protected HashMap<String,Entity> complexEntities;
 	
 	private Array<Entity> removalList;
+	
+	
 	public Level(){
 		entities = new Array<Entity>(true, 16);
 		complexEntities = new HashMap<String,Entity>();

@@ -75,6 +75,7 @@ public class BotInputComponent extends EntityComponent {
 		Vector2 direction = closestPoint.cpy().add(0.5f, 0.5f).sub(origin).nor().scl(3.9f);
 		Vector2 vel = body.getLinearVelocity();
 		body.setLinearVelocity(vel.add(direction));
+		body.setTransform(body.getPosition(), vel.angleRad());
 
 	}
 	

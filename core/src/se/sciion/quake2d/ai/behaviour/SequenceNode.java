@@ -36,7 +36,6 @@ public class SequenceNode extends CompositeBehaviour{
 			if(status == BehaviourStatus.SUCCESS){
 				++currentChild;
 				if(currentChild < children.size() && !children.isEmpty()) {
-					System.out.println(currentChild);
 					return onUpdate();
 				}
 			}
