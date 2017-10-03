@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 // Process each child in order. Fails if one fails.
-public class SequenceNode extends CompositeBehaviour{
+public class SequenceNode extends CompositeNode{
 	
 	
 	public SequenceNode() {
@@ -36,7 +36,6 @@ public class SequenceNode extends CompositeBehaviour{
 			if(status == BehaviourStatus.SUCCESS){
 				++currentChild;
 				if(currentChild < children.size() && !children.isEmpty()) {
-					System.out.println(currentChild);
 					return onUpdate();
 				}
 			}

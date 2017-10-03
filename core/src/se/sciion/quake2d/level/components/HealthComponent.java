@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Vector2;
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
-import se.sciion.quake2d.level.requests.RequestQueue;
 import se.sciion.quake2d.level.system.CollisionCallback;
 
 /**
