@@ -6,21 +6,14 @@ import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.items.Item;
-import se.sciion.quake2d.level.requests.DestroyBody;
-import se.sciion.quake2d.level.requests.RequestQueue;
 import se.sciion.quake2d.level.system.CollisionCallback;
-import se.sciion.quake2d.level.system.Pathfinding;
 
 public class PickupComponent extends EntityComponent implements CollisionCallback{
 
 	private Array<Item> items;
-	private RequestQueue<DestroyBody> request;
-	private Pathfinding pathfinder;
 	
-	public PickupComponent(Pathfinding pathfinder, RequestQueue<DestroyBody> requests, Item ... items) {
+	public PickupComponent(Item ... items) {
 		this.items = Array.with(items);
-		this.request = requests;
-		this.pathfinder = pathfinder;
 		
 	}
 	
@@ -54,8 +47,7 @@ public class PickupComponent extends EntityComponent implements CollisionCallbac
 		if(physics == null)
 			return;
 		
-		request.send(new DestroyBody(physics.getBody()));
-		getParent().setActive(false);
+		parent.setActive(false);
 
 	}
 

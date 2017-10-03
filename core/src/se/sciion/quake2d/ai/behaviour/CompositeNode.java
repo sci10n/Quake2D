@@ -3,18 +3,18 @@ package se.sciion.quake2d.ai.behaviour;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CompositeBehaviour extends BehaviourNode {
+public abstract class CompositeNode extends BehaviourNode {
     protected List<BehaviourNode> children; // Sibling children.
     protected int currentChild;	// Current index
     
     // Behaviour that will somehow do stuff to other behaviours.
-    public CompositeBehaviour(List<BehaviourNode> behaviours)  {
+    public CompositeNode(List<BehaviourNode> behaviours)  {
         children = behaviours;
         currentChild = 0;
     }
     
     // Default constructor if we want to dynamically add behaviours.
-    public CompositeBehaviour() {
+    public CompositeNode() {
     	children = new ArrayList<BehaviourNode>();
     	currentChild = 0;
     }

@@ -1,18 +1,17 @@
 package se.sciion.quake2d.level.components;
 
+import com.badlogic.gdx.math.Vector2;
+
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
-import se.sciion.quake2d.level.requests.DestroyBody;
-import se.sciion.quake2d.level.requests.RequestQueue;
 import se.sciion.quake2d.level.system.CollisionCallback;
-import se.sciion.quake2d.level.system.PhysicsSystem;
 
 public class ProjectileComponent extends EntityComponent implements CollisionCallback{
 
-	private RequestQueue<DestroyBody> queue;
-	public ProjectileComponent(RequestQueue<DestroyBody> queue) {
-		this.queue = queue;
+	private Vector2 direction;
+	public ProjectileComponent(Vector2 direction) {
+		this.direction = direction;
 	}
 
 	@Override
@@ -33,14 +32,14 @@ public class ProjectileComponent extends EntityComponent implements CollisionCal
 
 	@Override
 	public void process(Entity target) {
-		getParent().setActive(false);
 		PhysicsComponent physics = getParent().getComponent(ComponentTypes.Physics);
-		
+		if(physics != null){
+			physics.getBody().applyForceToCenter(direction.cpy(), true);
+		}
 		// Make sure we don't remove when we collide with other projectiles
 		ProjectileComponent projectile = target.getComponent(ComponentTypes.Projectile);
-		if(physics != null && projectile == null){
-			queue.send(new DestroyBody(physics.getBody()));
-
+		if(projectile == null){
+			getParent().setActive(false);
 		}
 	}
 

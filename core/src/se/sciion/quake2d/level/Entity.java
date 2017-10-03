@@ -1,6 +1,5 @@
 package se.sciion.quake2d.level;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.enums.ComponentTypes;
@@ -56,7 +55,6 @@ public class Entity {
 			if(components.get(i).getType() == type)
 				toRemove.add(components.get(i));
 		}
-		
 		for(EntityComponent i : toRemove){
 			removeComponent(i);
 		}
@@ -86,7 +84,13 @@ public class Entity {
 		return active;
 	}
 
-	public void clear() {
-		components.clear();
+	public void cleanup() {
+		if(active)
+			return;
+		for(EntityComponent ec : components) {
+			ec.cleanup();
+			removeComponent(ec);
+		}
+		
 	}
 }

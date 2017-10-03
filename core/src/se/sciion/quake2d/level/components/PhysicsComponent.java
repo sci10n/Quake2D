@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
+import se.sciion.quake2d.level.system.PhysicsSystem;
 
 /**
  * Physical body of entity.
@@ -18,8 +19,11 @@ public class PhysicsComponent extends EntityComponent{
 	// Keep track of all stuff physics
 	private Body body;
 	
-	public PhysicsComponent(Body body) {
+	private PhysicsSystem system;
+	
+	public PhysicsComponent(Body body, PhysicsSystem system) {
 		this.body = body;
+		this.system = system;
 	}
 	
 	@Override
@@ -30,14 +34,6 @@ public class PhysicsComponent extends EntityComponent{
 	@Override
 	public void tick(float delta) {
 		
-		// Update sprite location if such is attached to entity
-		SpriteComponent sprite = getParent().getComponent(ComponentTypes.Sprite);
-		if(sprite != null) {
-			Sprite s = sprite.getSprite();
-			float x = body.getPosition().x;
-			float y = body.getPosition().y;
-			s.setPosition(x - s.getWidth()/2.0f,y - s.getHeight()/2.0f);
-		}
 	}
 
 	@Override
@@ -45,17 +41,17 @@ public class PhysicsComponent extends EntityComponent{
 		return ComponentTypes.Physics;
 	}
 	
+	@Override
+	public void cleanup() {
+		system.removeBody(body);
+		super.cleanup();
+	}
+	
 	// Override to add parent as userData for body
 	@Override
 	public void setParent(Entity parent) {
 		super.setParent(parent);
 		body.setUserData(parent);
-	}
-	
-	@Override
-	protected void finalize() throws Throwable {
-		body.getWorld().destroyBody(body);
-		super.finalize();
 	}
 	
 	public Body getBody() {

@@ -25,17 +25,16 @@ public class Pathfinding {
 	private PhysicsSystem physics;
 	private Vector2 playerPosition;
 	
-	// Items of interest for pathfinders
-	private HashMap<Entity,Vector2> entities;
-	
 	public Pathfinding(int width, int height) {
 		WIDTH = width;
 		HEIGHT = height;
 		grid = new Vector2[WIDTH][HEIGHT];
-		entities = new HashMap<Entity,Vector2>();
 	}
 	
 	public void render(RenderModel model) { 
+		if(playerPosition == null)
+			return;
+		
 		model.primitiveRenderer.begin(ShapeType.Line);
 		for(int x = 0; x < WIDTH; x++){
 			for(int y = 0; y < HEIGHT; y++){
@@ -168,7 +167,7 @@ public class Pathfinding {
 				
 				// Should not be concerned with player position. Should be moved to sepparate function.
 				float extraScore = 1;
-				if(physics.lineOfSight(playerPosition,n)){
+				if(playerPosition != null && physics.lineOfSight(playerPosition,n)){
 					extraScore += 4;
 				}
 				float tentative_gScore = gScore.get(c) + c.cpy().sub(n).len2() + extraScore;
@@ -197,25 +196,6 @@ public class Pathfinding {
 		return false;
 	}
 	
-	
-	public void addEntity(Entity e, Vector2 origin){
-		entities.put(e, origin);
-	}
-	
-	// Get Vector2 location of item.
-	public Vector2 getEntityLocation(Entity e){
-		if(entities.containsKey(e)){
-			return entities.get(e);
-		}
-		return null;
-	}
-	
-	public void removeEntity(Entity e){
-		if(entities.containsKey(e)){
-			entities.remove(e);
-		}
-		
-	}
 	public Vector2 playerPosition(){
 		return playerPosition;
 	}
@@ -234,16 +214,5 @@ public class Pathfinding {
 			}
 		}
 	}
-
-	// Update all positions
-	public void tick() {
-		for(Entity e: entities.keySet()) {
-			PhysicsComponent physics = e.getComponent(ComponentTypes.Physics);
-			if(physics != null) {
-				entities.put(e, physics.getBody().getPosition());
-			}
-		}
-	}
-
 	
 }
