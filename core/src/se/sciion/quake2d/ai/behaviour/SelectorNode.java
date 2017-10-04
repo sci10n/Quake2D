@@ -9,7 +9,7 @@ import java.util.List;
  * @author sciion
  *
  */
-public class SelectorNode extends CompositeBehaviour {
+public class SelectorNode extends CompositeNode {
 
 	public SelectorNode() {
 		super();

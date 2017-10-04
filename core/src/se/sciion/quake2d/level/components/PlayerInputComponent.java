@@ -2,6 +2,7 @@ package se.sciion.quake2d.level.components;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -74,7 +75,7 @@ public class PlayerInputComponent extends EntityComponent{
 		//camera.update();
 		
 		// Test bullet creation. Should be moved to separate component like Weapon or similar
-		if(Gdx.input.isKeyJustPressed(Keys.SPACE)){
+		if(Gdx.input.isKeyJustPressed(Keys.SPACE) || Gdx.input.isButtonPressed(Buttons.LEFT)){
 			WeaponComponent weapon = getParent().getComponent(ComponentTypes.Weapon);
 			if(weapon != null){
 				weapon.fire(headingDirection, body.getPosition());

@@ -9,6 +9,7 @@ import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.items.Consumable;
+
 import se.sciion.quake2d.level.system.CollisionCallback;
 
 /**
