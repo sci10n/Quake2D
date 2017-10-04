@@ -37,16 +37,15 @@ public class MoveToEntity extends BehaviourNode {
 
 	@Override
 	protected BehaviourStatus onUpdate() {
-		if(!target.isActive()){
+		
+		if(target == null) {
 			status = BehaviourStatus.FAILURE;
-
 			return status;
 		}
 		
 		PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
 		if (physics == null) {
 			status = BehaviourStatus.FAILURE;
-
 			return status;
 		}
 
@@ -55,6 +54,7 @@ public class MoveToEntity extends BehaviourNode {
 		PhysicsComponent targetPhysics = target.getComponent(ComponentTypes.Physics);
 		if (targetPhysics == null ) {
 			status = BehaviourStatus.FAILURE;
+			System.out.println(status);
 			input.setTarget(null);
 
 			return status;

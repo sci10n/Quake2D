@@ -56,8 +56,6 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 		DamageComponent damage = target.getComponent(ComponentTypes.Damage);
 		if(damage != null){
 			health -= damage.getDamage();
-			System.out.println("Damaged!");
-
 			if(health <= 0){
 				health = 0;
 			}

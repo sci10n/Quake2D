@@ -19,10 +19,13 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.ai.behaviour.BehaviourTree;
+import se.sciion.quake2d.ai.behaviour.Inverter;
 import se.sciion.quake2d.ai.behaviour.SelectorNode;
 import se.sciion.quake2d.ai.behaviour.SequenceNode;
 import se.sciion.quake2d.ai.behaviour.nodes.Attack;
+import se.sciion.quake2d.ai.behaviour.nodes.HealthCheck;
 import se.sciion.quake2d.ai.behaviour.nodes.MoveToEntity;
+import se.sciion.quake2d.ai.behaviour.nodes.MoveToNearest;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.Level;
@@ -87,7 +90,7 @@ public class LevelSandbox extends ApplicationAdapter {
 			playerEntity.addComponent(playerPhysics);
 			playerEntity.addComponent(playerMovement);
 			playerEntity.addComponent(playerWeapon);
-			playerEntity.addComponent(new InventoryComponent(Items.Shotgun));
+			playerEntity.addComponent(new InventoryComponent());
 		}
 
 		// Sniper weapon pickup
@@ -128,7 +131,7 @@ public class LevelSandbox extends ApplicationAdapter {
 			Vector2 origin = new Vector2(20, 25);
 			PhysicsComponent pickupPhysics = physicsSystem.createComponent(origin.x, origin.y, BodyType.DynamicBody,boxShape);
 			healthPickup.addComponent(pickupPhysics);
-			PickupComponent pickup = new PickupComponent(new Consumable(1, 0));
+			PickupComponent pickup = new PickupComponent(new Consumable(10, 0));
 			physicsSystem.registerCallback(pickup, healthPickup);
 			healthPickup.addComponent(pickup);
 		}
@@ -140,7 +143,7 @@ public class LevelSandbox extends ApplicationAdapter {
 			Vector2 origin = new Vector2(21, 25);
 			PhysicsComponent pickupPhysics = physicsSystem.createComponent(origin.x, origin.y, BodyType.DynamicBody,boxShape);
 			healthPickup.addComponent(pickupPhysics);
-			PickupComponent pickup = new PickupComponent(new Consumable(1, 0));
+			PickupComponent pickup = new PickupComponent(new Consumable(10, 0));
 			physicsSystem.registerCallback(pickup, healthPickup);
 			healthPickup.addComponent(pickup);
 		}
@@ -162,14 +165,24 @@ public class LevelSandbox extends ApplicationAdapter {
 			entity.addComponent(new InventoryComponent());
 			entity.addComponent(botInput);
 			
-			MoveToEntity node1 = new MoveToEntity(level.getEntity("shotgun"), physicsSystem, botInput, 1.0f);
-			Attack node2 = new Attack(level.getEntity("player"), botInput);
-			MoveToEntity node3 = new MoveToEntity(level.getEntity("player"), physicsSystem, botInput, 20.0f);
+//			
+//			
+//			
+//			
+//			
+//			SequenceNode huntPlayer = new SequenceNode(pickupWeapon, moveToPlayer, attackPlayer);
 			
-			SequenceNode sequence = new SequenceNode(node3, node2);
-			SelectorNode selector = new SelectorNode(node1, sequence);
-
-			tree = new BehaviourTree(selector);
+			HealthCheck healthCheck = new HealthCheck(botHealth, 0.5f);
+			MoveToNearest pickupHealth = new MoveToNearest("health", level, pathfinding, physicsSystem, botInput, 1.0f);
+			MoveToNearest pickupWeapon= new MoveToNearest("shotgun",level,pathfinding, physicsSystem, botInput, 1.0f);
+			Attack attackPlayer = new Attack(level.getEntities("player").first(), botInput);
+			MoveToEntity moveToPlayer = new MoveToEntity(level.getEntities("player").first(), physicsSystem, botInput, 10.0f);
+			
+			SequenceNode s1 = new SequenceNode(new Inverter(healthCheck), pickupHealth);
+			SequenceNode s2 = new SequenceNode(pickupWeapon, moveToPlayer, attackPlayer);
+			SelectorNode s3 = new SelectorNode(s1,s2);
+			
+			tree = new BehaviourTree(s3);
 
 		}
 		// Static level entity

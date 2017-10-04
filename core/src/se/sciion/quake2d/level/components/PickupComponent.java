@@ -38,14 +38,16 @@ public class PickupComponent extends EntityComponent implements CollisionCallbac
 		
 		for(int i = 0; i < items.size; i++) {
 			if(items.get(i).accepted(target)){
-				removalList.add(i);
+				removalList.add(items.get(i));
 			}
 		}
-		for(int i : removalList){
-			items.removeIndex(i);
+		for(Item i : removalList){
+			items.removeValue(i,false);
 		}
 		
-		parent.setActive(false);
+		if(items.size == 0) {
+			parent.setActive(false);
+		}
 
 	}
 
