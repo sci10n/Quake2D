@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.level.Entity;
+import se.sciion.quake2d.level.components.ArmorComponent;
 import se.sciion.quake2d.level.components.HealthComponent;
 
 public class Consumable extends Item{
@@ -27,6 +28,15 @@ public class Consumable extends Item{
 				return true;
 			}
 		}
+		
+		ArmorComponent armor = e.getComponent(ComponentTypes.Armor);
+		if(armor != null) {
+			if(armor.armor < armor.MAX_ARMOR){
+				armor.armor = MathUtils.clamp(armor.armor + ArmorRestore, 0, armor.MAX_ARMOR);
+				return true;
+			}
+		}
+		
 		return false;
 	}
 }
