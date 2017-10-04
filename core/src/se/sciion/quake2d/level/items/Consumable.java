@@ -11,7 +11,8 @@ public class Consumable extends Item{
 	public final int HealthRestore;
 	public final int ArmorRestore;
 	
-	public Consumable(int health, int armor) {
+	public Consumable(String tag, int health, int armor) {
+		super(tag);
 		HealthRestore = health;
 		ArmorRestore = armor;
 	}

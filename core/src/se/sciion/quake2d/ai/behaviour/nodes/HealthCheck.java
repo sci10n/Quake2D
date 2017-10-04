@@ -29,7 +29,6 @@ public class HealthCheck extends BehaviourNode{
 		}
 		else {
 			status = BehaviourStatus.FAILURE;
-			System.out.println("Not ok " + (health.health/(float)health.MAX_HEALTH));
 		}
 		return status;
 	}

@@ -26,6 +26,7 @@ import se.sciion.quake2d.ai.behaviour.nodes.Attack;
 import se.sciion.quake2d.ai.behaviour.nodes.HealthCheck;
 import se.sciion.quake2d.ai.behaviour.nodes.MoveToEntity;
 import se.sciion.quake2d.ai.behaviour.nodes.MoveToNearest;
+import se.sciion.quake2d.ai.behaviour.nodes.PickupItem;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.Level;
@@ -38,6 +39,7 @@ import se.sciion.quake2d.level.components.PlayerInputComponent;
 import se.sciion.quake2d.level.components.WeaponComponent;
 import se.sciion.quake2d.level.items.Consumable;
 import se.sciion.quake2d.level.items.Items;
+import se.sciion.quake2d.level.items.Weapon;
 import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
@@ -123,15 +125,29 @@ public class LevelSandbox extends ApplicationAdapter {
 			shotgunPickup.addComponent(pickup);
 
 		}
+		// Shotgun weapon pickup
+		{
+			Entity shotgunPickup = level.createEntity("shotgun");
+			PolygonShape boxShape = new PolygonShape();
+			boxShape.setAsBox(0.5f, 0.5f);
+
+			Vector2 origin = new Vector2(25, 5);
+			PhysicsComponent pickupPhysics = physicsSystem.createComponent(origin.x, origin.y, BodyType.DynamicBody,boxShape);
+			shotgunPickup.addComponent(pickupPhysics);
+			PickupComponent pickup = new PickupComponent(Items.Shotgun);
+			physicsSystem.registerCallback(pickup, shotgunPickup);
+			shotgunPickup.addComponent(pickup);
+
+		}
 		{
 			Entity healthPickup = level.createEntity("health");
 			PolygonShape boxShape = new PolygonShape();
 			boxShape.setAsBox(0.5f, 0.5f);
 
-			Vector2 origin = new Vector2(20, 25);
+			Vector2 origin = new Vector2(18, 25);
 			PhysicsComponent pickupPhysics = physicsSystem.createComponent(origin.x, origin.y, BodyType.DynamicBody,boxShape);
 			healthPickup.addComponent(pickupPhysics);
-			PickupComponent pickup = new PickupComponent(new Consumable(10, 0));
+			PickupComponent pickup = new PickupComponent(new Consumable("health",10, 0));
 			physicsSystem.registerCallback(pickup, healthPickup);
 			healthPickup.addComponent(pickup);
 		}
@@ -140,10 +156,22 @@ public class LevelSandbox extends ApplicationAdapter {
 			PolygonShape boxShape = new PolygonShape();
 			boxShape.setAsBox(0.5f, 0.5f);
 
-			Vector2 origin = new Vector2(21, 25);
+			Vector2 origin = new Vector2(20, 25);
 			PhysicsComponent pickupPhysics = physicsSystem.createComponent(origin.x, origin.y, BodyType.DynamicBody,boxShape);
 			healthPickup.addComponent(pickupPhysics);
-			PickupComponent pickup = new PickupComponent(new Consumable(10, 0));
+			PickupComponent pickup = new PickupComponent(new Consumable("health", 10, 0));
+			physicsSystem.registerCallback(pickup, healthPickup);
+			healthPickup.addComponent(pickup);
+		}
+		{
+			Entity healthPickup = level.createEntity("health");
+			PolygonShape boxShape = new PolygonShape();
+			boxShape.setAsBox(0.5f, 0.5f);
+
+			Vector2 origin = new Vector2(22, 25);
+			PhysicsComponent pickupPhysics = physicsSystem.createComponent(origin.x, origin.y, BodyType.DynamicBody,boxShape);
+			healthPickup.addComponent(pickupPhysics);
+			PickupComponent pickup = new PickupComponent(new Consumable("health",10, 0));
 			physicsSystem.registerCallback(pickup, healthPickup);
 			healthPickup.addComponent(pickup);
 		}
@@ -173,8 +201,8 @@ public class LevelSandbox extends ApplicationAdapter {
 //			SequenceNode huntPlayer = new SequenceNode(pickupWeapon, moveToPlayer, attackPlayer);
 			
 			HealthCheck healthCheck = new HealthCheck(botHealth, 0.5f);
-			MoveToNearest pickupHealth = new MoveToNearest("health", level, pathfinding, physicsSystem, botInput, 1.0f);
-			MoveToNearest pickupWeapon= new MoveToNearest("shotgun",level,pathfinding, physicsSystem, botInput, 1.0f);
+			MoveToNearest pickupHealth = new MoveToNearest("health", level, pathfinding,physicsSystem, botInput, 1.0f);
+			PickupItem pickupWeapon= new PickupItem("shotgun",level,pathfinding, botInput);
 			Attack attackPlayer = new Attack(level.getEntities("player").first(), botInput);
 			MoveToEntity moveToPlayer = new MoveToEntity(level.getEntities("player").first(), physicsSystem, botInput, 10.0f);
 			

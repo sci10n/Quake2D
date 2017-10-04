@@ -128,10 +128,6 @@ public class Pathfinding {
 		return path;
 	}
 	
-	public Vector2 getSafePoint() {
-		
-	}
-	
 	// Get path from start to target using a* and euclidean distance as heuristic.
 	public Array<Vector2> findPath(Vector2 start, Vector2 target){
 

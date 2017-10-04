@@ -38,6 +38,15 @@ public class InventoryComponent extends EntityComponent {
 		return items.contains(item, false);
 	}
 	
+	public boolean containsItem(String tag){
+		for(Item i: items){
+			if(i.getTag().equals(tag)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public <T extends Item> Array<T> getItems(Class<T> type) {
 		Array<T> ret = new Array<T>();

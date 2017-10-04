@@ -21,8 +21,8 @@ public class Weapon extends Item {
 	 * @param spread
 	 * @param speed
 	 */
-	public Weapon(float cooldown, int bullets, int capacity, float knockback, float spread, float speed) {
-		super();
+	public Weapon(String tag, float cooldown, int bullets, int capacity, float knockback, float spread, float speed) {
+		super(tag);
 		this.cooldown = cooldown;
 		this.bullets = bullets;
 		this.capacity = capacity;

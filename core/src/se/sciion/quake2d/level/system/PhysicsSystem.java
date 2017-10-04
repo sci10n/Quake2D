@@ -160,17 +160,10 @@ public class PhysicsSystem {
 	}
 
 	public Vector2 rayCast(Vector2 origin, Vector2 direction) {
-		
 		world.rayCast(rayCastCallback, origin, origin.cpy().add(direction).scl(300));
 		return rayCastCallback.targetPos;
 	}
 	
-	// Use for raycasting against entities
-	public Entity rayCast(Vector2 origin, Vector2 direction) {
-		// 300 units should be enough for this project.
-		world.rayCast(rayCastCallback, origin, origin.cpy().add(direction).scl(300));
-		return rayCastCallback.target;
-	}
 
 	public void registerCallback(CollisionCallback callback, Entity e) {
 		contactResolver.addCollisionCallback(callback, e);
@@ -182,15 +175,6 @@ public class PhysicsSystem {
 	
 	public void render(Matrix4 combined) {
 		debugRenderer.render(world, combined);
-		
-		ShapeRenderer sr = new ShapeRenderer();
-		sr.setProjectionMatrix(combined);
-		
-		if(p1 != null && p2 != null) {
-			sr.begin(ShapeType.Line);
-			sr.line(p1, p2);
-			sr.end();
-		}
 	}
 
 	public void update(float delta) {
