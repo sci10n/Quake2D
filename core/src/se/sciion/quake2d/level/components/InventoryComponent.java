@@ -16,7 +16,6 @@ public class InventoryComponent extends EntityComponent {
 	
 	@Override
 	public void render(RenderModel batch) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -26,19 +25,12 @@ public class InventoryComponent extends EntityComponent {
 	}
 	
 	public void addItem(Item item) {
-		for(Item i : items) {
-			if(i.getType() == item.getType()) {
-				items.removeValue(i,true);
-				items.add(item);
-				return;
-			}
-		}
 		items.add(item);
 	}
 	
 	public void removeItem(Item item) {
-		if(items.contains(item, true)) {
-			items.removeValue(item,true);
+		if(items.contains(item, false)) {
+			items.removeValue(item,false);
 		}
 	}
 	
@@ -46,15 +38,26 @@ public class InventoryComponent extends EntityComponent {
 		return items.contains(item, false);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public <T extends Item> T getItem(Class<T> type) {
-		for(Item i: items) {
-			if(type.isInstance(i)) {
-				return (T) i;
+	public boolean containsItem(String tag){
+		for(Item i: items){
+			if(i.getTag().equals(tag)){
+				return true;
 			}
 		}
-		return null;
+		return false;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <T extends Item> Array<T> getItems(Class<T> type) {
+		Array<T> ret = new Array<T>();
+		for(Item i: items) {
+			if(type.isInstance(i)) {
+				ret.add((T)i);
+			}
+		}
+		return ret;
+	}
+
 	
 	@Override
 	public ComponentTypes getType() {

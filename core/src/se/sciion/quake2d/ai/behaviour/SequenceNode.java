@@ -35,9 +35,7 @@ public class SequenceNode extends CompositeNode{
 			status = children.get(currentChild).tick();
 			if(status == BehaviourStatus.SUCCESS){
 				++currentChild;
-				if(currentChild < children.size() && !children.isEmpty()) {
-					return onUpdate();
-				}
+				return onUpdate();
 			}
 		}
 		return status;

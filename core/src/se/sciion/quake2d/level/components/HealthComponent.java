@@ -1,11 +1,15 @@
 package se.sciion.quake2d.level.components;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
+import se.sciion.quake2d.level.items.Consumable;
+
 import se.sciion.quake2d.level.system.CollisionCallback;
 
 /**
@@ -16,7 +20,7 @@ import se.sciion.quake2d.level.system.CollisionCallback;
 public class HealthComponent extends EntityComponent implements CollisionCallback{
 
 	
-	private final int MAX_HEALTH;
+	public final int MAX_HEALTH;
 	public int health;
 	
 	public HealthComponent(int health) {

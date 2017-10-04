@@ -1,13 +1,11 @@
 package se.sciion.quake2d.level.components;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
-import se.sciion.quake2d.level.items.Items;
 import se.sciion.quake2d.level.system.Pathfinding;
 
 public class BotInputComponent extends EntityComponent {
@@ -75,6 +73,7 @@ public class BotInputComponent extends EntityComponent {
 		Vector2 direction = closestPoint.cpy().add(0.5f, 0.5f).sub(origin).nor().scl(3.9f);
 		Vector2 vel = body.getLinearVelocity();
 		body.setLinearVelocity(vel.add(direction));
+		body.setTransform(body.getPosition(), vel.angleRad());
 
 	}
 	

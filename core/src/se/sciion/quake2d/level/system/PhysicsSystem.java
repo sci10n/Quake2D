@@ -32,7 +32,7 @@ public class PhysicsSystem {
 	private class EntityRayCast implements RayCastCallback {
 
 		public Entity target;
-
+		public Vector2 targetPos;
 		public EntityRayCast() {
 			target = null;
 		}
@@ -41,12 +41,13 @@ public class PhysicsSystem {
 		public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
 			try {
 				target = (Entity) fixture.getBody().getUserData();
+				targetPos = point;
 			} catch (NullPointerException e1) {
 
 			} catch (ClassCastException e2) {
 
 			}
-			return 0;
+			return fraction;
 		}
 	}
 
@@ -57,7 +58,7 @@ public class PhysicsSystem {
 		@Override
 		public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
 			target = point;
-			return 1;
+			return fraction;
 		}
 
 	}
@@ -155,15 +156,14 @@ public class PhysicsSystem {
 		p1 = origin;
 		p2 = callback.target;
 		float dist = callback.target.cpy().sub(target).len();
-		return dist <= 0.5f;
+		return dist <= 1.0f;
 	}
 
-	// Use for raycasting against entities
-	public Entity rayCast(Vector2 origin, Vector2 direction) {
-		// 300 units should be enough for this project.
+	public Vector2 rayCast(Vector2 origin, Vector2 direction) {
 		world.rayCast(rayCastCallback, origin, origin.cpy().add(direction).scl(300));
-		return rayCastCallback.target;
+		return rayCastCallback.targetPos;
 	}
+	
 
 	public void registerCallback(CollisionCallback callback, Entity e) {
 		contactResolver.addCollisionCallback(callback, e);
@@ -175,15 +175,6 @@ public class PhysicsSystem {
 	
 	public void render(Matrix4 combined) {
 		debugRenderer.render(world, combined);
-		
-		ShapeRenderer sr = new ShapeRenderer();
-		sr.setProjectionMatrix(combined);
-		
-		if(p1 != null && p2 != null) {
-			sr.begin(ShapeType.Line);
-			sr.line(p1, p2);
-			sr.end();
-		}
 	}
 
 	public void update(float delta) {
