@@ -26,6 +26,6 @@ public abstract class BehaviourNode{
         if (status != BehaviourStatus.RUNNING) onLeave();
         return status;
     }
-    
-    public abstract Node toDot();
+
+    public abstract Node toDotNode();
 }

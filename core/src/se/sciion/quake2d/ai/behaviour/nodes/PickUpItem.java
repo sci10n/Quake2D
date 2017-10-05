@@ -4,6 +4,7 @@ import static guru.nidi.graphviz.model.Factory.node;
 import guru.nidi.graphviz.attribute.Shape;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
@@ -13,57 +14,62 @@ import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.Level;
 import se.sciion.quake2d.level.components.BotInputComponent;
+import se.sciion.quake2d.level.components.InventoryComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
-public class MoveToNearest extends BehaviourNode {
-    private static int moveToNearestId = 0;
+public class PickUpItem extends BehaviourNode {
+    private static int pickUpItem = 0;
 
     private String id;
-    private BotInputComponent input;
-    private float minDistance;
-    private PhysicsSystem physics;
     private Level level;
     private Pathfinding pathfinding;
+    private BotInputComponent input;
 
-    public MoveToNearest(String id, Level level, Pathfinding pathfinding, PhysicsSystem physics, BotInputComponent input, float minDistance) {
-        super();
+    public PickUpItem(String id, Level level, Pathfinding pathfinding, BotInputComponent input) {
         this.id = id;
         this.level = level;
-        this.input = input;
-        this.minDistance = minDistance;
-        this.physics = physics;
         this.pathfinding = pathfinding;
+        this.input = input;
     }
 
     @Override
     protected void onEnter() {
         status = BehaviourStatus.RUNNING;
-        super.onEnter();
-
     }
 
     @Override
     protected BehaviourStatus onUpdate() {
 
+        InventoryComponent inventory = input.getParent().getComponent(ComponentTypes.Inventory);
+        if(inventory == null){
+            status = BehaviourStatus.SUCCESS;
+            return status;
+        }
+
+        if(inventory.containsItem(id)){
+            status = BehaviourStatus.SUCCESS;
+            return status;
+        }
+
         PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
-        if (physics == null) {
+        if(physics == null) {
             status = BehaviourStatus.FAILURE;
             return status;
         }
 
-        Vector2 fromLoc = physics.getBody().getPosition();
+        Vector2 fromPos = physics.getBody().getPosition();
+        Vector2 targetPos = null;
         int bestPath = Integer.MAX_VALUE;
 
-        Vector2 targetPos = null;
-        for(Entity e: level.getEntities(id)) {
-            PhysicsComponent ePhysics = e.getComponent(ComponentTypes.Physics);
-            if(ePhysics != null) {
-                Vector2 ePos = ePhysics.getBody().getPosition();
-                int pathLength = pathfinding.findPath(fromLoc, ePos).size;
-                if(pathLength < bestPath) {
-                    bestPath = pathLength;
+        for(Entity e: level.getEntities(id)){
+            PhysicsComponent p = e.getComponent(ComponentTypes.Physics);
+            if(p != null){
+                Vector2 ePos = p.getBody().getPosition();
+                int path = pathfinding.findPath(fromPos, ePos).size;
+                if(path < bestPath){
+                    bestPath = path;
                     targetPos = ePos;
                 }
             }
@@ -76,26 +82,14 @@ public class MoveToNearest extends BehaviourNode {
 
         input.setTarget(targetPos);
 
-        float distance = fromLoc.cpy().sub(targetPos).len();
-
-        if (distance > minDistance) {
-            status = BehaviourStatus.RUNNING;
-        } else if (distance <= minDistance && this.physics.lineOfSight(fromLoc, targetPos)) {
-            status = BehaviourStatus.SUCCESS;
-            input.setTarget(null);
-
-        }
-
         return status;
     }
 
     @Override
     public Node toDotNode() {
-        Node node = node("moveToNearest" + moveToNearestId++)
-                    .with(Shape.RECTANGLE)
-                    .with(Label.of("MoveToNearest(" + id + ", " + minDistance + ")"));
-
-        return node;
+        return node("pickUpItem" + pickUpItem++)
+               .with(Shape.RECTANGLE)
+               .with(Label.of("PickUpItem(" + id + ")"));
     }
 
 }

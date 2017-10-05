@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -21,21 +23,24 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader.Parameters;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
+import se.sciion.quake2d.ai.behaviour.BTVisualizer;
 import se.sciion.quake2d.ai.behaviour.BehaviourTree;
 import se.sciion.quake2d.ai.behaviour.InverterNode;
 import se.sciion.quake2d.ai.behaviour.SelectorNode;
 import se.sciion.quake2d.ai.behaviour.SequenceNode;
-import se.sciion.quake2d.ai.behaviour.nodes.Attack;
-import se.sciion.quake2d.ai.behaviour.nodes.HealthCheck;
+import se.sciion.quake2d.ai.behaviour.nodes.AttackEntity;
+import se.sciion.quake2d.ai.behaviour.nodes.CheckHealth;
 import se.sciion.quake2d.ai.behaviour.nodes.MoveToNearest;
-import se.sciion.quake2d.ai.behaviour.nodes.PickupItem;
+import se.sciion.quake2d.ai.behaviour.nodes.PickUpItem;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.Level;
+import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.level.components.BotInputComponent;
 import se.sciion.quake2d.level.components.HealthComponent;
 import se.sciion.quake2d.level.components.InventoryComponent;
@@ -63,17 +68,14 @@ public class LevelSandbox extends ApplicationAdapter {
 	private RenderModel model;
 	
 	private Pathfinding pathfinding;
+	private BTVisualizer visualizer;
 	private PhysicsSystem physicsSystem;
-
-	private BehaviourTree tree;	
-
 	
 	@Override
 	public void create() {
-		
 		Gdx.graphics.setWindowedMode((int) (800 * Gdx.graphics.getDensity()), (int) (600 * Gdx.graphics.getDensity()));
-		// Set up level object
 		Gdx.graphics.setSystemCursor(SystemCursor.Crosshair);
+		Gdx.graphics.setTitle("Quake 2-D");
 
 		level = new Level();
 		camera = new OrthographicCamera();
@@ -81,6 +83,7 @@ public class LevelSandbox extends ApplicationAdapter {
 
 		model = new RenderModel();
 		physicsSystem = new PhysicsSystem();
+		visualizer = new BTVisualizer(camera, physicsSystem);
 
 		pathfinding = new Pathfinding(30, 30);
 
@@ -91,7 +94,6 @@ public class LevelSandbox extends ApplicationAdapter {
 
 	@Override
 	public void dispose() {
-
 	}
 
 	public void loadAssets() {
@@ -219,23 +221,25 @@ public class LevelSandbox extends ApplicationAdapter {
 				physicsSystem.registerCallback(health, entity);
 
 				BotInputComponent botInput = new BotInputComponent(pathfinding);
+
 				entity.addComponent(health);
 				entity.addComponent(physics);
 				entity.addComponent(weapon);
 				entity.addComponent(new InventoryComponent());
 				entity.addComponent(botInput);
 				
-				HealthCheck healthCheck = new HealthCheck(health, 0.5f);
-				MoveToNearest pickupHealth = new MoveToNearest("health", level, pathfinding,physicsSystem, botInput, 1.0f);
-				PickupItem pickupWeapon= new PickupItem("shotgun",level,pathfinding, botInput);
-				Attack attackPlayer = new Attack(level.getEntities("player").first(), botInput);
+				CheckHealth checkHealth = new CheckHealth(health, 0.25f);
+				MoveToNearest pickupHealth = new MoveToNearest("health", level, pathfinding,physicsSystem, botInput, 0.25f);
+				PickUpItem pickupWeapon = new PickUpItem("shotgun",level,pathfinding, botInput);
+				AttackEntity attackPlayer = new AttackEntity(level.getEntities("player").first(), botInput);
 				MoveToNearest moveToPlayer = new MoveToNearest("player",level ,pathfinding,physicsSystem, botInput, 10.0f);
 				
-				SequenceNode s1 = new SequenceNode(new InverterNode(healthCheck), pickupHealth);
+				SequenceNode s1 = new SequenceNode(new InverterNode(checkHealth), pickupHealth);
 				SequenceNode s2 = new SequenceNode(pickupWeapon, moveToPlayer, attackPlayer);
 				SelectorNode s3 = new SelectorNode(s1,s2);
 				
-				tree = new BehaviourTree(s3);
+				BehaviourTree tree = new BehaviourTree(s3);
+				botInput.setBehaviourTree(tree);
 			}
 		}
 		
@@ -243,8 +247,11 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	@Override
 	public void render() {
+		// Wait what. Pause? :(
+		if (visualizer.pause())
+			return;
+
 		camera.update();
-		tree.tick();
 		level.tick(Gdx.graphics.getDeltaTime());
 		physicsSystem.update(Gdx.graphics.getDeltaTime());
 		physicsSystem.cleanup();
@@ -253,29 +260,14 @@ public class LevelSandbox extends ApplicationAdapter {
 		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 		model.setProjectionMatrix(camera.combined);
 
-		//Matrix4 projection = camera.combined.cpy().scl(1.0f/64.0f);
 		renderer.setView(camera);
 		renderer.render();
-		//pathfinding.render(model);
 
 		model.begin();
 		level.render(model);
 		model.end();
 
-		// Currently only Box2D debug renderer
 		physicsSystem.render(camera.combined);
-		
-//		cooldown += Gdx.graphics.getDeltaTime();
-//		if(cooldown >= 1.0f) {
-//			try {
-//				Graphviz.fromGraph(tree.toDot()).render(Format.PNG).toFile(new File("test/test.png"));
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			cooldown = 0;
-//		}
-//		
 	}
 	
 	@Override

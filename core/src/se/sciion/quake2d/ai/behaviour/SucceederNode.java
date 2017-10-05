@@ -8,34 +8,34 @@ import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 
 public class SucceederNode extends DecoratorNode {
+    private static int succeederId = 0;
 
-	private static int succeederId = 0;
-	
-	public SucceederNode(BehaviourNode behaviour) {
-		super(behaviour);
-	}
+    public SucceederNode(BehaviourNode behaviour) {
+        super(behaviour);
+    }
 
-	@Override
-	protected void onEnter() {
-		status = BehaviourStatus.RUNNING;
-	}
-	
-	@Override
-	protected BehaviourStatus onUpdate() {
-		status = child.tick();
-		if(child.status == BehaviourStatus.SUCCESS) {
-			status = BehaviourStatus.SUCCESS;
-		} else if(child.status == BehaviourStatus.FAILURE) {
-			status = BehaviourStatus.SUCCESS;
-		}
-		return status;
-	}
+    @Override
+    protected void onEnter() {
+        status = BehaviourStatus.RUNNING;
+    }
 
-	@Override
-	public Node toDot() {
-		Node node = node("Succeeder" + succeederId++).with(Shape.RECTANGLE).with(Label.of("Succeeder"));
-		node = node.link(child.toDot());
-		return node;
-	}
-	
+    @Override
+    protected BehaviourStatus onUpdate() {
+        status = child.tick();
+        if(child.status == BehaviourStatus.SUCCESS) {
+            status = BehaviourStatus.SUCCESS;
+        } else if(child.status == BehaviourStatus.FAILURE) {
+            status = BehaviourStatus.SUCCESS;
+        }
+        return status;
+    }
+
+    @Override
+    public Node toDotNode() {
+        return node("succeeder" + succeederId++)
+                   .with(Shape.RECTANGLE)
+                   .with(Label.of("Succeeder"))
+                   .link(child.toDotNode());
+    }
+
 }

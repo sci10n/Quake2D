@@ -13,50 +13,52 @@ import guru.nidi.graphviz.model.Node;
 
 // Process each child in order. Fails if one fails.
 public class SequenceNode extends CompositeNode{
-	
-	private static int sequenceId = 0;
-	
-	public SequenceNode() {
-		super();
-	}
-	
-	public SequenceNode(List<BehaviourNode> behaviours) {
-		super(behaviours);
-		currentChild = 0;
+    private static int sequenceId = 0;
 
-	}
-	public SequenceNode(BehaviourNode ...behaviourNodes){
-		super(Arrays.asList(behaviourNodes));
-		currentChild = 0;
+    public SequenceNode() {
+        super();
+    }
 
-	}
-	
-	@Override
-	protected void onEnter() {
-		currentChild = 0;
-		status = BehaviourStatus.RUNNING;
-		super.onEnter();
-	}
-	
-	@Override
-	protected BehaviourStatus onUpdate() {
-		if (currentChild < children.size() && !children.isEmpty()) {
-			status = children.get(currentChild).tick();
-			if(status == BehaviourStatus.SUCCESS){
-				++currentChild;
-				return onUpdate();
-			}
-		}
-		return status;
-	}
+    public SequenceNode(List<BehaviourNode> behaviours) {
+        super(behaviours);
+        currentChild = 0;
 
-	public Node toDot() {
-		Node node = node("Sequence" + sequenceId++).with(Shape.RECTANGLE).with(Label.of("Sequence"));
-		for(BehaviourNode c: children) {
-			node = node.link(c.toDot());
-		}
-		
-		return node;
-	}
+    }
+    public SequenceNode(BehaviourNode ...behaviourNodes){
+        super(Arrays.asList(behaviourNodes));
+        currentChild = 0;
+
+    }
+
+    @Override
+    protected void onEnter() {
+        currentChild = 0;
+        status = BehaviourStatus.RUNNING;
+        super.onEnter();
+    }
+
+    @Override
+    protected BehaviourStatus onUpdate() {
+        if (currentChild < children.size() && !children.isEmpty()) {
+            status = children.get(currentChild).tick();
+            if(status == BehaviourStatus.SUCCESS){
+                ++currentChild;
+                return onUpdate();
+            }
+        }
+        return status;
+    }
+
+    public Node toDotNode() {
+        Node sequence = node("sequence" + sequenceId++)
+                        .with(Shape.RECTANGLE)
+                        .with(Label.of("Sequence"))
+                        .with(Rank.SAME);
+
+        for(BehaviourNode child : children)
+            sequence = sequence.link(child.toDotNode());
+
+        return sequence;
+    }
 
 }

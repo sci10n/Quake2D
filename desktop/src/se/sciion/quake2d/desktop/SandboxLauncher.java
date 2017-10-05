@@ -3,7 +3,6 @@ package se.sciion.quake2d.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-import se.sciion.quake2d.sandbox.BehaviorSandbox;
 import se.sciion.quake2d.sandbox.LevelSandbox;
 
 public class SandboxLauncher {
@@ -18,6 +17,5 @@ public class SandboxLauncher {
 		config.gles30ContextMinorVersion = 5;
 		
 		new LwjglApplication(new LevelSandbox(), config);
-		//new LwjglApplication(new BehaviorSandbox(), config);
 	}
 }

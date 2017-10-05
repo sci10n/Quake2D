@@ -17,53 +17,53 @@ import guru.nidi.graphviz.model.Node;
  *
  */
 public class SelectorNode extends CompositeNode {
-	private static int selectorID = 0;
-	
-	public SelectorNode() {
-		super();
-	}
+    private static int selectorId = 0;
 
-	public SelectorNode(List<BehaviourNode> behaviours) {
-		super(behaviours);
-		currentChild = 0;
-	}
+    public SelectorNode() {
+        super();
+    }
 
-	public SelectorNode(BehaviourNode... behaviourNodes) {
-		super(Arrays.asList(behaviourNodes));
-		currentChild = 0;
+    public SelectorNode(List<BehaviourNode> behaviours) {
+        super(behaviours);
+        currentChild = 0;
+    }
 
-	}
+    public SelectorNode(BehaviourNode... behaviourNodes) {
+        super(Arrays.asList(behaviourNodes));
+        currentChild = 0;
 
-	@Override
-	protected void onEnter() {
-		super.onEnter();
-		status = BehaviourStatus.RUNNING;
-		currentChild = 0;
-	}
+    }
 
-	@Override
-	protected BehaviourStatus onUpdate() {
-		if (currentChild < children.size() && !children.isEmpty()) {
-			status = children.get(currentChild).tick();
-			if (status == BehaviourStatus.FAILURE) {
-				if (currentChild < children.size()) {
-					++currentChild;
-					return onUpdate();
-				}
-			}
-		}
-		return status;
-	}
+    @Override
+    protected void onEnter() {
+        super.onEnter();
+        status = BehaviourStatus.RUNNING;
+        currentChild = 0;
+    }
 
-	@Override
-	public Node toDot() {
-		Node node = node("Selector" + selectorID++).with(Shape.RECTANGLE).with(Label.of("Selector")).with(Rank.SAME);
-		for(BehaviourNode c: children) {
-			Node otherNode = c.toDot();
-			node = node.link(otherNode);
-		}
-		
-		return node;
-	}
+    @Override
+    protected BehaviourStatus onUpdate() {
+        if (currentChild < children.size() && !children.isEmpty()) {
+            status = children.get(currentChild).tick();
+            if (status == BehaviourStatus.FAILURE) {
+                if (currentChild < children.size()) {
+                    ++currentChild;
+                    return onUpdate();
+                }
+            }
+        }
+        return status;
+    }
 
+    @Override
+    public Node toDotNode() {
+        Node selector = node("selector" + selectorId++)
+                        .with(Shape.RECTANGLE)
+                        .with(Label.of("Selector"))
+                        .with(Rank.SAME);
+
+        for(BehaviourNode child : children)
+            selector = selector.link(child.toDotNode());
+        return selector;
+    }
 }

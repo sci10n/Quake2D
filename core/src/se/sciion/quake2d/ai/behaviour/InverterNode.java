@@ -7,35 +7,34 @@ import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 
 public class InverterNode extends DecoratorNode {
-	private static int nodeID = 0;
-	
-	public InverterNode(BehaviourNode behaviour) {
-		super(behaviour);
-	}
+    private static int inverterNodeId = 0;
 
-	@Override
-	protected void onEnter() {
-		status = BehaviourStatus.RUNNING;
-	}
-	
-	@Override
-	protected BehaviourStatus onUpdate() {
-		status = child.tick();
-		if(child.status == BehaviourStatus.SUCCESS) {
-			status = BehaviourStatus.FAILURE;
-		}
-		else if(child.status == BehaviourStatus.FAILURE) {
-			status = BehaviourStatus.SUCCESS;
-		}
-		
-		return status;
-	}
+    public InverterNode(BehaviourNode behaviour) {
+        super(behaviour);
+    }
 
-	@Override
-	public Node toDot() {
-		Node node = node("Inverter" + nodeID++).with(Shape.RECTANGLE).with(Label.of("Inverter"));
-		node = node.link(child.toDot());
-		return node;
-	}
-	
+    @Override
+    protected void onEnter() {
+        status = BehaviourStatus.RUNNING;
+    }
+
+    @Override
+    protected BehaviourStatus onUpdate() {
+        status = child.tick();
+        if(child.status == BehaviourStatus.SUCCESS) {
+            status = BehaviourStatus.FAILURE;
+        } else if(child.status == BehaviourStatus.FAILURE) {
+            status = BehaviourStatus.SUCCESS;
+        }
+
+        return status;
+    }
+
+    @Override
+    public Node toDotNode() {
+        return node("inverter" + inverterNodeId++)
+               .with(Shape.DIAMOND)
+               .with(Label.of("Inverter"))
+               .link(child.toDotNode());
+    }
 }

@@ -6,26 +6,26 @@ import java.util.List;
 public abstract class CompositeNode extends BehaviourNode {
     protected List<BehaviourNode> children; // Sibling children.
     protected int currentChild;	// Current index
-    
+
     // Behaviour that will somehow do stuff to other behaviours.
     public CompositeNode(List<BehaviourNode> behaviours)  {
         children = behaviours;
         currentChild = 0;
     }
-    
+
     // Default constructor if we want to dynamically add behaviours.
     public CompositeNode() {
-    	children = new ArrayList<BehaviourNode>();
-    	currentChild = 0;
+        children = new ArrayList<BehaviourNode>();
+        currentChild = 0;
     }
-    
+
     public void addChild(BehaviourNode node) {
-    	if(currentChild == 0)	// Prevent modifying during execution.
-    		children.add(node);
+        if(currentChild == 0)	// Prevent modifying during execution.
+            children.add(node);
     }
-    
+
     public void removeChild(BehaviourNode node){
-    	if(currentChild == 0)	// Prevent modifying during execution.
-    		children.remove(node);
+        if(currentChild == 0)	// Prevent modifying during execution.
+            children.remove(node);
     }
 }
