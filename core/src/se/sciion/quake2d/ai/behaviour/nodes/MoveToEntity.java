@@ -1,7 +1,11 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
+import static guru.nidi.graphviz.model.Factory.node;
+
 import com.badlogic.gdx.math.Vector2;
 
+import guru.nidi.graphviz.model.Label;
+import guru.nidi.graphviz.model.Node;
 import se.sciion.quake2d.ai.behaviour.BehaviourNode;
 import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
 import se.sciion.quake2d.enums.ComponentTypes;
@@ -12,7 +16,8 @@ import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
 public class MoveToEntity extends BehaviourNode {
-
+	private static int moveToEntityId = 0;
+	
 	private Entity target;
 	private BotInputComponent input;
 	private float minDistance;
@@ -77,5 +82,11 @@ public class MoveToEntity extends BehaviourNode {
 
 		return status;
 	}
-
+	
+	@Override
+	public Node toDot() {
+		Node node = node("MoveToEntity" + moveToEntityId++).with(Label.of("Move To Entity"));
+		
+		return node;
+	}
 }

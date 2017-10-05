@@ -17,7 +17,9 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
 
+import guru.nidi.graphviz.model.Graph;
 import se.sciion.quake2d.ai.behaviour.BehaviourTree;
 import se.sciion.quake2d.ai.behaviour.InverterNode;
 import se.sciion.quake2d.ai.behaviour.SucceederNode;
@@ -43,6 +45,23 @@ import se.sciion.quake2d.level.items.Items;
 import se.sciion.quake2d.level.items.Weapon;
 import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
+import static guru.nidi.graphviz.model.Factory.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.swing.JFrame;
+
+import guru.nidi.graphviz.attribute.Rank;
+import guru.nidi.graphviz.attribute.RankDir;
+import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.engine.Format;
+import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.model.Label;
+import guru.nidi.graphviz.model.Node;
+
 
 public class LevelSandbox extends ApplicationAdapter {
 
@@ -58,6 +77,8 @@ public class LevelSandbox extends ApplicationAdapter {
 
 	private BehaviourTree tree;
 
+	private float cooldown = 0;
+	
 	@Override
 	public void create() {
 
@@ -205,13 +226,15 @@ public class LevelSandbox extends ApplicationAdapter {
 			MoveToNearest pickupHealth = new MoveToNearest("health", level, pathfinding,physicsSystem, botInput, 1.0f);
 			PickupItem pickupWeapon= new PickupItem("shotgun",level,pathfinding, botInput);
 			Attack attackPlayer = new Attack(level.getEntities("player").first(), botInput);
-			MoveToEntity moveToPlayer = new MoveToEntity(level.getEntities("player").first(), physicsSystem, botInput, 10.0f);
+			MoveToNearest moveToPlayer = new MoveToNearest("player",level ,pathfinding,physicsSystem, botInput, 10.0f);
 			
 			SequenceNode s1 = new SequenceNode(new InverterNode(healthCheck), pickupHealth);
 			SequenceNode s2 = new SequenceNode(pickupWeapon, moveToPlayer, attackPlayer);
 			SelectorNode s3 = new SelectorNode(s1,s2);
 			
 			tree = new BehaviourTree(s3);
+			
+
 
 		}
 		// Static level entity
@@ -310,9 +333,20 @@ public class LevelSandbox extends ApplicationAdapter {
 
 		// Currently only Box2D debug renderer
 		physicsSystem.render(camera.combined);
-
+		
+		cooldown += Gdx.graphics.getDeltaTime();
+		if(cooldown >= 1.0f) {
+			try {
+				Graphviz.fromGraph(tree.toDot()).render(Format.PNG).toFile(new File("test/test.png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			cooldown = 0;
+		}
+		
 	}
-
+	
 	@Override
 	public void resize(int width, int height) {
 	}

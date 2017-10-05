@@ -1,7 +1,14 @@
 package se.sciion.quake2d.ai.behaviour;
 
+import static guru.nidi.graphviz.model.Factory.*;
 import java.util.Arrays;
 import java.util.List;
+
+import guru.nidi.graphviz.attribute.Rank;
+import guru.nidi.graphviz.attribute.RankDir;
+import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.model.Label;
+import guru.nidi.graphviz.model.Node;
 
 /**
  * Continue processing until ail children are attempted or one succeeds.
@@ -10,7 +17,8 @@ import java.util.List;
  *
  */
 public class SelectorNode extends CompositeNode {
-
+	private static int selectorID = 0;
+	
 	public SelectorNode() {
 		super();
 	}
@@ -45,6 +53,17 @@ public class SelectorNode extends CompositeNode {
 			}
 		}
 		return status;
+	}
+
+	@Override
+	public Node toDot() {
+		Node node = node("Selector" + selectorID++).with(Shape.RECTANGLE).with(Label.of("Selector")).with(Rank.SAME);
+		for(BehaviourNode c: children) {
+			Node otherNode = c.toDot();
+			node = node.link(otherNode);
+		}
+		
+		return node;
 	}
 
 }

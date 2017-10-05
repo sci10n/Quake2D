@@ -1,7 +1,11 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
 import com.badlogic.gdx.math.Vector2;
+import static guru.nidi.graphviz.model.Factory.node;
 
+import guru.nidi.graphviz.attribute.Color;
+import guru.nidi.graphviz.model.Label;
+import guru.nidi.graphviz.model.Node;
 import se.sciion.quake2d.ai.behaviour.BehaviourNode;
 import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
 import se.sciion.quake2d.enums.ComponentTypes;
@@ -10,6 +14,7 @@ import se.sciion.quake2d.level.components.BotInputComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
 
 public class Attack extends BehaviourNode{
+	private static int attackId = 0;
 	
 	private Entity target;
 	private BotInputComponent input;
@@ -45,6 +50,12 @@ public class Attack extends BehaviourNode{
 		}
 		
 		return status;
+	}
+
+	@Override
+	public Node toDot() {
+		Node node = node("Attack" + attackId++).with(Label.of("Attack"));
+		return node;
 	}
 
 }

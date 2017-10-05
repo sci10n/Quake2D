@@ -1,7 +1,11 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
+import static guru.nidi.graphviz.model.Factory.node;
+
 import com.badlogic.gdx.math.Vector2;
 
+import guru.nidi.graphviz.model.Label;
+import guru.nidi.graphviz.model.Node;
 import se.sciion.quake2d.ai.behaviour.BehaviourNode;
 import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
 import se.sciion.quake2d.enums.ComponentTypes;
@@ -13,7 +17,8 @@ import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
 public class MoveToNearest extends BehaviourNode {
-
+		private static int moveToNearestId = 0;
+		
 		private String id;
 		private BotInputComponent input;
 		private float minDistance;
@@ -82,5 +87,12 @@ public class MoveToNearest extends BehaviourNode {
 
 			return status;
 		}
+		
+	@Override
+	public Node toDot() {
+		Node node = node("MoveToNearest" + moveToNearestId++).with(Label.of("Move To Nearest " + id));
+		
+		return node;
+	}
 
 }

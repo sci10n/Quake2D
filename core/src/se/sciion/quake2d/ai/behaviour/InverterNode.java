@@ -1,7 +1,14 @@
 package se.sciion.quake2d.ai.behaviour;
 
-public class InverterNode extends DecoratorNode {
+import static guru.nidi.graphviz.model.Factory.*;
 
+import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.model.Label;
+import guru.nidi.graphviz.model.Node;
+
+public class InverterNode extends DecoratorNode {
+	private static int nodeID = 0;
+	
 	public InverterNode(BehaviourNode behaviour) {
 		super(behaviour);
 	}
@@ -22,6 +29,13 @@ public class InverterNode extends DecoratorNode {
 		}
 		
 		return status;
+	}
+
+	@Override
+	public Node toDot() {
+		Node node = node("Inverter" + nodeID++).with(Shape.RECTANGLE).with(Label.of("Inverter"));
+		node = node.link(child.toDot());
+		return node;
 	}
 	
 }

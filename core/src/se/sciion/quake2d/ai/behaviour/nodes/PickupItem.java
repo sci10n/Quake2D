@@ -1,8 +1,12 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
+import static guru.nidi.graphviz.model.Factory.node;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+import guru.nidi.graphviz.model.Label;
+import guru.nidi.graphviz.model.Node;
 import se.sciion.quake2d.ai.behaviour.BehaviourNode;
 import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
 import se.sciion.quake2d.enums.ComponentTypes;
@@ -15,7 +19,8 @@ import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
 public class PickupItem extends BehaviourNode{
-
+	private static int pickupItem = 0;
+	
 	private String id;
 	private Level level;
 	private Pathfinding pathfinding;
@@ -77,6 +82,13 @@ public class PickupItem extends BehaviourNode{
 		input.setTarget(targetPos);
 		
 		return status;
+	}
+	
+	@Override
+	public Node toDot() {
+		Node node = node("PickupItem" + pickupItem++).with(Label.of("Pickup Item " + id));
+		
+		return node;
 	}
 
 }
