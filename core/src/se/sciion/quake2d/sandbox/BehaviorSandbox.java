@@ -8,7 +8,7 @@ import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
 import se.sciion.quake2d.ai.behaviour.BehaviourTree;
 import se.sciion.quake2d.ai.behaviour.SelectorNode;
 import se.sciion.quake2d.ai.behaviour.SequenceNode;
-import se.sciion.quake2d.ai.behaviour.nodes.NoOpNode;
+import se.sciion.quake2d.ai.behaviour.nodes.NoOp;
 
 // More in the style of unit test
 public class BehaviorSandbox extends ApplicationAdapter{
@@ -17,7 +17,7 @@ public class BehaviorSandbox extends ApplicationAdapter{
 	public void create() {
 		
 		{
-			BehaviourNode rootNode = new NoOpNode(BehaviourStatus.SUCCESS);
+			BehaviourNode rootNode = new NoOp(BehaviourStatus.SUCCESS);
 			BehaviourTree tree = new BehaviourTree(rootNode);
 			
 			System.out.println("Expecting Success " + tree.tick());
@@ -25,8 +25,8 @@ public class BehaviorSandbox extends ApplicationAdapter{
 		
 		{
 			SequenceNode rootNode = new SequenceNode();
-			rootNode.addChild(new NoOpNode(BehaviourStatus.SUCCESS));
-			rootNode.addChild(new NoOpNode(BehaviourStatus.RUNNING));
+			rootNode.addChild(new NoOp(BehaviourStatus.SUCCESS));
+			rootNode.addChild(new NoOp(BehaviourStatus.RUNNING));
 			BehaviourTree tree = new BehaviourTree(rootNode);
 			
 			System.out.println("Expecting Running " + tree.tick());
@@ -34,8 +34,8 @@ public class BehaviorSandbox extends ApplicationAdapter{
 		
 		{
 			SelectorNode rootNode = new SelectorNode();
-			rootNode.addChild(new NoOpNode(BehaviourStatus.FAILURE));
-			rootNode.addChild(new NoOpNode(BehaviourStatus.SUCCESS));
+			rootNode.addChild(new NoOp(BehaviourStatus.FAILURE));
+			rootNode.addChild(new NoOp(BehaviourStatus.SUCCESS));
 			BehaviourTree tree = new BehaviourTree(rootNode);
 			
 			System.out.println("Expecting Success " + tree.tick());
@@ -43,8 +43,8 @@ public class BehaviorSandbox extends ApplicationAdapter{
 		
 		{
 			SelectorNode rootNode = new SelectorNode();
-			rootNode.addChild(new NoOpNode(BehaviourStatus.RUNNING));
-			rootNode.addChild(new NoOpNode(BehaviourStatus.SUCCESS));
+			rootNode.addChild(new NoOp(BehaviourStatus.RUNNING));
+			rootNode.addChild(new NoOp(BehaviourStatus.SUCCESS));
 			BehaviourTree tree = new BehaviourTree(rootNode);
 			
 			System.out.println("Expecting Running " + tree.tick());
@@ -52,8 +52,8 @@ public class BehaviorSandbox extends ApplicationAdapter{
 		
 		{
 			SequenceNode rootNode = new SequenceNode();
-			rootNode.addChild(new NoOpNode(BehaviourStatus.RUNNING));
-			rootNode.addChild(new NoOpNode(BehaviourStatus.FAILURE));
+			rootNode.addChild(new NoOp(BehaviourStatus.RUNNING));
+			rootNode.addChild(new NoOp(BehaviourStatus.FAILURE));
 			BehaviourTree tree = new BehaviourTree(rootNode);
 			
 			System.out.println("Expecting Running " + tree.tick());

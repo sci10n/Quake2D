@@ -58,6 +58,7 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "net.dermetfan.libgdx-utils:libgdx-utils:0.13.4"
+        compile group: 'guru.nidi', name: 'graphviz-java', version: '0.2.2'
         compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:0.13.4"
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
     }

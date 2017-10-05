@@ -1,8 +1,8 @@
 package se.sciion.quake2d.ai.behaviour;
 
-public class Inverter extends DecoratorBehaviour{
+public class SucceederNode extends DecoratorNode {
 
-	public Inverter(BehaviourNode behaviour) {
+	public SucceederNode(BehaviourNode behaviour) {
 		super(behaviour);
 	}
 
@@ -15,12 +15,10 @@ public class Inverter extends DecoratorBehaviour{
 	protected BehaviourStatus onUpdate() {
 		status = child.tick();
 		if(child.status == BehaviourStatus.SUCCESS) {
-			status = BehaviourStatus.FAILURE;
-		}
-		else if(child.status == BehaviourStatus.FAILURE) {
+			status = BehaviourStatus.SUCCESS;
+		} else if(child.status == BehaviourStatus.FAILURE) {
 			status = BehaviourStatus.SUCCESS;
 		}
-		
 		return status;
 	}
 	

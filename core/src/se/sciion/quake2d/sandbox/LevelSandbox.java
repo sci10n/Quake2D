@@ -19,7 +19,8 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.ai.behaviour.BehaviourTree;
-import se.sciion.quake2d.ai.behaviour.Inverter;
+import se.sciion.quake2d.ai.behaviour.InverterNode;
+import se.sciion.quake2d.ai.behaviour.SucceederNode;
 import se.sciion.quake2d.ai.behaviour.SelectorNode;
 import se.sciion.quake2d.ai.behaviour.SequenceNode;
 import se.sciion.quake2d.ai.behaviour.nodes.Attack;
@@ -206,7 +207,7 @@ public class LevelSandbox extends ApplicationAdapter {
 			Attack attackPlayer = new Attack(level.getEntities("player").first(), botInput);
 			MoveToEntity moveToPlayer = new MoveToEntity(level.getEntities("player").first(), physicsSystem, botInput, 10.0f);
 			
-			SequenceNode s1 = new SequenceNode(new Inverter(healthCheck), pickupHealth);
+			SequenceNode s1 = new SequenceNode(new InverterNode(healthCheck), pickupHealth);
 			SequenceNode s2 = new SequenceNode(pickupWeapon, moveToPlayer, attackPlayer);
 			SelectorNode s3 = new SelectorNode(s1,s2);
 			
