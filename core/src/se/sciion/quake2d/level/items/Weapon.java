@@ -1,7 +1,8 @@
 package se.sciion.quake2d.level.items;
 
-import se.sciion.quake2d.enums.ItemType;
-import se.sciion.quake2d.graphics.RenderModel;
+import se.sciion.quake2d.enums.ComponentTypes;
+import se.sciion.quake2d.level.Entity;
+import se.sciion.quake2d.level.components.InventoryComponent;
 
 public class Weapon extends Item {
 	public final float cooldown;
@@ -20,8 +21,8 @@ public class Weapon extends Item {
 	 * @param spread
 	 * @param speed
 	 */
-	public Weapon(float cooldown, int bullets, int capacity, float knockback, float spread, float speed) {
-		super();
+	public Weapon(String tag, float cooldown, int bullets, int capacity, float knockback, float spread, float speed) {
+		super(tag);
 		this.cooldown = cooldown;
 		this.bullets = bullets;
 		this.capacity = capacity;
@@ -31,17 +32,18 @@ public class Weapon extends Item {
 	}
 
 	@Override
-	public void tick(float delta) {
+	public boolean accepted(Entity e) {
 		
+		InventoryComponent inventory = e.getComponent(ComponentTypes.Inventory);
+		if(inventory != null) {
+			if(inventory.containsItem(this)){
+				return false;
+			}
+			inventory.addItem(this);
+			return true;
+		}
+		return false;
 	}
-
-	@Override
-	public void render(RenderModel model) {
-		
-	}
-
-	@Override
-	public ItemType getType() {
-		return ItemType.Weapon;
-	}	
+	
+	
 }

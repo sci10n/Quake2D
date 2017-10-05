@@ -1,6 +1,8 @@
 package se.sciion.quake2d.ai.behaviour;
 
-public abstract class BehaviourNode {
+import guru.nidi.graphviz.model.Node;
+
+public abstract class BehaviourNode{
     // Since we haven't traversed this branch of the tree yet, we
     // set the current status of these nodes to become undefined.
     protected BehaviourStatus status = BehaviourStatus.UNDEFINED;
@@ -24,4 +26,6 @@ public abstract class BehaviourNode {
         if (status != BehaviourStatus.RUNNING) onLeave();
         return status;
     }
+    
+    public abstract Node toDot();
 }

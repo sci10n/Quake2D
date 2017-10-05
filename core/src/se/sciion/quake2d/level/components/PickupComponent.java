@@ -6,21 +6,15 @@ import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.items.Item;
-import se.sciion.quake2d.level.requests.DestroyBody;
-import se.sciion.quake2d.level.requests.RequestQueue;
 import se.sciion.quake2d.level.system.CollisionCallback;
-import se.sciion.quake2d.level.system.Pathfinding;
 
 public class PickupComponent extends EntityComponent implements CollisionCallback{
 
 	private Array<Item> items;
-	private RequestQueue<DestroyBody> request;
-	private Pathfinding pathfinder;
-	
-	public PickupComponent(Pathfinding pathfinder, RequestQueue<DestroyBody> requests, Item ... items) {
+	private Array<Item> removalList;
+	public PickupComponent(Item ... items) {
 		this.items = Array.with(items);
-		this.request = requests;
-		this.pathfinder = pathfinder;
+		removalList = new Array<Item>();
 		
 	}
 	
@@ -41,21 +35,19 @@ public class PickupComponent extends EntityComponent implements CollisionCallbac
 
 	@Override
 	public void process(Entity target) {
-		InventoryComponent inventory = target.getComponent(ComponentTypes.Inventory);
-		if(inventory == null)
-			return;
 		
 		for(int i = 0; i < items.size; i++) {
-			inventory.addItem(items.get(i));
+			if(items.get(i).accepted(target)){
+				removalList.add(items.get(i));
+			}
 		}
-		items.clear();
+		for(Item i : removalList){
+			items.removeValue(i,false);
+		}
 		
-		PhysicsComponent physics = getParent().getComponent(ComponentTypes.Physics);
-		if(physics == null)
-			return;
-		
-		request.send(new DestroyBody(physics.getBody()));
-		getParent().setActive(false);
+		if(items.size == 0) {
+			parent.setActive(false);
+		}
 
 	}
 

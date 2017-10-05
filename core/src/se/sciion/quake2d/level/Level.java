@@ -1,16 +1,22 @@
 package se.sciion.quake2d.level;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.graphics.RenderModel;
 
-public abstract class Level {
+public class Level {
 
 	protected Array<Entity> entities;
-
+	protected HashMap<String,Array<Entity>> complexEntities;
+	
 	private Array<Entity> removalList;
+	
+	
 	public Level(){
 		entities = new Array<Entity>(true, 16);
+		complexEntities = new HashMap<String,Array<Entity>>();
 		removalList = new Array<Entity>(true,16);
 	}
 		
@@ -22,11 +28,48 @@ public abstract class Level {
 			}
 		}
 		
+		// Removal and cleanup of inactive entities
 		for(int i = 0; i < removalList.size; i++){
-			removalList.get(i).clear();
-			entities.removeValue(removalList.get(i), true);
-			
+			removalList.get(i).cleanup();
+			entities.removeValue(removalList.get(i), false);
+			for(Array<Entity> e: complexEntities.values()) {
+				if(e.contains(removalList.get(i), false)) {
+					e.removeValue(removalList.get(i), false);
+				}
+			}
 		}
+		removalList.clear();
+	}
+	
+
+	private void addComplexEntity(Entity e, String id){
+		if(!complexEntities.containsKey(id)) {
+			complexEntities.put(id, new Array<Entity>());
+		}
+		complexEntities.get(id).add(e);
+
+	}
+	
+	/**
+	 * Only works for complex entities
+	 * @param id
+	 * @return
+	 */
+	public Array<Entity> getEntities(String id) {
+		return complexEntities.get(id);
+	}
+	
+	public Entity createEntity() {
+		Entity e = new Entity();
+		entities.add(e);
+		return e;
+	}
+	
+	public Entity createEntity(String id){
+		Entity e = new Entity();
+		addComplexEntity(e, id);
+		entities.add(e);
+		return e;
 	}
 	
 	public void render(RenderModel model){

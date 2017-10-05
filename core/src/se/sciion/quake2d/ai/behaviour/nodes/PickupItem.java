@@ -1,61 +1,94 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
+import static guru.nidi.graphviz.model.Factory.node;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+import guru.nidi.graphviz.model.Label;
+import guru.nidi.graphviz.model.Node;
 import se.sciion.quake2d.ai.behaviour.BehaviourNode;
 import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
 import se.sciion.quake2d.enums.ComponentTypes;
+import se.sciion.quake2d.level.Entity;
+import se.sciion.quake2d.level.Level;
 import se.sciion.quake2d.level.components.BotInputComponent;
 import se.sciion.quake2d.level.components.InventoryComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
-import se.sciion.quake2d.level.items.Item;
 import se.sciion.quake2d.level.system.Pathfinding;
+import se.sciion.quake2d.level.system.PhysicsSystem;
 
 public class PickupItem extends BehaviourNode{
-
-	private Pathfinding pathfinder;
-	private BotInputComponent input;
-	private Item item;
+	private static int pickupItem = 0;
 	
-	public PickupItem(Item item, Pathfinding pathfinding, BotInputComponent component) {
-		this.pathfinder = pathfinding;
-		this.input = component;
-		this.item = item;
+	private String id;
+	private Level level;
+	private Pathfinding pathfinding;
+	private BotInputComponent input;
+	
+	public PickupItem(String id, Level level, Pathfinding pathfinding, BotInputComponent input) {
+		this.id = id;
+		this.level = level;
+		this.pathfinding = pathfinding;
+		this.input = input;
 	}
 	
 	@Override
 	protected void onEnter() {
 		status = BehaviourStatus.RUNNING;
-		super.onEnter();
 	}
 	
 	@Override
 	protected BehaviourStatus onUpdate() {
-
-//		PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
-//		if(physics == null){
-//			status = BehaviourStatus.FAILURE;
-//			return status;
-//		}
-//		
-//		Vector2 fromLoc = physics.getBody().getPosition();
-//		Vector2 itemLoc = pathfinder.getItemLocation(item);
-//		
-//		InventoryComponent inventory = input.getParent().getComponent(ComponentTypes.Inventory);
-//		if (inventory.containsItem(item) && pathfinder.getItemLocation(item) == null){
-//			
-//			status = BehaviourStatus.SUCCESS;
-//		}
-//		else if(!inventory.containsItem(item) && pathfinder.getItemLocation(item) == null){
-//			status = BehaviourStatus.FAILURE;
-//		}
-//		else{
-//			status = BehaviourStatus.RUNNING;
-//		}
-//		input.setTarget(itemLoc);
-
-		return BehaviourStatus.FAILURE;
+		
+		InventoryComponent inventory = input.getParent().getComponent(ComponentTypes.Inventory);
+		if(inventory == null){
+			status = BehaviourStatus.SUCCESS;
+			return status;
+		}
+		
+		if(inventory.containsItem(id)){
+			status = BehaviourStatus.SUCCESS;
+			return status;
+		}
+		
+		PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
+		if(physics == null) {
+			status = BehaviourStatus.FAILURE;
+			return status;
+		}
+		
+		Vector2 fromPos = physics.getBody().getPosition();
+		Vector2 targetPos = null;
+		int bestPath = Integer.MAX_VALUE;
+		
+		for(Entity e: level.getEntities(id)){
+			PhysicsComponent p = e.getComponent(ComponentTypes.Physics);
+			if(p != null){
+				Vector2 ePos = p.getBody().getPosition();
+				int path = pathfinding.findPath(fromPos, ePos).size;
+				if(path < bestPath){
+					bestPath = path;
+					targetPos = ePos;
+				}
+			}
+		}
+		
+		if(targetPos == null) {
+			status = BehaviourStatus.FAILURE;
+			return status;
+		}
+		
+		input.setTarget(targetPos);
+		
+		return status;
+	}
+	
+	@Override
+	public Node toDot() {
+		Node node = node("PickupItem" + pickupItem++).with(Label.of("Pickup Item " + id));
+		
+		return node;
 	}
 
 }

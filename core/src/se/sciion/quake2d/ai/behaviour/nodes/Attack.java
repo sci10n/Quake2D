@@ -1,7 +1,11 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
 import com.badlogic.gdx.math.Vector2;
+import static guru.nidi.graphviz.model.Factory.node;
 
+import guru.nidi.graphviz.attribute.Color;
+import guru.nidi.graphviz.model.Label;
+import guru.nidi.graphviz.model.Node;
 import se.sciion.quake2d.ai.behaviour.BehaviourNode;
 import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
 import se.sciion.quake2d.enums.ComponentTypes;
@@ -10,6 +14,7 @@ import se.sciion.quake2d.level.components.BotInputComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
 
 public class Attack extends BehaviourNode{
+	private static int attackId = 0;
 	
 	private Entity target;
 	private BotInputComponent input;
@@ -23,7 +28,6 @@ public class Attack extends BehaviourNode{
 	protected void onEnter() {
 		super.onEnter();
 		status = BehaviourStatus.RUNNING;
-		System.out.println("Enter Attack");
 	}
 	
 	@Override
@@ -33,20 +37,25 @@ public class Attack extends BehaviourNode{
 		PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
 		if(targetPhysics == null || physics == null) {
 			status = BehaviourStatus.FAILURE;
-			System.out.println("Attack: Target does not have physics");
 			return status;
 		}
-		System.out.println("Direction: ");
+		
+
 		Vector2 direction = targetPhysics.getBody().getPosition().cpy().sub(physics.getBody().getPosition());
 		if(input.fire(direction.nor())) {
-			System.out.println("Attack: " + status);
 			status = BehaviourStatus.SUCCESS;
 		}
 		else {
-			System.out.println("Attack: " + status);
 			status = BehaviourStatus.FAILURE;
 		}
+		
 		return status;
+	}
+
+	@Override
+	public Node toDot() {
+		Node node = node("Attack" + attackId++).with(Label.of("Attack"));
+		return node;
 	}
 
 }
