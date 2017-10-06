@@ -15,9 +15,9 @@ public class BehaviourTree {
     public BehaviourStatus tick() {
         return root.tick();
     }
-    
-    public Graph toDot() {
-    	Graph g = graph("BehaviorTree").directed().with(root.toDot());
-    	return g;
+
+    public Graph toDotGraph() {
+        // Traverses the tree and produced a Graphviz traversable graph.
+        return graph("BehaviourTree").directed().with(root.toDotNode());
     }
 }

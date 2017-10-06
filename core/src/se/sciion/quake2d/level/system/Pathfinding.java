@@ -153,7 +153,7 @@ public class Pathfinding {
 		
 		while(!openSet.isEmpty()){
 			Vector2 c = openSet.peek();
-			if(c.cpy().sub(target).len2() < 1.0f){
+			if(c.cpy().sub(target).len2() < 0.5f){
 				return reconstruct(cameFrom,c);
 			}
 			

@@ -29,6 +29,8 @@ import se.sciion.quake2d.level.components.PhysicsComponent;
 public class PhysicsSystem {
 
 	private Vector2 p1,p2;
+	private Array<PhysicsComponent> components;
+
 	private class EntityRayCast implements RayCastCallback {
 
 		public Entity target;
@@ -78,6 +80,15 @@ public class PhysicsSystem {
 
 	}
 
+	public class FindBodyCallback implements QueryCallback {
+		public Array<Body> bodies = new Array<Body>();
+		@Override
+		public boolean reportFixture(Fixture fixture) {
+			bodies.add(fixture.getBody());
+			return false;
+		}
+	}
+
 	private EntityContactResolver contactResolver;
 	private Box2DDebugRenderer debugRenderer;
 	private EntityRayCast rayCastCallback;
@@ -95,6 +106,7 @@ public class PhysicsSystem {
 		world.setContactListener(contactResolver);
 		debugRenderer = new Box2DDebugRenderer();
 		solidcallback = new OverlapCallback();
+		components = new Array<PhysicsComponent>();
 	}
 
 	public void cleanup() {
@@ -113,6 +125,18 @@ public class PhysicsSystem {
 		}
 	}
 
+	public PhysicsComponent queryComponentAt(float x, float y) {
+		FindBodyCallback findBodies = new FindBodyCallback();
+		world.QueryAABB(findBodies, x-0.5f, y-0.5f, x+0.5f, y+0.5f);
+		for (Body b : findBodies.bodies) {
+			for (PhysicsComponent c : components) {
+				if (c.getBody() == b) return c;
+			}
+		}
+
+		return null;
+	}
+
 	public boolean containsSolidObject(float x, float y, float w, float h) {
 		solidcallback.solid = false;
 		world.QueryAABB(solidcallback, x - w / 2.0f, y - h / 2.0f, x + w / 2.0f, y + h / 2.0f);
@@ -124,6 +148,8 @@ public class PhysicsSystem {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = type;
 		bodyDef.position.set(x, y);
+		bodyDef.angularDamping = 2.0f;
+		bodyDef.linearDamping  = 1.5f;
 
 		Body body = world.createBody(bodyDef);
 
@@ -142,6 +168,7 @@ public class PhysicsSystem {
 		
 		Body body = createBody(x, y, type, shape);
 		PhysicsComponent component = new PhysicsComponent(body,this);
+		components.add(component);
 		return component;
 	}
 
