@@ -63,7 +63,7 @@ public class SelectorNode extends CompositeNode {
         Node selector = node("selector" + selectorId++)
                         .with(Shape.RECTANGLE)
                         .with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
-                        .with(Label.of("Select"))
+                        .with(Label.of("Selector"))
                         .with(Rank.SAME);
        
         for(BehaviourNode child : children)

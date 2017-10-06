@@ -87,6 +87,7 @@ public class BTVisualizer {
 			if (debugBot != null)
 				visualize(debugBot.getBehaviourTree());
 		} else if (Gdx.input.isKeyPressed(Keys.ANY_KEY)) {
+			visualizerWindow.setVisible(false);
 			paused = false;
 		}
 
