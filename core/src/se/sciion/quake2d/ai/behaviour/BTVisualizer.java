@@ -29,9 +29,11 @@ public class BTVisualizer {
 
 	private JFrame visualizerWindow;
 	private JLabel visualizerBuffer;
+	private int windowSize;
 
-	public BTVisualizer(OrthographicCamera camera, PhysicsSystem physicsSystem) {
+	public BTVisualizer(int size, OrthographicCamera camera, PhysicsSystem physicsSystem) {
 		this.physicsSystem = physicsSystem;
+		this.windowSize = size;
 		this.camera = camera;
 
 		visualizerWindow = new JFrame();
@@ -40,6 +42,7 @@ public class BTVisualizer {
 		visualizerWindow.setFocusableWindowState(false);
 
 		JPanel panel = new JPanel();
+		panel.setBackground(Color.WHITE);
 		visualizerBuffer = new JLabel();
 		visualizerBuffer.setIcon(new ImageIcon());
 		panel.add(visualizerBuffer);
@@ -47,9 +50,18 @@ public class BTVisualizer {
 	}
 
 	private void visualize(BehaviourTree behaviourTree) {
-		BufferedImage btImage = Graphviz.fromGraph(behaviourTree.toDotGraph())
-			                            .width(1280).render(Format.PNG).toImage();
+		Graph btGraph = behaviourTree.toDotGraph();
+		BufferedImage btImage = Graphviz.fromGraph(btGraph)
+			                            .width(windowSize)
+			                            .render(Format.PNG)
+			                            .toImage();
+
 		visualizerBuffer.setIcon(new ImageIcon(btImage));
+		visualizerWindow.setSize(visualizerBuffer.getIcon().getIconWidth(),
+								 visualizerBuffer.getIcon().getIconHeight());
+
+		visualizerWindow.setResizable(false);
+		visualizerWindow.pack();
 		visualizerWindow.setVisible(true);
 	}
 
@@ -60,22 +72,21 @@ public class BTVisualizer {
 			PhysicsComponent component = physicsSystem.queryComponentAt(mousePosition.x, mousePosition.y);
 			if (component != null) {
 				BotInputComponent newDebugBot = component.getParent().getComponent(ComponentTypes.BotInput);
-				if (newDebugBot != debugBot) visualizeStep = true;
+				if (newDebugBot == null) visualizerWindow.setVisible(false);
+				if (newDebugBot != debugBot || !visualizerWindow.isVisible()) visualizeStep = true;
 				debugBot = newDebugBot;
-			}
+			} else visualizerWindow.setVisible(false);
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.P)) {
 			paused = true;
 			visualizeStep = true;
-			visualizerWindow.setVisible(false);
 			return false;
 		} else if (visualizeStep && !Gdx.input.isKeyPressed(Keys.P)) {
 			visualizeStep = false;
 			if (debugBot != null)
 				visualize(debugBot.getBehaviourTree());
 		} else if (Gdx.input.isKeyPressed(Keys.ANY_KEY)) {
-			visualizerWindow.setVisible(false);
 			paused = false;
 		}
 

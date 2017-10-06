@@ -1,7 +1,9 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
 import static guru.nidi.graphviz.model.Factory.node;
+import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.attribute.Style;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -89,7 +91,8 @@ public class PickUpItem extends BehaviourNode {
     public Node toDotNode() {
         return node("pickUpItem" + pickUpItem++)
                .with(Shape.RECTANGLE)
-               .with(Label.of("PickUpItem(" + id + ")"));
+			   .with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
+               .with(Label.of("Pick up " + id));
     }
 
 }

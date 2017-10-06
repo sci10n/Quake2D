@@ -34,6 +34,7 @@ import se.sciion.quake2d.ai.behaviour.InverterNode;
 import se.sciion.quake2d.ai.behaviour.SelectorNode;
 import se.sciion.quake2d.ai.behaviour.SequenceNode;
 import se.sciion.quake2d.ai.behaviour.nodes.AttackEntity;
+import se.sciion.quake2d.ai.behaviour.nodes.AttackNearest;
 import se.sciion.quake2d.ai.behaviour.nodes.CheckHealth;
 import se.sciion.quake2d.ai.behaviour.nodes.MoveToNearest;
 import se.sciion.quake2d.ai.behaviour.nodes.PickUpItem;
@@ -73,9 +74,11 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	@Override
 	public void create() {
-		Gdx.graphics.setWindowedMode((int) (800 * Gdx.graphics.getDensity()), (int) (600 * Gdx.graphics.getDensity()));
-		Gdx.graphics.setSystemCursor(SystemCursor.Crosshair);
+		int width = (int)(800 * Gdx.graphics.getDensity());
+		int height = (int)(600 * Gdx.graphics.getDensity());
+		Gdx.graphics.setWindowedMode(width, height);
 		Gdx.graphics.setTitle("Quake 2-D");
+		Gdx.graphics.setSystemCursor(SystemCursor.Crosshair);
 
 		level = new Level();
 		camera = new OrthographicCamera();
@@ -83,9 +86,9 @@ public class LevelSandbox extends ApplicationAdapter {
 
 		model = new RenderModel();
 		physicsSystem = new PhysicsSystem();
-		visualizer = new BTVisualizer(camera, physicsSystem);
-
 		pathfinding = new Pathfinding(30, 30);
+
+		visualizer = new BTVisualizer(width * 2, camera, physicsSystem);
 
 		loadAssets();
 
@@ -231,7 +234,7 @@ public class LevelSandbox extends ApplicationAdapter {
 				CheckHealth checkHealth = new CheckHealth(health, 0.25f);
 				MoveToNearest pickupHealth = new MoveToNearest("health", level, pathfinding,physicsSystem, botInput, 0.25f);
 				PickUpItem pickupWeapon = new PickUpItem("shotgun",level,pathfinding, botInput);
-				AttackEntity attackPlayer = new AttackEntity(level.getEntities("player").first(), botInput);
+				AttackNearest attackPlayer = new AttackNearest("player", botInput, level);
 				MoveToNearest moveToPlayer = new MoveToNearest("player",level ,pathfinding,physicsSystem, botInput, 10.0f);
 				
 				SequenceNode s1 = new SequenceNode(new InverterNode(checkHealth), pickupHealth);

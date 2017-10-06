@@ -1,7 +1,9 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
 import static guru.nidi.graphviz.model.Factory.node;
+import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.attribute.Style;
 
 import org.omg.PortableInterceptor.SUCCESSFUL;
 
@@ -43,6 +45,7 @@ public class CheckHealth extends BehaviourNode {
     public Node toDotNode() {
         return node("checkHealth" + checkHealthId++)
                .with(Shape.ELLIPSE)
-               .with(Label.of("CheckHealth(" + ratio + ")"));
+				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
+               .with(Label.of("Health > " + ratio));
     }
 }

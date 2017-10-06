@@ -12,18 +12,22 @@ import se.sciion.quake2d.ai.behaviour.BehaviourNode;
 import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.level.Entity;
+import se.sciion.quake2d.level.Level;
 import se.sciion.quake2d.level.components.BotInputComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
+import se.sciion.quake2d.level.system.Pathfinding;
 
-public class AttackEntity extends BehaviourNode{
+public class AttackNearest extends BehaviourNode{
     private static int attackId = 0;
 
-    private Entity target;
+    private String id;
+    private Level level;
     private BotInputComponent input;
 
-    public AttackEntity(Entity target, BotInputComponent input) {
-        this.target = target;
+    public AttackNearest(String id,  BotInputComponent input, Level level) {
+        this.id = id;
         this.input = input;
+        this.level = level;
     }
 
     @Override
@@ -35,9 +39,30 @@ public class AttackEntity extends BehaviourNode{
     @Override
     protected BehaviourStatus onUpdate() {
 
-        PhysicsComponent targetPhysics = target.getComponent(ComponentTypes.Physics);
         PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
-        if(targetPhysics == null || physics == null) {
+        if (physics == null) {
+            status = BehaviourStatus.FAILURE;
+            return status;
+        }
+        
+        Vector2 position = physics.getBody().getPosition();
+   
+    	Entity nearestTarget = null;
+    	double nearestDistance = 300.0;
+        for(Entity e: level.getEntities(id)) {
+            PhysicsComponent ePhysics = e.getComponent(ComponentTypes.Physics);
+            if(ePhysics != null) {
+                Vector2 ePos = ePhysics.getBody().getPosition();
+                double distance = position.cpy().sub(ePos).len();
+                if (distance < nearestDistance) {
+                	nearestDistance = distance;
+                	nearestTarget = e;
+                }
+            }
+        }
+
+        PhysicsComponent targetPhysics = nearestTarget.getComponent(ComponentTypes.Physics);
+        if(targetPhysics == null) {
             status = BehaviourStatus.FAILURE;
             return status;
         }
@@ -56,10 +81,10 @@ public class AttackEntity extends BehaviourNode{
 
     @Override
     public Node toDotNode() {
-        return node("attackEntity" + attackId++)
+        return node("attackNearest" + attackId++)
                .with(Shape.RECTANGLE)
 				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
-               .with(Label.of("Attack"));
+               .with(Label.of("Attack " + id));
     }
 
 }

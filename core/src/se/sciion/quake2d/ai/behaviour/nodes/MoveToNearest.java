@@ -1,7 +1,9 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
 import static guru.nidi.graphviz.model.Factory.node;
+import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.attribute.Style;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -93,7 +95,8 @@ public class MoveToNearest extends BehaviourNode {
     public Node toDotNode() {
         Node node = node("moveToNearest" + moveToNearestId++)
                     .with(Shape.RECTANGLE)
-                    .with(Label.of("MoveToNearest(" + id + ", " + minDistance + ")"));
+					.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
+                    .with(Label.of("Move to " + id));
 
         return node;
     }

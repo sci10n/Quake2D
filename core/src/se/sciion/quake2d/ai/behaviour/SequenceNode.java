@@ -5,9 +5,11 @@ import static guru.nidi.graphviz.model.Factory.node;
 import java.util.Arrays;
 import java.util.List;
 
+import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Rank;
 import guru.nidi.graphviz.attribute.RankDir;
 import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 
@@ -52,6 +54,7 @@ public class SequenceNode extends CompositeNode{
     public Node toDotNode() {
         Node sequence = node("sequence" + sequenceId++)
                         .with(Shape.RECTANGLE)
+                        .with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
                         .with(Label.of("Sequence"))
                         .with(Rank.SAME);
 

@@ -1,7 +1,9 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
 import static guru.nidi.graphviz.model.Factory.node;
+import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.attribute.Style;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -88,6 +90,7 @@ public class MoveToEntity extends BehaviourNode {
     public Node toDotNode() {
         return node("moveToEntity" + moveToEntityId++)
                .with(Shape.RECTANGLE)
-               .with(Label.of("MoveToEntity(" + minDistance + ")"));
+				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
+               .with(Label.of("Move to"));
     }
 }
