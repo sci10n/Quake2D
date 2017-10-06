@@ -1,0 +1,33 @@
+graph example {
+    root [label="", shape=point];
+    selector [label="Selector", shape=box]
+
+    healthCheck [label="HealthCheck(0.5)", shape=box];
+    moveToNearest [label="MoveToNearest(health, 1.0)", shape=box];
+    inverter [label="Inverter", shape=box];
+    safeSequence [label="Sequence", shape=box];
+
+    pickUpShotgun [label="MoveToNearest(shotgun, 1.0)", shape=box];
+    moveWithinRange [label="MoveToEntity(player, 10.0)", shape=box];
+    attackPlayer [label="Attack(player)", shape=box];
+    attackSequence [label="Sequence", shape=box];
+
+    attackSequence -- pickUpShotgun
+    attackSequence -- moveWithinRange
+    attackSequence -- attackPlayer
+
+    { rank=same pickUpShotgun -- moveWithinRange -- attackPlayer [style=invis]; }
+
+    inverter -- healthCheck
+    safeSequence -- inverter
+    safeSequence -- moveToNearest
+
+    { rank=same inverter -- moveToNearest [style=invis]; }
+
+    selector -- safeSequence
+    selector -- attackSequence
+
+    { rank=same safeSequence -- attackSequence [style=invis]; }
+
+    root -- selector
+}
