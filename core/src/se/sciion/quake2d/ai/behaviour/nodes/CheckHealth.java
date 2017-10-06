@@ -26,19 +26,19 @@ public class CheckHealth extends BehaviourNode {
 
     @Override
     protected void onEnter() {
-        status = BehaviourStatus.RUNNING;
+    	setStatus(BehaviourStatus.RUNNING);
     }
 
     @Override
     protected BehaviourStatus onUpdate() {
 
         if(health != null && (health.health/(float)health.MAX_HEALTH) >= ratio) {
-            status = BehaviourStatus.SUCCESS;
+        	setStatus(BehaviourStatus.SUCCESS);
         }
         else {
-            status = BehaviourStatus.FAILURE;
+        	setStatus(BehaviourStatus.FAILURE);
         }
-        return status;
+        return getStatus();
     }
 
     @Override

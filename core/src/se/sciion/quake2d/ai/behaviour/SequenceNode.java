@@ -35,20 +35,20 @@ public class SequenceNode extends CompositeNode{
     @Override
     protected void onEnter() {
         currentChild = 0;
-        status = BehaviourStatus.RUNNING;
+        setStatus(BehaviourStatus.RUNNING);
         super.onEnter();
     }
 
     @Override
     protected BehaviourStatus onUpdate() {
         if (currentChild < children.size() && !children.isEmpty()) {
-            status = children.get(currentChild).tick();
-            if(status == BehaviourStatus.SUCCESS){
+        	setStatus(children.get(currentChild).tick());
+            if(getStatus() == BehaviourStatus.SUCCESS){
                 ++currentChild;
                 return onUpdate();
             }
         }
-        return status;
+        return getStatus();
     }
 
     public Node toDotNode() {

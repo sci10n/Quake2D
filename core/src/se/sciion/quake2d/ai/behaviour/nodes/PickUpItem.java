@@ -38,7 +38,7 @@ public class PickUpItem extends BehaviourNode {
 
     @Override
     protected void onEnter() {
-        status = BehaviourStatus.RUNNING;
+    	setStatus(BehaviourStatus.RUNNING);
     }
 
     @Override
@@ -46,19 +46,19 @@ public class PickUpItem extends BehaviourNode {
 
         InventoryComponent inventory = input.getParent().getComponent(ComponentTypes.Inventory);
         if(inventory == null){
-            status = BehaviourStatus.SUCCESS;
-            return status;
+        	setStatus(BehaviourStatus.SUCCESS);
+            return getStatus();
         }
 
         if(inventory.containsItem(id)){
-            status = BehaviourStatus.SUCCESS;
-            return status;
+        	setStatus(BehaviourStatus.SUCCESS);
+            return getStatus();
         }
 
         PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
         if(physics == null) {
-            status = BehaviourStatus.FAILURE;
-            return status;
+        	setStatus(BehaviourStatus.FAILURE);
+            return getStatus();
         }
 
         Vector2 fromPos = physics.getBody().getPosition();
@@ -78,13 +78,13 @@ public class PickUpItem extends BehaviourNode {
         }
 
         if(targetPos == null) {
-            status = BehaviourStatus.FAILURE;
-            return status;
+        	setStatus(BehaviourStatus.FAILURE);
+            return getStatus();
         }
 
         input.setTarget(targetPos);
 
-        return status;
+        return getStatus();
     }
 
     @Override

@@ -40,22 +40,22 @@ public class SelectorNode extends CompositeNode {
     @Override
     protected void onEnter() {
         super.onEnter();
-        status = BehaviourStatus.RUNNING;
+        setStatus(BehaviourStatus.RUNNING);
         currentChild = 0;
     }
 
     @Override
     protected BehaviourStatus onUpdate() {
         if (currentChild < children.size() && !children.isEmpty()) {
-            status = children.get(currentChild).tick();
-            if (status == BehaviourStatus.FAILURE) {
+        	setStatus(children.get(currentChild).tick());
+            if (getStatus() == BehaviourStatus.FAILURE) {
                 if (currentChild < children.size()) {
                     ++currentChild;
                     return onUpdate();
                 }
             }
         }
-        return status;
+        return getStatus();
     }
 
     @Override

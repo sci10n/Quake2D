@@ -16,19 +16,19 @@ public class InverterNode extends DecoratorNode {
 
     @Override
     protected void onEnter() {
-        status = BehaviourStatus.RUNNING;
+    	setStatus(BehaviourStatus.RUNNING);
     }
 
     @Override
     protected BehaviourStatus onUpdate() {
-        status = child.tick();
-        if(child.status == BehaviourStatus.SUCCESS) {
-            status = BehaviourStatus.FAILURE;
-        } else if(child.status == BehaviourStatus.FAILURE) {
-            status = BehaviourStatus.SUCCESS;
+        setStatus(child.tick());
+        if(child.getStatus() == BehaviourStatus.SUCCESS) {
+        	setStatus(BehaviourStatus.FAILURE);
+        } else if(child.getStatus() == BehaviourStatus.FAILURE) {
+        	setStatus(BehaviourStatus.SUCCESS);
         }
 
-        return status;
+        return getStatus();
     }
 
     @Override

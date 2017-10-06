@@ -1,17 +1,28 @@
 package se.sciion.quake2d.ai.behaviour;
 
+import com.badlogic.gdx.utils.Array;
+
 import guru.nidi.graphviz.model.Node;
+import se.sciion.quake2d.ai.behaviour.visualizer.BehaviorListener;
 
 public abstract class BehaviourNode{
+	
+	// Array to keep track of listeners
+	private Array<BehaviorListener> listeners;
+	
     // Since we haven't traversed this branch of the tree yet, we
     // set the current status of these nodes to become undefined.
-    protected BehaviourStatus status = BehaviourStatus.UNDEFINED;
-   
+    private BehaviourStatus status = BehaviourStatus.UNDEFINED;
+    
     // When we traverse some behaviour in the tree, and it hasn't
     // been running yet, we enter this behaviour. If we have been
     // running, but just recently left it, the we left behaviour.
     // If otherwise, we just update the behaviour for traversing.
 
+    public BehaviourNode() {
+		listeners = new Array<BehaviorListener>();
+	}
+    
     protected void onEnter() {
     }
 
@@ -19,7 +30,22 @@ public abstract class BehaviourNode{
 
     protected void onLeave() {
     }
-
+    
+    protected void noitfyListeners(){
+    	for(BehaviorListener l: listeners){
+    		l.onStatusChanged(this);
+    	}
+    }
+    
+    protected void setStatus(BehaviourStatus status) {
+    	this.status = status;
+    	noitfyListeners();
+    }
+    
+    protected BehaviourStatus getStatus(){
+    	return this.status;
+    }
+    
     public BehaviourStatus tick() {
         if (status != BehaviourStatus.RUNNING) onEnter();
         status = onUpdate(); // Run and update behaviour.
@@ -28,7 +54,7 @@ public abstract class BehaviourNode{
     }
 
     public abstract Node toDotNode();
-    
+
      
     public String getColor() {
     	switch (status) {
@@ -39,4 +65,13 @@ public abstract class BehaviourNode{
     	default: return "ffffff";
     	}
     }
+    
+    public void addListener(BehaviorListener l){
+    	listeners.add(l);
+    }
+    
+    public void removeListener(BehaviorListener l){
+    	listeners.removeValue(l, true);
+    }
+    
 }

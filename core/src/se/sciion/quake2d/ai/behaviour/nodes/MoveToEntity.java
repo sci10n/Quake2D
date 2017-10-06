@@ -38,7 +38,7 @@ public class MoveToEntity extends BehaviourNode {
 
     @Override
     protected void onEnter() {
-        status = BehaviourStatus.RUNNING;
+    	setStatus(BehaviourStatus.RUNNING);
         super.onEnter();
 
     }
@@ -47,25 +47,24 @@ public class MoveToEntity extends BehaviourNode {
     protected BehaviourStatus onUpdate() {
 
         if(target == null) {
-            status = BehaviourStatus.FAILURE;
-            return status;
+        	setStatus(BehaviourStatus.FAILURE);
+            return getStatus();
         }
 
         PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
         if (physics == null) {
-            status = BehaviourStatus.FAILURE;
-            return status;
+        	setStatus(BehaviourStatus.FAILURE);
+            return getStatus();
         }
 
         Vector2 fromLoc = physics.getBody().getPosition();
 
         PhysicsComponent targetPhysics = target.getComponent(ComponentTypes.Physics);
         if (targetPhysics == null ) {
-            status = BehaviourStatus.FAILURE;
-            System.out.println(status);
+        	setStatus(BehaviourStatus.FAILURE);
             input.setTarget(null);
 
-            return status;
+            return getStatus();
         }
 
         Vector2 targetLoc = targetPhysics.getBody().getPosition();
@@ -75,15 +74,15 @@ public class MoveToEntity extends BehaviourNode {
         float distance = fromLoc.cpy().sub(targetLoc).len();
 
         if (distance > minDistance) {
-            status = BehaviourStatus.RUNNING;
+        	setStatus( BehaviourStatus.RUNNING);
 
         } else if (distance <= minDistance && this.physics.lineOfSight(fromLoc, targetLoc)) {
-            status = BehaviourStatus.SUCCESS;
+        	setStatus(BehaviourStatus.SUCCESS);
             input.setTarget(null);
 
         }
 
-        return status;
+        return getStatus();
     }
 
     @Override

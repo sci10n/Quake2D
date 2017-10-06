@@ -29,7 +29,7 @@ public class AttackEntity extends BehaviourNode{
     @Override
     protected void onEnter() {
         super.onEnter();
-        status = BehaviourStatus.RUNNING;
+        setStatus( BehaviourStatus.RUNNING);
     }
 
     @Override
@@ -38,20 +38,20 @@ public class AttackEntity extends BehaviourNode{
         PhysicsComponent targetPhysics = target.getComponent(ComponentTypes.Physics);
         PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
         if(targetPhysics == null || physics == null) {
-            status = BehaviourStatus.FAILURE;
-            return status;
+        	setStatus(BehaviourStatus.FAILURE);
+            return getStatus();
         }
 
 
         Vector2 direction = targetPhysics.getBody().getPosition().cpy().sub(physics.getBody().getPosition());
         if(input.fire(direction.nor())) {
-            status = BehaviourStatus.SUCCESS;
+        	setStatus(BehaviourStatus.SUCCESS);
         }
         else {
-            status = BehaviourStatus.FAILURE;
+        	setStatus(BehaviourStatus.FAILURE);
         }
 
-        return status;
+        return getStatus();
     }
 
     @Override

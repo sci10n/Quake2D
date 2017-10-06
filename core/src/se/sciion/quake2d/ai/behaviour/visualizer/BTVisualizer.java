@@ -1,4 +1,4 @@
-package se.sciion.quake2d.ai.behaviour;
+package se.sciion.quake2d.ai.behaviour.visualizer;
 
 import java.awt.*;
 import javax.swing.*;
@@ -7,90 +7,104 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
+import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
-
+import se.sciion.quake2d.ai.behaviour.BehaviourTree;
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.level.components.BotInputComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
-public class BTVisualizer {
+public class BTVisualizer extends JFrame{
 	private OrthographicCamera camera;
 	private PhysicsSystem physicsSystem;
 
-	private boolean paused = false;
-	private boolean visualizeStep = false;
 	private BotInputComponent debugBot = null;
 
-	private JFrame visualizerWindow;
-	private JLabel visualizerBuffer;
 	private int windowSize;
-
+	private boolean paused = false;
+	
 	public BTVisualizer(int size, OrthographicCamera camera, PhysicsSystem physicsSystem) {
+		super("Tree Visualizer");
 		this.physicsSystem = physicsSystem;
 		this.windowSize = size;
 		this.camera = camera;
 
-		visualizerWindow = new JFrame();
-		visualizerWindow.setVisible(false);
-		visualizerWindow.setTitle("Behaviour Tree");
-		visualizerWindow.setFocusableWindowState(false);
+		setFocusableWindowState(false);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setResizable(false);
+		setVisible(true);
+		
+		createBufferStrategy(2);
+		setVisible(false);
 
-		JPanel panel = new JPanel();
-		panel.setBackground(Color.WHITE);
-		visualizerBuffer = new JLabel();
-		visualizerBuffer.setIcon(new ImageIcon());
-		panel.add(visualizerBuffer);
-		visualizerWindow.getContentPane().add(panel);
+		
+		new Thread(){
+		
+			public void run() {
+				while(true){
+					if(debugBot != null && debugBot.getBehaviourTree().isDirty()){
+						setVisible(true);
+						visualize(debugBot.getBehaviourTree());
+					}
+					try {
+						Thread.sleep(1000/Math.max(Gdx.graphics.getFramesPerSecond(),1));
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			};
+		}.start();
+		
+		
 	}
 
 	private void visualize(BehaviourTree behaviourTree) {
 		Graph btGraph = behaviourTree.toDotGraph();
 		BufferedImage btImage = Graphviz.fromGraph(btGraph)
 			                            .width(windowSize)
-			                            .render(Format.PNG)
-			                            .toImage();
+			                            .render(Format.PNG).toImage();
 
-		visualizerBuffer.setIcon(new ImageIcon(btImage));
-		visualizerWindow.setSize(visualizerBuffer.getIcon().getIconWidth(),
-								 visualizerBuffer.getIcon().getIconHeight());
-
-		visualizerWindow.setResizable(false);
-		visualizerWindow.pack();
-		visualizerWindow.setVisible(true);
+		setSize(btImage.getWidth(), btImage.getHeight()+ 150);
+		BufferStrategy bs = getBufferStrategy();
+		
+		Graphics g = bs.getDrawGraphics();
+		g.setColor(Color.WHITE);
+		g.drawRect(0,0,getWidth(),getHeight());
+		g.drawImage(btImage, 0, 50, null);
+		g.dispose();
+		bs.show();
+		
 	}
 
 	public boolean pause() {
-		if (paused && Gdx.input.isButtonPressed(Buttons.LEFT)) {
+		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			Vector3 screenMousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0.0f);
 			Vector3 mousePosition = camera.unproject(screenMousePosition);
 			PhysicsComponent component = physicsSystem.queryComponentAt(mousePosition.x, mousePosition.y);
 			if (component != null) {
 				BotInputComponent newDebugBot = component.getParent().getComponent(ComponentTypes.BotInput);
-				if (newDebugBot == null) visualizerWindow.setVisible(false);
-				if (newDebugBot != debugBot || !visualizerWindow.isVisible()) visualizeStep = true;
 				debugBot = newDebugBot;
-			} else visualizerWindow.setVisible(false);
+				
+			}
 		}
-
-		if (Gdx.input.isKeyPressed(Keys.P)) {
+		
+		if(Gdx.input.isKeyPressed(Keys.P) && !paused){
 			paused = true;
-			visualizeStep = true;
+		}
+		else if(Gdx.input.isKeyPressed(Keys.P) && paused){
 			return false;
-		} else if (visualizeStep && !Gdx.input.isKeyPressed(Keys.P)) {
-			visualizeStep = false;
-			if (debugBot != null)
-				visualize(debugBot.getBehaviourTree());
-		} else if (Gdx.input.isKeyPressed(Keys.ANY_KEY)) {
-			visualizerWindow.setVisible(false);
+		}
+		else if(Gdx.input.isKeyPressed(Keys.R)){
 			paused = false;
 		}
-
+		
 		return paused;
 	}
 }

@@ -33,7 +33,7 @@ public class AttackNearest extends BehaviourNode{
     @Override
     protected void onEnter() {
         super.onEnter();
-        status = BehaviourStatus.RUNNING;
+        setStatus(BehaviourStatus.RUNNING);
     }
 
     @Override
@@ -41,8 +41,8 @@ public class AttackNearest extends BehaviourNode{
 
         PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
         if (physics == null) {
-            status = BehaviourStatus.FAILURE;
-            return status;
+        	setStatus(BehaviourStatus.FAILURE);
+            return getStatus();
         }
         
         Vector2 position = physics.getBody().getPosition();
@@ -63,20 +63,20 @@ public class AttackNearest extends BehaviourNode{
 
         PhysicsComponent targetPhysics = nearestTarget.getComponent(ComponentTypes.Physics);
         if(targetPhysics == null) {
-            status = BehaviourStatus.FAILURE;
-            return status;
+        	setStatus(BehaviourStatus.FAILURE);
+            return getStatus();
         }
 
 
         Vector2 direction = targetPhysics.getBody().getPosition().cpy().sub(physics.getBody().getPosition());
         if(input.fire(direction.nor())) {
-            status = BehaviourStatus.SUCCESS;
+        	setStatus(BehaviourStatus.SUCCESS);
         }
         else {
-            status = BehaviourStatus.FAILURE;
+        	setStatus(BehaviourStatus.FAILURE);
         }
 
-        return status;
+        return getStatus();
     }
 
     @Override

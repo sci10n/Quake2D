@@ -41,7 +41,7 @@ public class MoveToNearest extends BehaviourNode {
 
     @Override
     protected void onEnter() {
-        status = BehaviourStatus.RUNNING;
+    	setStatus(BehaviourStatus.RUNNING);
         super.onEnter();
 
     }
@@ -51,8 +51,8 @@ public class MoveToNearest extends BehaviourNode {
 
         PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
         if (physics == null) {
-            status = BehaviourStatus.FAILURE;
-            return status;
+        	setStatus(BehaviourStatus.FAILURE);
+            return getStatus();
         }
 
         Vector2 fromLoc = physics.getBody().getPosition();
@@ -72,8 +72,8 @@ public class MoveToNearest extends BehaviourNode {
         }
 
         if(targetPos == null) {
-            status = BehaviourStatus.FAILURE;
-            return status;
+        	setStatus(BehaviourStatus.FAILURE);
+            return getStatus();
         }
 
         input.setTarget(targetPos);
@@ -81,14 +81,14 @@ public class MoveToNearest extends BehaviourNode {
         float distance = fromLoc.cpy().sub(targetPos).len();
 
         if (distance > minDistance) {
-            status = BehaviourStatus.RUNNING;
+        	setStatus(BehaviourStatus.RUNNING);
         } else if (distance <= minDistance && this.physics.lineOfSight(fromLoc, targetPos)) {
-            status = BehaviourStatus.SUCCESS;
+        	setStatus(BehaviourStatus.SUCCESS);
             input.setTarget(null);
 
         }
 
-        return status;
+        return getStatus();
     }
 
     @Override
