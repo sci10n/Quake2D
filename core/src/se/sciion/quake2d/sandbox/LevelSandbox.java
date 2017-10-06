@@ -19,6 +19,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader.Parameters;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -63,11 +64,13 @@ public class LevelSandbox extends ApplicationAdapter {
 
 	private TiledMap map;
 	private TiledMapTileSet tileSet;
+	private TiledMapTileLayer overlayTiledLayer;
 	private OrthogonalTiledMapRenderer renderer;
 	
 	private Level level;
 	private RenderModel model;
 	
+    boolean debugging = false;
 	private Pathfinding pathfinding;
 	private BTVisualizer visualizer;
 	private PhysicsSystem physicsSystem;
@@ -113,10 +116,13 @@ public class LevelSandbox extends ApplicationAdapter {
 		params.textureMinFilter = TextureFilter.Nearest;
 		params.textureMagFilter = TextureFilter.Nearest;
 		
-		map = loader.load("levels/level_test.tmx", params);
+		map = loader.load("levels/level.tmx", params);
 		
 		tileSet = map.getTileSets().getTileSet(0);
 		renderer = new OrthogonalTiledMapRenderer(map,1.0f/64.0f);
+
+		overlayTiledLayer = (TiledMapTileLayer) map.getLayers().get("Overlay");
+
 		MapLayer structuralLayer = map.getLayers().get("Structures");
 		for(MapObject o: structuralLayer.getObjects()) {
 			RectangleMapObject r = (RectangleMapObject) o;
@@ -144,7 +150,9 @@ public class LevelSandbox extends ApplicationAdapter {
 			float y = rect.y / 64.0f;
 			float w = rect.width/64.0f;
 			float h = rect.height/ 64.0f;
+
 			String type = r.getProperties().get("type", String.class);
+			String name = r.getProperties().get("name", String.class);
 			
 			if(type.equals("Consumable")) {
 				Entity entity = level.createEntity(o.getName());
@@ -155,11 +163,13 @@ public class LevelSandbox extends ApplicationAdapter {
 				
 				PhysicsComponent pickupPhysics = physicsSystem.createComponent(origin.x, origin.y, BodyType.DynamicBody,shape);
 				entity.addComponent(pickupPhysics);
-				
-				int healthAmount = r.getProperties().get("amount", Integer.class);
-				PickupComponent pickup = new PickupComponent(new Consumable("health",healthAmount, 0));
-				physicsSystem.registerCallback(pickup, entity);
-				entity.addComponent(pickup);
+
+				if (name == "health") {
+					int healthAmount = r.getProperties().get("amount", Integer.class);
+					PickupComponent pickup = new PickupComponent(new Consumable("health",healthAmount, 0));
+					physicsSystem.registerCallback(pickup, entity);
+					entity.addComponent(pickup);
+				}
 			}
 			else if(type.equals("Weapon")) {
 				Entity entity = level.createEntity(o.getName());
@@ -177,7 +187,7 @@ public class LevelSandbox extends ApplicationAdapter {
 				float knockback = r.getProperties().get("knockback", Float.class);
 				float spread = r.getProperties().get("spread",Float.class);
 				float speed = r.getProperties().get("speed", Float.class);
-				Weapon wweapon = new Weapon(o.getName(),cooldown, bullets, capacity,knockback, spread, speed);
+				Weapon wweapon = new Weapon(o.getName(),cooldown, bullets, capacity, knockback, spread, speed);
 				PickupComponent pickup = new PickupComponent(wweapon);
 				physicsSystem.registerCallback(pickup, entity);
 				entity.addComponent(pickup);
@@ -212,6 +222,8 @@ public class LevelSandbox extends ApplicationAdapter {
 				player.addComponent(playerMovement);
 				player.addComponent(playerWeapon);
 				player.addComponent(new InventoryComponent());
+
+				pathfinding.setPlayerPosition(playerPhysics.getBody().getPosition());
 			}
 			else if(type.equals("BotSpawn")) {
 				Entity entity = level.createEntity("bot");
@@ -254,6 +266,11 @@ public class LevelSandbox extends ApplicationAdapter {
 		if (visualizer.pause())
 			return;
 
+		if (Gdx.input.isKeyJustPressed(Keys.O)) {
+			model.debugging = !debugging;
+			debugging = !debugging;
+		}
+
 		camera.update();
 		level.tick(Gdx.graphics.getDeltaTime());
 		physicsSystem.update(Gdx.graphics.getDeltaTime());
@@ -264,13 +281,21 @@ public class LevelSandbox extends ApplicationAdapter {
 		model.setProjectionMatrix(camera.combined);
 
 		renderer.setView(camera);
-		renderer.render();
+		int[] layers = {0, 1, 2};
+		renderer.render(layers);
 
 		model.begin();
 		level.render(model);
 		model.end();
 
-		physicsSystem.render(camera.combined);
+		renderer.getBatch().begin();
+		renderer.renderTileLayer(overlayTiledLayer);
+		renderer.getBatch().end();
+
+		if (debugging) {
+			pathfinding.render(model);
+			physicsSystem.render(camera.combined);
+		}
 	}
 	
 	@Override

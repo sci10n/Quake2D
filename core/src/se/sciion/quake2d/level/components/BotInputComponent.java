@@ -2,6 +2,7 @@ package se.sciion.quake2d.level.components;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 
 import javax.swing.JFrame;
@@ -34,6 +35,28 @@ public class BotInputComponent extends EntityComponent {
 
 	@Override
 	public void render(RenderModel batch) {
+		if (batch.debugging) {
+			PhysicsComponent spriteComponent = getParent().getComponent(ComponentTypes.Physics);
+			if (spriteComponent == null)
+				return;
+
+			Body body = spriteComponent.getBody();
+			Vector2 origin = body.getPosition();
+			Vector2 prev = origin;
+
+			batch.primitiveRenderer.begin();
+
+			if (currentPath.size != 0) {
+				for (int i = currentPath.size - 1; i >= 0; i--) {
+					Vector2 p = currentPath.get(i);
+					batch.primitiveRenderer.setColor(Color.RED);
+					batch.primitiveRenderer.line(prev, p);
+					prev = p;
+				}
+			}
+
+			batch.primitiveRenderer.end();
+		}
 	}
 
 	@Override

@@ -31,14 +31,6 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 
 	@Override
 	public void render(RenderModel batch) {
-		
-		PhysicsComponent physics = getParent().getComponent(ComponentTypes.Physics);
-		if(physics != null && health != 0){
-			float part = 180 / MAX_HEALTH;
-			Vector2 origin = physics.getBody().getPosition();
-			batch.primitiveRenderer.setColor(Color.RED);
-			batch.primitiveRenderer.arc(origin.x,origin.y, 1.5f, 0, part * health,health);
-		}
 	}
 
 	@Override
