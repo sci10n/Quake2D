@@ -40,7 +40,6 @@ public class BotInputComponent extends EntityComponent {
 	public void tick(float delta) {
 		HealthComponent healthComponent = getParent().getComponent(ComponentTypes.Health);
 		if (healthComponent.health <= 0) isDead = true;
-		else isDead = false; // Maybe can't be revived?
 
 		// If we're dead then we likely can't think now do we :)
 		if (behaviourTree != null && !isDead)

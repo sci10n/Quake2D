@@ -19,6 +19,7 @@ import se.sciion.quake2d.level.system.Pathfinding;
  */
 public class PlayerInputComponent extends EntityComponent{
 
+	private boolean isDead = false;
 	private OrthographicCamera camera;
 	private Pathfinding pathfinding;
 
@@ -34,6 +35,9 @@ public class PlayerInputComponent extends EntityComponent{
 
 	@Override
 	public void tick(float delta) {
+		HealthComponent healthComponent = getParent().getComponent(ComponentTypes.Health);
+		if (healthComponent.health <= 0) isDead = true;
+        if (isDead) return; // Do something else too??
 		
 		// Update sprite location
 		PhysicsComponent physicsComponent = getParent().getComponent(ComponentTypes.Physics);
