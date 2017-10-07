@@ -36,7 +36,7 @@ public class InverterNode extends DecoratorNode {
         return node("inverter" + inverterNodeId++)
                .with(Shape.DIAMOND)
 				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
-               .with(Label.of("Invert"))
+               .with(Label.of("Inverter"))
                .link(child.toDotNode());
     }
 }
