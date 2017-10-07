@@ -1,0 +1,382 @@
+spritesheet.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+hitman1_gun
+  rotate: false
+  xy: 164, 88
+  size: 49, 43
+  orig: 49, 43
+  offset: 0, 0
+  index: -1
+hitman1_hold
+  rotate: false
+  xy: 386, 88
+  size: 35, 43
+  orig: 35, 43
+  offset: 0, 0
+  index: -1
+hitman1_machine
+  rotate: false
+  xy: 214, 44
+  size: 49, 43
+  orig: 49, 43
+  offset: 0, 0
+  index: -1
+hitman1_reload
+  rotate: false
+  xy: 313, 132
+  size: 39, 43
+  orig: 39, 43
+  offset: 0, 0
+  index: -1
+hitman1_silencer
+  rotate: false
+  xy: 0, 132
+  size: 54, 43
+  orig: 54, 43
+  offset: 0, 0
+  index: -1
+hitman1_stand
+  rotate: false
+  xy: 426, 176
+  size: 33, 43
+  orig: 33, 43
+  offset: 0, 0
+  index: -1
+manBlue_gun
+  rotate: false
+  xy: 263, 132
+  size: 49, 43
+  orig: 49, 43
+  offset: 0, 0
+  index: -1
+manBlue_hold
+  rotate: false
+  xy: 390, 132
+  size: 35, 43
+  orig: 35, 43
+  offset: 0, 0
+  index: -1
+manBlue_machine
+  rotate: false
+  xy: 212, 176
+  size: 49, 43
+  orig: 49, 43
+  offset: 0, 0
+  index: -1
+manBlue_reload
+  rotate: false
+  xy: 309, 0
+  size: 39, 43
+  orig: 39, 43
+  offset: 0, 0
+  index: -1
+manBlue_silencer
+  rotate: false
+  xy: 58, 0
+  size: 54, 43
+  orig: 54, 43
+  offset: 0, 0
+  index: -1
+manBlue_stand
+  rotate: false
+  xy: 426, 132
+  size: 33, 43
+  orig: 33, 43
+  offset: 0, 0
+  index: -1
+manBrown_gun
+  rotate: false
+  xy: 262, 176
+  size: 49, 43
+  orig: 49, 43
+  offset: 0, 0
+  index: -1
+manBrown_hold
+  rotate: false
+  xy: 388, 0
+  size: 35, 43
+  orig: 35, 43
+  offset: 0, 0
+  index: -1
+manBrown_machine
+  rotate: false
+  xy: 214, 88
+  size: 49, 43
+  orig: 49, 43
+  offset: 0, 0
+  index: -1
+manBrown_reload
+  rotate: false
+  xy: 312, 176
+  size: 39, 43
+  orig: 39, 43
+  offset: 0, 0
+  index: -1
+manBrown_silencer
+  rotate: false
+  xy: 0, 176
+  size: 54, 43
+  orig: 54, 43
+  offset: 0, 0
+  index: -1
+manBrown_stand
+  rotate: false
+  xy: 459, 44
+  size: 33, 43
+  orig: 33, 43
+  offset: 0, 0
+  index: -1
+manOld_gun
+  rotate: false
+  xy: 216, 0
+  size: 49, 43
+  orig: 49, 43
+  offset: 0, 0
+  index: -1
+manOld_hold
+  rotate: false
+  xy: 422, 88
+  size: 35, 43
+  orig: 35, 43
+  offset: 0, 0
+  index: -1
+manOld_machine
+  rotate: false
+  xy: 213, 132
+  size: 49, 43
+  orig: 49, 43
+  offset: 0, 0
+  index: -1
+manOld_reload
+  rotate: false
+  xy: 307, 44
+  size: 39, 43
+  orig: 39, 43
+  offset: 0, 0
+  index: -1
+manOld_silencer
+  rotate: false
+  xy: 55, 132
+  size: 54, 43
+  orig: 54, 43
+  offset: 0, 0
+  index: -1
+manOld_stand
+  rotate: false
+  xy: 460, 132
+  size: 33, 43
+  orig: 33, 43
+  offset: 0, 0
+  index: -1
+robot1_gun
+  rotate: false
+  xy: 164, 44
+  size: 49, 43
+  orig: 49, 43
+  offset: 0, 0
+  index: -1
+robot1_hold
+  rotate: false
+  xy: 423, 44
+  size: 35, 43
+  orig: 35, 43
+  offset: 0, 0
+  index: -1
+robot1_machine
+  rotate: false
+  xy: 166, 0
+  size: 49, 43
+  orig: 49, 43
+  offset: 0, 0
+  index: -1
+robot1_reload
+  rotate: false
+  xy: 306, 88
+  size: 39, 43
+  orig: 39, 43
+  offset: 0, 0
+  index: -1
+robot1_silencer
+  rotate: false
+  xy: 55, 176
+  size: 54, 43
+  orig: 54, 43
+  offset: 0, 0
+  index: -1
+robot1_stand
+  rotate: false
+  xy: 458, 88
+  size: 33, 43
+  orig: 33, 43
+  offset: 0, 0
+  index: -1
+soldier1_gun
+  rotate: false
+  xy: 113, 0
+  size: 52, 43
+  orig: 52, 43
+  offset: 0, 0
+  index: -1
+soldier1_hold
+  rotate: false
+  xy: 349, 0
+  size: 38, 43
+  orig: 38, 43
+  offset: 0, 0
+  index: -1
+soldier1_machine
+  rotate: false
+  xy: 110, 132
+  size: 52, 43
+  orig: 52, 43
+  offset: 0, 0
+  index: -1
+soldier1_reload
+  rotate: false
+  xy: 264, 44
+  size: 42, 43
+  orig: 42, 43
+  offset: 0, 0
+  index: -1
+soldier1_silencer
+  rotate: false
+  xy: 0, 0
+  size: 57, 43
+  orig: 57, 43
+  offset: 0, 0
+  index: -1
+soldier1_stand
+  rotate: false
+  xy: 353, 132
+  size: 36, 43
+  orig: 36, 43
+  offset: 0, 0
+  index: -1
+survivor1_gun
+  rotate: false
+  xy: 112, 88
+  size: 51, 43
+  orig: 51, 43
+  offset: 0, 0
+  index: -1
+survivor1_hold
+  rotate: false
+  xy: 352, 176
+  size: 37, 43
+  orig: 37, 43
+  offset: 0, 0
+  index: -1
+survivor1_machine
+  rotate: false
+  xy: 110, 176
+  size: 51, 43
+  orig: 51, 43
+  offset: 0, 0
+  index: -1
+survivor1_reload
+  rotate: false
+  xy: 264, 88
+  size: 41, 43
+  orig: 41, 43
+  offset: 0, 0
+  index: -1
+survivor1_silencer
+  rotate: false
+  xy: 0, 88
+  size: 56, 43
+  orig: 56, 43
+  offset: 0, 0
+  index: -1
+survivor1_stand
+  rotate: false
+  xy: 390, 176
+  size: 35, 43
+  orig: 35, 43
+  offset: 0, 0
+  index: -1
+womanGreen_gun
+  rotate: false
+  xy: 58, 44
+  size: 52, 43
+  orig: 52, 43
+  offset: 0, 0
+  index: -1
+womanGreen_hold
+  rotate: false
+  xy: 347, 44
+  size: 38, 43
+  orig: 38, 43
+  offset: 0, 0
+  index: -1
+womanGreen_machine
+  rotate: false
+  xy: 111, 44
+  size: 52, 43
+  orig: 52, 43
+  offset: 0, 0
+  index: -1
+womanGreen_reload
+  rotate: false
+  xy: 266, 0
+  size: 42, 43
+  orig: 42, 43
+  offset: 0, 0
+  index: -1
+womanGreen_silencer
+  rotate: false
+  xy: 0, 44
+  size: 57, 43
+  orig: 57, 43
+  offset: 0, 0
+  index: -1
+womanGreen_stand
+  rotate: false
+  xy: 386, 44
+  size: 36, 43
+  orig: 36, 43
+  offset: 0, 0
+  index: -1
+zoimbie1_gun
+  rotate: false
+  xy: 163, 132
+  size: 49, 43
+  orig: 49, 43
+  offset: 0, 0
+  index: -1
+zoimbie1_hold
+  rotate: false
+  xy: 424, 0
+  size: 35, 43
+  orig: 35, 43
+  offset: 0, 0
+  index: -1
+zoimbie1_machine
+  rotate: false
+  xy: 162, 176
+  size: 49, 43
+  orig: 49, 43
+  offset: 0, 0
+  index: -1
+zoimbie1_reload
+  rotate: false
+  xy: 346, 88
+  size: 39, 43
+  orig: 39, 43
+  offset: 0, 0
+  index: -1
+zoimbie1_silencer
+  rotate: false
+  xy: 57, 88
+  size: 54, 43
+  orig: 54, 43
+  offset: 0, 0
+  index: -1
+zoimbie1_stand
+  rotate: false
+  xy: 460, 0
+  size: 33, 43
+  orig: 33, 43
+  offset: 0, 0
+  index: -1

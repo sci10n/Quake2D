@@ -12,28 +12,25 @@ import com.badlogic.gdx.math.Matrix4;
  */
 public class RenderModel {
 
-	public SpriteBatch spriteBatch;
-	public boolean debugging = false;
+	public SpriteBatch spriteRenderer;
 	public ShapeRenderer primitiveRenderer;
 	
 	public RenderModel(){
 		primitiveRenderer = new ShapeRenderer();
 		primitiveRenderer.setAutoShapeType(true);
-		spriteBatch = new SpriteBatch();
+		spriteRenderer = new SpriteBatch();
 	}
-	
 	
 	public void begin(){
-		spriteBatch.begin();
+		spriteRenderer.begin();
 	}
 	
-	
 	public void end(){
-		spriteBatch.end();
+		spriteRenderer.end();
 	}
 
 	public void setProjectionMatrix(Matrix4 combined) {
 		primitiveRenderer.setProjectionMatrix(combined);
-		spriteBatch.setProjectionMatrix(combined);
+		spriteRenderer.setProjectionMatrix(combined);
 	}
 }

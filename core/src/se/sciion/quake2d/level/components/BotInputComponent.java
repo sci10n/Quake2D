@@ -35,28 +35,26 @@ public class BotInputComponent extends EntityComponent {
 
 	@Override
 	public void render(RenderModel batch) {
-		if (batch.debugging) {
-			PhysicsComponent spriteComponent = getParent().getComponent(ComponentTypes.Physics);
-			if (spriteComponent == null)
-				return;
+		// PhysicsComponent spriteComponent = getParent().getComponent(ComponentTypes.Physics);
+		// if (spriteComponent == null)
+		// 	return;
 
-			Body body = spriteComponent.getBody();
-			Vector2 origin = body.getPosition();
-			Vector2 prev = origin;
+		// Body body = spriteComponent.getBody();
+		// Vector2 origin = body.getPosition();
+		// Vector2 prev = origin;
 
-			batch.primitiveRenderer.begin();
+		// batch.primitiveRenderer.begin();
 
-			if (currentPath.size != 0) {
-				for (int i = currentPath.size - 1; i >= 0; i--) {
-					Vector2 p = currentPath.get(i);
-					batch.primitiveRenderer.setColor(Color.RED);
-					batch.primitiveRenderer.line(prev, p);
-					prev = p;
-				}
-			}
+		// if (currentPath.size != 0) {
+		// 	for (int i = currentPath.size - 1; i >= 0; i--) {
+		// 		Vector2 p = currentPath.get(i);
+		// 		batch.primitiveRenderer.setColor(Color.RED);
+		// 		batch.primitiveRenderer.line(prev, p);
+		// 		prev = p;
+		// 	}
+		// }
 
-			batch.primitiveRenderer.end();
-		}
+		// batch.primitiveRenderer.end();
 	}
 
 	@Override
@@ -96,7 +94,7 @@ public class BotInputComponent extends EntityComponent {
 		if(body.getLinearVelocity().len() > 7.0f){
 			body.getLinearVelocity().clamp(0, 7.0f);
 		}
-		Vector2 direction = closestPoint.cpy().add(0.5f, 0.5f).sub(origin).nor().scl(3.9f);
+		Vector2 direction = closestPoint.cpy().add(0.5f, 0.5f).sub(origin).nor().scl(1.8f);
 		Vector2 vel = body.getLinearVelocity();
 		body.setLinearVelocity(vel.add(direction));
 		body.setTransform(body.getPosition(), vel.angleRad());

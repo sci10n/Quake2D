@@ -47,19 +47,29 @@ public class PlayerInputComponent extends EntityComponent{
 		Body body = physicsComponent.getBody();
 		
 		Vector2 vel = body.getLinearVelocity();
+
+		boolean verticalMovement = false;
+		boolean horizontalMovement = false;
+		if (Gdx.input.isKeyPressed(Keys.W) || Gdx.input.isKeyPressed(Keys.S))
+				horizontalMovement = true;
+		if (Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D))
+				verticalMovement = true;
+
+		float speed = 1.8f;
+		if (verticalMovement && horizontalMovement)
+			speed = (float)(Math.sqrt(speed));
 		
 		if(Gdx.input.isKeyPressed(Keys.W) && vel.y < 7.0f){
-			body.setLinearVelocity(vel.add(0, 3.9f));
-		} 
-		else if(Gdx.input.isKeyPressed(Keys.S) && vel.y > -7.0f){
-			body.setLinearVelocity(vel.add(0, -3.9f));
+			body.setLinearVelocity(vel.add(0, speed));
+		} else if(Gdx.input.isKeyPressed(Keys.S) && vel.y > -7.0f){
+			body.setLinearVelocity(vel.add(0, -speed));
 		}
 		
 		if(Gdx.input.isKeyPressed(Keys.A) && vel.x > -7.0f){
-			body.setLinearVelocity(vel.add(-3.9f,0.0f));
+			body.setLinearVelocity(vel.add(-speed,0.0f));
 		} 
 		else if(Gdx.input.isKeyPressed(Keys.D) && vel.x < 7.0f){
-			body.setLinearVelocity(vel.add(3.9f,0.0f));
+			body.setLinearVelocity(vel.add(speed,0.0f));
 		}
 		
 		float len = body.getLinearVelocity().len();

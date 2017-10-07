@@ -1,9 +1,12 @@
 package se.sciion.quake2d.level.components;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.utils.Array;
 
@@ -23,11 +26,14 @@ import se.sciion.quake2d.level.system.PhysicsSystem;
 public class WeaponComponent extends EntityComponent {
 
 	private float cooldown;
+	private TextureRegion bulletTexture;
 	private PhysicsSystem physicsSystem;
 	private Level level;
 
 	public WeaponComponent(Level level, PhysicsSystem physicsSystem) {
 		cooldown = 0;
+		// Load the bullet texture here. A bit ugly, maybe do this in the level instead?
+		bulletTexture = new TextureRegion(new Texture(Gdx.files.internal("images/bullet.png")));
 		this.physicsSystem = physicsSystem;
 		this.level = level;
 	}
@@ -67,11 +73,11 @@ public class WeaponComponent extends EntityComponent {
 					bulletHeading.setAngle(
 							angle + MathUtils.random(-currentWeapon.spread / 2.0f, currentWeapon.spread / 2.0f));
 					{
-						float x = origin.x + bulletHeading.x;
-						float y = origin.y + bulletHeading.y;
+						float x = origin.x + bulletHeading.x / 2.0f;
+						float y = origin.y + bulletHeading.y / 2.0f;
 						Entity e = level.createEntity();
 						CircleShape circle = new CircleShape();
-						circle.setRadius(0.2f);
+						circle.setRadius(0.13f);
 						PhysicsComponent bulletPhysics = physicsSystem.createComponent(x, y, BodyType.DynamicBody,
 								circle);
 						bulletPhysics.getBody().setLinearDamping(0.0f);
@@ -81,6 +87,10 @@ public class WeaponComponent extends EntityComponent {
 						ProjectileComponent projectile = new ProjectileComponent(
 								bulletHeading.cpy().scl(currentWeapon.speed));
 						e.addComponent(projectile);
+
+						SpriteComponent bulletSprite = new SpriteComponent(bulletTexture, new Vector2(0.0f, 0.0f), new Vector2(-0.12f, -0.12f),
+						                                                   new Vector2(1.0f / 64.0f, 1.0f / 64.0f), 0.0f);
+						e.addComponent(bulletSprite);
 
 						DamageComponent damage = new DamageComponent(1);
 						e.addComponent(damage);

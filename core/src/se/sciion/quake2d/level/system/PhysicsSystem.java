@@ -127,7 +127,7 @@ public class PhysicsSystem {
 
 	public PhysicsComponent queryComponentAt(float x, float y) {
 		FindBodyCallback findBodies = new FindBodyCallback();
-		world.QueryAABB(findBodies, x-0.5f, y-0.5f, x+0.5f, y+0.5f);
+		world.QueryAABB(findBodies, x-0.25f, y-0.25f, x+0.25f, y+0.25f);
 		for (Body b : findBodies.bodies) {
 			for (PhysicsComponent c : components) {
 				if (c.getBody() == b) return c;
