@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.Input.Keys;
@@ -69,6 +70,9 @@ public class LevelSandbox extends ApplicationAdapter {
 	private TiledMap map;
 	private TiledMapTileSet tileSet;
 	private TextureAtlas spriteSheet;
+	private TextureRegion bulletTexture;
+	private TextureRegion amountTexture;
+	private TextureRegion muzzleTexture;
 	private TiledMapTileLayer overlayTiledLayer;
 	private OrthogonalTiledMapRenderer renderer;
 	
@@ -111,6 +115,9 @@ public class LevelSandbox extends ApplicationAdapter {
 		assets = new AssetManager();
 		assets.setLoader(Texture.class, new TextureLoader(new InternalFileHandleResolver()));
 		spriteSheet = new TextureAtlas(Gdx.files.internal("images/spritesheet.atlas"));
+		bulletTexture = new TextureRegion(new Texture(Gdx.files.internal("images/bullet.png")));
+		amountTexture = new TextureRegion(new Texture(Gdx.files.internal("images/amount.png")));
+		muzzleTexture = new TextureRegion(new Texture(Gdx.files.internal("images/muzzle.png")));
 		assets.finishLoading();
 		loadMap();
 	}
@@ -260,9 +267,9 @@ public class LevelSandbox extends ApplicationAdapter {
 				CircleShape shape = new CircleShape();
 				shape.setRadius(bodySize);
 				PhysicsComponent playerPhysics = physicsSystem.createComponent(x + w/2.0f, y + h/2.0f, BodyType.DynamicBody, shape);
-				WeaponComponent playerWeapon = new WeaponComponent(level,physicsSystem);
+				WeaponComponent playerWeapon = new WeaponComponent(level,physicsSystem, bulletTexture, muzzleTexture);
 
-				SheetComponent playerSpriteSheet = new SheetComponent("gun");
+				SheetComponent playerSpriteSheet = new SheetComponent("stand");
 
 				float sheetScale = 1.0f / 64.0f;
 
@@ -299,7 +306,7 @@ public class LevelSandbox extends ApplicationAdapter {
 				playerSpriteSheet.addRegion(silencerRegion, "silencer");
 				playerSpriteSheet.addRegion(gunRegion, "gun");
 
-				HealthComponent playerHealth = new HealthComponent(o.getProperties().get("health", Integer.class));
+				HealthComponent playerHealth = new HealthComponent(o.getProperties().get("health", Integer.class), amountTexture);
 				physicsSystem.registerCallback(playerHealth, player);
 				
 				player.addComponent(playerHealth);
@@ -318,8 +325,8 @@ public class LevelSandbox extends ApplicationAdapter {
 				CircleShape shape = new CircleShape();
 				shape.setRadius(bodySize);
 				PhysicsComponent physics = physicsSystem.createComponent(x + w/2.0f, y + h/2.0f, BodyType.DynamicBody, shape);
-				WeaponComponent weapon = new WeaponComponent(level,physicsSystem);
-				HealthComponent health = new HealthComponent(o.getProperties().get("health", Integer.class));
+				WeaponComponent weapon = new WeaponComponent(level,physicsSystem, bulletTexture, muzzleTexture);
+				HealthComponent health = new HealthComponent(o.getProperties().get("health", Integer.class), amountTexture);
 				physicsSystem.registerCallback(health, entity);
 
 				SheetComponent robotSpriteSheet = new SheetComponent("gun");

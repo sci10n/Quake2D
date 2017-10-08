@@ -27,19 +27,45 @@ public class WeaponComponent extends EntityComponent {
 
 	private float cooldown;
 	private TextureRegion bulletTexture;
+    private TextureRegion muzzleTexture;
 	private PhysicsSystem physicsSystem;
 	private Level level;
 
-	public WeaponComponent(Level level, PhysicsSystem physicsSystem) {
+	public WeaponComponent(Level level, PhysicsSystem physicsSystem, TextureRegion bulletTexture, TextureRegion muzzleTexture) {
 		cooldown = 0;
-		// Load the bullet texture here. A bit ugly, maybe do this in the level instead?
-		bulletTexture = new TextureRegion(new Texture(Gdx.files.internal("images/bullet.png")));
+		this.bulletTexture = bulletTexture;
+        this.muzzleTexture = muzzleTexture;
 		this.physicsSystem = physicsSystem;
 		this.level = level;
 	}
 
 	@Override
 	public void render(RenderModel batch) {
+		SheetComponent spriteSheet = getParent().getComponent(ComponentTypes.Sheet);
+		if (spriteSheet == null) return;
+
+		InventoryComponent inventory = getParent().getComponent(ComponentTypes.Inventory);
+		Array<Weapon> weapons = inventory.getItems(Weapon.class);
+
+		if (weapons.size >= 1) {
+			Weapon currentWeapon = weapons.first();
+
+			if (currentWeapon.cooldown - cooldown <= 0.05) {
+				PhysicsComponent playerPhysics = getParent().getComponent(ComponentTypes.Physics);
+				Vector2 playerPosition = playerPhysics.getBody().getPosition();
+				float playerAngle = playerPhysics.getBody().getAngle() * MathUtils.radiansToDegrees - 90.0f;
+				playerPosition.add(new Vector2(-0.2f, 0.6f).rotate(playerAngle));
+				batch.spriteRenderer.draw(muzzleTexture, playerPosition.x, playerPosition.y, 0.0f, 0.0f, muzzleTexture.getRegionWidth(),
+				                          muzzleTexture.getRegionHeight(), 1.0f / 48.0f, 1.0f / 48.0f, playerAngle);
+			}
+
+			if (currentWeapon.getTag().equals("shotgun"))
+				spriteSheet.setCurrentRegion("gun");
+			else if (currentWeapon.getTag().equals("rifle"))
+				spriteSheet.setCurrentRegion("silencer");
+			else if (currentWeapon.getTag().equals("sniper"))
+				spriteSheet.setCurrentRegion("machine");
+		} else spriteSheet.setCurrentRegion("stand");
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package se.sciion.quake2d.level.components;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -21,16 +22,46 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 
 	
 	public final int MAX_HEALTH;
+    private TextureRegion amountTexture;
+    private TextureRegion[][] amountBar;
 	public int health;
 	
-	public HealthComponent(int health) {
+	public HealthComponent(int health, TextureRegion amountTexture) {
 		super();
 		this.health = health;
+		this.amountTexture = amountTexture;
+        this.amountBar = amountTexture.split(48, 10);
 		MAX_HEALTH = health;
 	}
 
 	@Override
 	public void render(RenderModel batch) {
+		PhysicsComponent playerPhysics = getParent().getComponent(ComponentTypes.Physics);
+		Vector2 playerPosition = playerPhysics.getBody().getPosition();
+
+		float ratioHealthLeft = health / (float)(MAX_HEALTH);
+		// TODO: change this later to consider armor amounts.
+		float ratioArmorLeft  = health / (float)(MAX_HEALTH);
+
+		if (health == 0) return; // It's dead Jim!
+
+		batch.spriteRenderer.setColor(0.8f, 0.1f, 0.1f, 1.0f);
+		batch.spriteRenderer.draw(amountBar[1][0], playerPosition.x - 0.5f, playerPosition.y - 0.7f, 0.0f, 0.0f,
+		                          amountBar[1][0].getRegionWidth(), amountBar[0][0].getRegionHeight(),
+		                          1.0f / 48.0f * ratioHealthLeft, 1.0f / 48.0f, 0.0f);
+		batch.spriteRenderer.draw(amountBar[0][0], playerPosition.x - 0.5f, playerPosition.y - 0.7f, 0.0f, 0.0f,
+		                          amountBar[0][0].getRegionWidth(), amountBar[0][0].getRegionHeight(),
+		                          1.0f / 48.0f, 1.0f / 48.0f, 0.0f);
+
+		batch.spriteRenderer.setColor(0.8f, 0.8f, 0.8f, 1.0f);
+		batch.spriteRenderer.draw(amountBar[1][0], playerPosition.x - 0.5f, playerPosition.y - 1.0f, 0.0f, 0.0f,
+		                          amountBar[1][0].getRegionWidth(), amountBar[0][0].getRegionHeight(),
+		                          1.0f / 48.0f * ratioArmorLeft, 1.0f / 48.0f, 0.0f);
+
+		batch.spriteRenderer.draw(amountBar[0][0], playerPosition.x - 0.5f, playerPosition.y - 1.0f, 0.0f, 0.0f,
+		                          amountBar[0][0].getRegionWidth(), amountBar[0][0].getRegionHeight(),
+		                          1.0f / 48.0f, 1.0f / 48.0f, 0.0f);
+		batch.spriteRenderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	@Override
