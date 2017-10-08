@@ -2,22 +2,11 @@ package se.sciion.quake2d.level.components;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import java.awt.image.BufferedImage;
-
-import guru.nidi.graphviz.model.Graph;
-import guru.nidi.graphviz.engine.Format;
-import guru.nidi.graphviz.engine.Graphviz;
-import static guru.nidi.graphviz.model.Factory.*;
-
+import se.sciion.quake2d.ai.behaviour.BehaviourTree;
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
-import se.sciion.quake2d.ai.behaviour.BehaviourTree;
 import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
@@ -25,6 +14,7 @@ public class BotInputComponent extends EntityComponent {
 
 	private BehaviourTree behaviourTree;
 	private boolean isDead = false;
+
 	private Pathfinding pathfinding;
 	private Vector2 targetPosition;
 	private Array<Vector2> currentPath;
@@ -59,13 +49,13 @@ public class BotInputComponent extends EntityComponent {
 		// }
 
 		// batch.primitiveRenderer.end();
+
 	}
 
 	@Override
 	public void tick(float delta) {
 		HealthComponent healthComponent = getParent().getComponent(ComponentTypes.Health);
-		if (healthComponent.health <= 0) isDead = true;
-		System.out.println(isDead);
+		if (healthComponent.getHealth() <= 0) isDead = true;
 
 		// If we're dead then we likely can't think now do we :)
 		if (behaviourTree != null && !isDead)
@@ -106,6 +96,7 @@ public class BotInputComponent extends EntityComponent {
 			body.getLinearVelocity().clamp(0, 7.0f);
 		}
 		Vector2 direction = closestPoint.cpy().sub(origin).nor().scl(1.8f);
+
 		Vector2 vel = body.getLinearVelocity();
 		body.setLinearVelocity(vel.add(direction));
 		body.setTransform(body.getPosition(), vel.angleRad());

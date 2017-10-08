@@ -11,7 +11,7 @@ public class Weapon extends Item {
 	public final float knockback;
 	public final float spread;
 	public final float speed;
-	
+	public final int baseDamage;
 	/**
 	 * 
 	 * @param cooldown
@@ -21,7 +21,7 @@ public class Weapon extends Item {
 	 * @param spread
 	 * @param speed
 	 */
-	public Weapon(String tag, float cooldown, int bullets, int capacity, float knockback, float spread, float speed) {
+	public Weapon(String tag, float cooldown, int bullets, int capacity, float knockback, float spread, float speed, int damage) {
 		super(tag);
 		this.cooldown = cooldown;
 		this.bullets = bullets;
@@ -29,6 +29,7 @@ public class Weapon extends Item {
 		this.knockback = knockback;
 		this.spread = spread;
 		this.speed = speed;
+		this.baseDamage = damage;
 	}
 
 	@Override
@@ -36,14 +37,26 @@ public class Weapon extends Item {
 		
 		InventoryComponent inventory = e.getComponent(ComponentTypes.Inventory);
 		if(inventory != null) {
-			if(inventory.containsItem(this)){
-				return false;
-			}
 			inventory.addItem(this);
 			return true;
 		}
 		return false;
 	}
 	
-	
+	@Override
+	public boolean equals(Object obj) {
+		
+		if(obj == null)
+			return false;
+		if(obj instanceof Weapon){
+			return 
+					((Weapon) obj).bullets == bullets && 
+					((Weapon) obj).capacity == capacity && 
+					((Weapon) obj).cooldown == cooldown && 
+					((Weapon) obj).knockback == knockback && 
+					((Weapon) obj).speed == speed && 
+					((Weapon) obj).spread == spread;
+		}
+		return super.equals(obj);
+	}
 }

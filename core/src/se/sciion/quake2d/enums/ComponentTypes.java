@@ -13,5 +13,6 @@ public enum ComponentTypes {
 	LineOfSight,
 	Inventory,
 	Pickup, 
-	Armor
+	Armor, 
+	Boost
 }

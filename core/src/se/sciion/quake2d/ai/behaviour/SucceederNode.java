@@ -5,10 +5,13 @@ import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.RankDir;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
+
+
 import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 
 public class SucceederNode extends DecoratorNode {
+
     private static int succeederId = 0;
 
     public SucceederNode(BehaviourNode behaviour) {

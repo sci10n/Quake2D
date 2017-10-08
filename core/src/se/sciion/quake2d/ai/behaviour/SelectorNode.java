@@ -2,6 +2,7 @@ package se.sciion.quake2d.ai.behaviour;
 
 import static guru.nidi.graphviz.model.Factory.*;
 
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import guru.nidi.graphviz.attribute.Rank;
 import guru.nidi.graphviz.attribute.RankDir;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
+
 import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 

@@ -175,6 +175,7 @@
     <property name="bullets" type="int" value="6"/>
     <property name="capacity" type="int" value="16"/>
     <property name="cooldown" type="float" value="1"/>
+    <property name="damage" type="int" value="1"/>
     <property name="knockback" type="float" value="8"/>
     <property name="speed" type="float" value="30"/>
     <property name="spread" type="float" value="18"/>
@@ -187,7 +188,7 @@
   </object>
   <object id="115" name="damage" type="Consumable" x="969" y="938.167" width="45" height="45">
    <properties>
-    <property name="amount" type="int" value="2"/>
+    <property name="amount" type="float" value="2"/>
    </properties>
   </object>
   <object id="117" name="armor" type="Consumable" x="1800.67" y="1800.67" width="45" height="45">
@@ -205,6 +206,7 @@
     <property name="bullets" type="int" value="2"/>
     <property name="capacity" type="int" value="30"/>
     <property name="cooldown" type="float" value="0.1"/>
+    <property name="damage" type="int" value="1"/>
     <property name="knockback" type="float" value="4"/>
     <property name="speed" type="float" value="60"/>
     <property name="spread" type="float" value="8"/>
@@ -215,6 +217,7 @@
     <property name="bullets" type="int" value="2"/>
     <property name="capacity" type="int" value="4"/>
     <property name="cooldown" type="float" value="2"/>
+    <property name="damage" type="int" value="3"/>
     <property name="knockback" type="float" value="12"/>
     <property name="speed" type="float" value="120"/>
     <property name="spread" type="float" value="1"/>
@@ -225,6 +228,7 @@
     <property name="bullets" type="int" value="6"/>
     <property name="capacity" type="int" value="16"/>
     <property name="cooldown" type="float" value="1"/>
+    <property name="damage" type="int" value="1"/>
     <property name="knockback" type="float" value="8"/>
     <property name="speed" type="float" value="30"/>
     <property name="spread" type="float" value="18"/>

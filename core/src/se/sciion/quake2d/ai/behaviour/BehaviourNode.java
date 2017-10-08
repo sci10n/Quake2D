@@ -9,8 +9,7 @@ public abstract class BehaviourNode{
 	
 	// Array to keep track of listeners
 	private Array<BehaviorListener> listeners;
-	
-    // Since we haven't traversed this branch of the tree yet, we
+	// Since we haven't traversed this branch of the tree yet, we
     // set the current status of these nodes to become undefined.
     private BehaviourStatus status = BehaviourStatus.UNDEFINED;
     
@@ -52,6 +51,7 @@ public abstract class BehaviourNode{
         if (status != BehaviourStatus.RUNNING) onLeave();
         return status;
     }
+
 
     public abstract Node toDotNode();
 

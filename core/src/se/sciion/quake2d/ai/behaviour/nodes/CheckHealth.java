@@ -32,8 +32,7 @@ public class CheckHealth extends BehaviourNode {
     @Override
     protected BehaviourStatus onUpdate() {
 
-    	System.out.println(health.health/(float)health.MAX_HEALTH);
-        if(health != null && (health.health/(float)health.MAX_HEALTH) > ratio) {
+        if(health != null && health.ratioHealth() > ratio) {
         	setStatus(BehaviourStatus.SUCCESS);
         }
         else {

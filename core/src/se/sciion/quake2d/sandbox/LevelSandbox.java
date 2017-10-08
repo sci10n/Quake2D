@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
@@ -11,21 +12,17 @@ import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader.Parameters;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -34,7 +31,6 @@ import se.sciion.quake2d.ai.behaviour.BehaviourTree;
 import se.sciion.quake2d.ai.behaviour.InverterNode;
 import se.sciion.quake2d.ai.behaviour.SelectorNode;
 import se.sciion.quake2d.ai.behaviour.SequenceNode;
-import se.sciion.quake2d.ai.behaviour.nodes.AttackEntity;
 import se.sciion.quake2d.ai.behaviour.nodes.AttackNearest;
 import se.sciion.quake2d.ai.behaviour.nodes.CheckHealth;
 import se.sciion.quake2d.ai.behaviour.nodes.MoveToNearest;
@@ -44,17 +40,20 @@ import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.graphics.SheetRegion;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.Level;
-import se.sciion.quake2d.enums.ComponentTypes;
-import se.sciion.quake2d.level.components.SheetComponent;
-import se.sciion.quake2d.level.components.SpriteComponent;
 import se.sciion.quake2d.level.components.BotInputComponent;
+import se.sciion.quake2d.level.components.DamageBoostComponent;
 import se.sciion.quake2d.level.components.HealthComponent;
 import se.sciion.quake2d.level.components.InventoryComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.components.PickupComponent;
 import se.sciion.quake2d.level.components.PlayerInputComponent;
+import se.sciion.quake2d.level.components.SheetComponent;
+import se.sciion.quake2d.level.components.SpriteComponent;
 import se.sciion.quake2d.level.components.WeaponComponent;
-import se.sciion.quake2d.level.items.Consumable;
+import se.sciion.quake2d.level.items.ArmorRestore;
+import se.sciion.quake2d.level.items.DamageBoost;
+import se.sciion.quake2d.level.items.HealthRestore;
+import se.sciion.quake2d.level.items.Item;
 import se.sciion.quake2d.level.items.Weapon;
 import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
@@ -70,6 +69,7 @@ public class LevelSandbox extends ApplicationAdapter {
 	private TiledMapTileSet tileSet;
 	private TextureAtlas spriteSheet;
 	private TiledMapTileLayer overlayTiledLayer;
+
 	private OrthogonalTiledMapRenderer renderer;
 	
 	private Level level;
@@ -86,6 +86,7 @@ public class LevelSandbox extends ApplicationAdapter {
 		int height = (int)(600 * Gdx.graphics.getDensity());
 		Gdx.graphics.setWindowedMode(width, height);
 		Gdx.graphics.setTitle("Quake 2-D");
+
 		Gdx.graphics.setSystemCursor(SystemCursor.Crosshair);
 
 		level = new Level();
@@ -105,12 +106,14 @@ public class LevelSandbox extends ApplicationAdapter {
 
 	@Override
 	public void dispose() {
+
 	}
 
 	public void loadAssets() {
 		assets = new AssetManager();
 		assets.setLoader(Texture.class, new TextureLoader(new InternalFileHandleResolver()));
 		spriteSheet = new TextureAtlas(Gdx.files.internal("images/spritesheet.atlas"));
+
 		assets.finishLoading();
 		loadMap();
 	}
@@ -118,8 +121,7 @@ public class LevelSandbox extends ApplicationAdapter {
 	private void loadMap() {
 		TmxMapLoader loader = new TmxMapLoader(new InternalFileHandleResolver());
 		// TmxMapLoader.Parameters
-		Parameters params = new Parameters();
-		
+		Parameters params = new Parameters();		
 		map = loader.load("levels/level.tmx", params);
 		
 		tileSet = map.getTileSets().getTileSet(0);
@@ -154,9 +156,7 @@ public class LevelSandbox extends ApplicationAdapter {
 			float y = rect.y / 64.0f;
 			float w = rect.width/64.0f;
 			float h = rect.height/ 64.0f;
-
 			String type = r.getProperties().get("type", String.class);
-			String name = o.getName();
 			
 			if(type.equals("Consumable")) {
 				Entity entity = level.createEntity(o.getName());
@@ -168,37 +168,41 @@ public class LevelSandbox extends ApplicationAdapter {
 				PhysicsComponent pickupPhysics = physicsSystem.createComponent(origin.x, origin.y, BodyType.DynamicBody,shape, false);
 				entity.addComponent(pickupPhysics);
 
-				if (name.equals("health")) {
-					int healthAmount = r.getProperties().get("amount", Integer.class);
-					PickupComponent pickup = new PickupComponent(new Consumable("health",healthAmount, 0));
-					physicsSystem.registerCallback(pickup, entity);
-					entity.addComponent(pickup);
-
-					SpriteComponent healthSprite = new SpriteComponent(tileSet.getTile(131 + 1).getTextureRegion(),
-					                                                   new Vector2(0.0f, 0.0f), new Vector2(-0.4f, -0.4f),
-					                                                   new Vector2(1.0f / 75.0f, 1.0f / 75.0f), 0.0f);
-					entity.addComponent(healthSprite);
-				} else if (name.equals("armor")) {
-					int armorAmount = r.getProperties().get("amount", Integer.class);
-					PickupComponent pickup = new PickupComponent(new Consumable("armor",armorAmount, 0));
-					physicsSystem.registerCallback(pickup, entity);
-					entity.addComponent(pickup);
-
+				Item c = null;
+				if(o.getName().equals("armor")) {
+					int amountArmor = o.getProperties().get("amount", Integer.class);
+					c = new ArmorRestore(o.getName(), amountArmor);
+					
 					SpriteComponent armorSprite = new SpriteComponent(tileSet.getTile(132 + 1).getTextureRegion(),
-					                                                  new Vector2(0.0f, 0.0f), new Vector2(-0.4f, -0.4f),
-					                                                  new Vector2(1.0f / 75.0f, 1.0f / 75.0f), 0.0f);
+                            new Vector2(0.0f, 0.0f), new Vector2(-0.4f, -0.4f),
+                            new Vector2(1.0f / 75.0f, 1.0f / 75.0f), 0.0f);
 					entity.addComponent(armorSprite);
-				} else if (name.equals("damage")) {
-					int damageAmount = r.getProperties().get("amount", Integer.class);
-					PickupComponent pickup = new PickupComponent(new Consumable("damage",damageAmount, 0));
-					physicsSystem.registerCallback(pickup, entity);
-					entity.addComponent(pickup);
-
+				} 
+				else if(o.getName().equals("health")) {
+					int amountHealth = o.getProperties().get("amount", Integer.class);
+					c = new HealthRestore(o.getName(), amountHealth);
+					
+					SpriteComponent healthSprite = new SpriteComponent(tileSet.getTile(131 + 1).getTextureRegion(),
+                            new Vector2(0.0f, 0.0f), new Vector2(-0.4f, -0.4f),
+                            new Vector2(1.0f / 75.0f, 1.0f / 75.0f), 0.0f);
+					entity.addComponent(healthSprite);
+				} 
+				else if(o.getName().equals("damage")) {
+					float damageMul = o.getProperties().get("amount", Float.class);
+					c = new DamageBoost(o.getName(), damageMul);
+					
 					SpriteComponent damageSprite = new SpriteComponent(tileSet.getTile(187 + 1).getTextureRegion(),
-					                                                  new Vector2(0.0f, 0.0f), new Vector2(-0.4f, -0.4f),
-					                                                  new Vector2(1.0f / 75.0f, 1.0f / 75.0f), 0.0f);
+                            new Vector2(0.0f, 0.0f), new Vector2(-0.4f, -0.4f),
+                            new Vector2(1.0f / 75.0f, 1.0f / 75.0f), 0.0f);
 					entity.addComponent(damageSprite);
+				} 
+				else {
+					System.out.println(o.getName());
 				}
+				
+				PickupComponent pickup = new PickupComponent(c);
+				physicsSystem.registerCallback(pickup, entity);
+				entity.addComponent(pickup);
 			}
 			else if(type.equals("Weapon")) {
 				Entity entity = level.createEntity(o.getName());
@@ -216,7 +220,8 @@ public class LevelSandbox extends ApplicationAdapter {
 				float knockback = r.getProperties().get("knockback", Float.class);
 				float spread = r.getProperties().get("spread",Float.class);
 				float speed = r.getProperties().get("speed", Float.class);
-
+				int baseDamage = r.getProperties().get("damage", Integer.class);
+				
 				if (o.getName().equals("shotgun")) {
 					SpriteComponent shotgunSprite = new SpriteComponent(tileSet.getTile(158 + 1).getTextureRegion(),
 					                                                  new Vector2(0.0f, 0.0f), new Vector2(-0.4f, -0.4f),
@@ -234,7 +239,7 @@ public class LevelSandbox extends ApplicationAdapter {
 					entity.addComponent(sniperSprite);
 				}
 
-				Weapon wweapon = new Weapon(o.getName(),cooldown, bullets, capacity, knockback, spread, speed);
+				Weapon wweapon = new Weapon(o.getName(),cooldown, bullets, capacity, knockback, spread, speed, baseDamage);
 				PickupComponent pickup = new PickupComponent(wweapon);
 				physicsSystem.registerCallback(pickup, entity);
 				entity.addComponent(pickup);
@@ -299,7 +304,7 @@ public class LevelSandbox extends ApplicationAdapter {
 				playerSpriteSheet.addRegion(silencerRegion, "silencer");
 				playerSpriteSheet.addRegion(gunRegion, "gun");
 
-				HealthComponent playerHealth = new HealthComponent(o.getProperties().get("health", Integer.class));
+				HealthComponent playerHealth = new HealthComponent(o.getProperties().get("health", Integer.class) ,0);
 				physicsSystem.registerCallback(playerHealth, player);
 				
 				player.addComponent(playerHealth);
@@ -308,6 +313,7 @@ public class LevelSandbox extends ApplicationAdapter {
 				player.addComponent(playerWeapon);
 				player.addComponent(new InventoryComponent());
 				player.addComponent(playerSpriteSheet);
+				player.addComponent(new DamageBoostComponent());
 
 				pathfinding.setPlayerPosition(playerPhysics.getBody().getPosition());
 			}
@@ -319,7 +325,7 @@ public class LevelSandbox extends ApplicationAdapter {
 				shape.setRadius(bodySize);
 				PhysicsComponent physics = physicsSystem.createComponent(x + w/2.0f, y + h/2.0f, BodyType.DynamicBody, shape, false);
 				WeaponComponent weapon = new WeaponComponent(level,physicsSystem);
-				HealthComponent health = new HealthComponent(o.getProperties().get("health", Integer.class));
+				HealthComponent health = new HealthComponent(o.getProperties().get("health", Integer.class) ,0);
 				physicsSystem.registerCallback(health, entity);
 
 				SheetComponent robotSpriteSheet = new SheetComponent("gun");
@@ -361,12 +367,14 @@ public class LevelSandbox extends ApplicationAdapter {
 
 				BotInputComponent botInput = new BotInputComponent(pathfinding, physicsSystem);
 
+
 				entity.addComponent(health);
 				entity.addComponent(physics);
 				entity.addComponent(weapon);
 				entity.addComponent(new InventoryComponent());
 				entity.addComponent(botInput);
 				entity.addComponent(robotSpriteSheet);
+				entity.addComponent(new DamageBoostComponent());
 				
 				CheckHealth checkHealth = new CheckHealth(health, 0.25f);
 				MoveToNearest pickupHealth = new MoveToNearest("health", level, pathfinding,physicsSystem, botInput, 0.25f);
@@ -406,6 +414,7 @@ public class LevelSandbox extends ApplicationAdapter {
 		renderer.setView(camera);
 		int[] layers = {0, 1, 2};
 		renderer.render(layers);
+
 
 		model.begin();
 		level.render(model);

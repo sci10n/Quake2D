@@ -38,5 +38,4 @@ public class BehaviourTree implements BehaviorListener{
 		return tmp;
 	}
 	
-	
 }

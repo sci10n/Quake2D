@@ -4,6 +4,7 @@ import static guru.nidi.graphviz.model.Factory.*;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
+
 import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 
@@ -39,4 +40,5 @@ public class InverterNode extends DecoratorNode {
                .with(Label.of("Inverter"))
                .link(child.toDotNode());
     }
+
 }

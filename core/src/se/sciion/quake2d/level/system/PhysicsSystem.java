@@ -31,6 +31,7 @@ public class PhysicsSystem {
 	private Vector2 p1,p2;
 	private Array<PhysicsComponent> components;
 
+
 	private class EntityRayCast implements RayCastCallback {
 
 		public Entity target;
@@ -89,6 +90,7 @@ public class PhysicsSystem {
 		}
 	}
 
+
 	private EntityContactResolver contactResolver;
 	private Box2DDebugRenderer debugRenderer;
 	private EntityRayCast rayCastCallback;
@@ -136,6 +138,7 @@ public class PhysicsSystem {
 
 		return null;
 	}
+
 
 	public boolean containsSolidObject(float x, float y, float w, float h) {
 		solidcallback.solid = false;
@@ -198,6 +201,7 @@ public class PhysicsSystem {
 		components.add(component);
 		return component;
 	}
+
 
 	// Check if two point are within each others line of sight
 	public boolean lineOfSight(Vector2 origin, Vector2 target) {
