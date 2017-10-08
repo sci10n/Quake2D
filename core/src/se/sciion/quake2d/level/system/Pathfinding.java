@@ -41,7 +41,7 @@ public class Pathfinding {
 				if(grid[x][y] != null){
 					model.primitiveRenderer.setColor(Color.DARK_GRAY);
 					if(physics.lineOfSight(playerPosition,grid[x][y])){
-						model.primitiveRenderer.setColor(Color.FOREST);
+						model.primitiveRenderer.setColor(Color.LIGHT_GRAY);
 					}
 					for(Vector2 neighbor: neighbors(grid[x][y])){
 						model.primitiveRenderer.line(grid[x][y], neighbor);
