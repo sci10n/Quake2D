@@ -10,7 +10,7 @@ public class DamageBoostComponent extends EntityComponent{
 	
 	public DamageBoostComponent() {
 		// TODO Auto-generated constructor stub
-		boost = 0;
+		boost = 1;
 	}
 	
 	@Override
