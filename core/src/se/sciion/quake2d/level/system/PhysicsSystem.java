@@ -31,6 +31,7 @@ public class PhysicsSystem {
 	private Vector2 p1,p2;
 	private Array<PhysicsComponent> components;
 
+
 	private class EntityRayCast implements RayCastCallback {
 
 		public Entity target;
@@ -89,6 +90,7 @@ public class PhysicsSystem {
 		}
 	}
 
+
 	private EntityContactResolver contactResolver;
 	private Box2DDebugRenderer debugRenderer;
 	private EntityRayCast rayCastCallback;
@@ -127,7 +129,7 @@ public class PhysicsSystem {
 
 	public PhysicsComponent queryComponentAt(float x, float y) {
 		FindBodyCallback findBodies = new FindBodyCallback();
-		world.QueryAABB(findBodies, x-0.5f, y-0.5f, x+0.5f, y+0.5f);
+		world.QueryAABB(findBodies, x-0.25f, y-0.25f, x+0.25f, y+0.25f);
 		for (Body b : findBodies.bodies) {
 			for (PhysicsComponent c : components) {
 				if (c.getBody() == b) return c;
@@ -136,6 +138,7 @@ public class PhysicsSystem {
 
 		return null;
 	}
+
 
 	public boolean containsSolidObject(float x, float y, float w, float h) {
 		solidcallback.solid = false;
@@ -164,13 +167,41 @@ public class PhysicsSystem {
 		return body;
 	}
 
-	public PhysicsComponent createComponent(float x, float y, BodyType type, Shape shape) {
-		
-		Body body = createBody(x, y, type, shape);
+	public Body createSensor(float x, float y, BodyType type, Shape shape){
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = type;
+		bodyDef.position.set(x, y);
+		bodyDef.angularDamping = 2.0f;
+		bodyDef.linearDamping  = 1.5f;
+
+		Body body = world.createBody(bodyDef);
+
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = shape;
+		fixtureDef.density = 1;
+		fixtureDef.friction = 0.2f;
+		fixtureDef.restitution = 0;
+		fixtureDef.isSensor = true;
+		body.createFixture(fixtureDef);
+
+		return body;
+	}
+	
+	
+	public PhysicsComponent createComponent(float x, float y, BodyType type, Shape shape, boolean sensor) {
+		Body body;
+
+		if(sensor){
+			 body = createSensor(x, y, type, shape);
+		}
+		else {
+			body = createBody(x, y, type, shape);
+		}
 		PhysicsComponent component = new PhysicsComponent(body,this);
 		components.add(component);
 		return component;
 	}
+
 
 	// Check if two point are within each others line of sight
 	public boolean lineOfSight(Vector2 origin, Vector2 target) {

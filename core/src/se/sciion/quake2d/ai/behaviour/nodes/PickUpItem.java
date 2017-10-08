@@ -65,13 +65,15 @@ public class PickUpItem extends BehaviourNode {
         Vector2 targetPos = null;
         int bestPath = Integer.MAX_VALUE;
 
+
         for(Entity e: level.getEntities(id)){
-            PhysicsComponent p = e.getComponent(ComponentTypes.Physics);
+        	PhysicsComponent p = e.getComponent(ComponentTypes.Physics);
             if(p != null){
                 Vector2 ePos = p.getBody().getPosition();
-                int path = pathfinding.findPath(fromPos, ePos).size;
-                if(path < bestPath){
-                    bestPath = path;
+                int pathLength = pathfinding.findPath(fromPos, ePos).size;
+
+                if(pathLength < bestPath){
+                    bestPath = pathLength;
                     targetPos = ePos;
                 }
             }
@@ -81,7 +83,7 @@ public class PickUpItem extends BehaviourNode {
         	setStatus(BehaviourStatus.FAILURE);
             return getStatus();
         }
-
+        
         input.setTarget(targetPos);
 
         return getStatus();

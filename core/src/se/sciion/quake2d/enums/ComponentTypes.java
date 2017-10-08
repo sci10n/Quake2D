@@ -1,6 +1,7 @@
 package se.sciion.quake2d.enums;
 
 public enum ComponentTypes {
+	Sheet,
 	Sprite,
 	PlayerInput,
 	Physics,
@@ -12,5 +13,6 @@ public enum ComponentTypes {
 	LineOfSight,
 	Inventory,
 	Pickup, 
-	Armor
+	Armor, 
+	Boost
 }

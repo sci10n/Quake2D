@@ -89,8 +89,11 @@ public class BTVisualizer extends JFrame{
 			Vector3 mousePosition = camera.unproject(screenMousePosition);
 			PhysicsComponent component = physicsSystem.queryComponentAt(mousePosition.x, mousePosition.y);
 			if (component != null) {
-				BotInputComponent newDebugBot = component.getParent().getComponent(ComponentTypes.BotInput);
-				debugBot = newDebugBot;
+				if(component.getParent() != null){
+					BotInputComponent newDebugBot = component.getParent().getComponent(ComponentTypes.BotInput);
+					if(newDebugBot != null)
+						debugBot = newDebugBot;
+				}
 				
 			}
 		}

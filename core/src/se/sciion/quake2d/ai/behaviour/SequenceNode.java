@@ -7,7 +7,6 @@ import java.util.List;
 
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Rank;
-import guru.nidi.graphviz.attribute.RankDir;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.model.Label;
@@ -15,6 +14,7 @@ import guru.nidi.graphviz.model.Node;
 
 // Process each child in order. Fails if one fails.
 public class SequenceNode extends CompositeNode{
+
     private static int sequenceId = 0;
 
     public SequenceNode() {

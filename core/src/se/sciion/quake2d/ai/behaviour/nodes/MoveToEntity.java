@@ -5,6 +5,7 @@ import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
 
+
 import com.badlogic.gdx.math.Vector2;
 
 import guru.nidi.graphviz.model.Label;
@@ -36,6 +37,7 @@ public class MoveToEntity extends BehaviourNode {
 
     }
 
+
     @Override
     protected void onEnter() {
     	setStatus(BehaviourStatus.RUNNING);
@@ -45,7 +47,6 @@ public class MoveToEntity extends BehaviourNode {
 
     @Override
     protected BehaviourStatus onUpdate() {
-
         if(target == null) {
         	setStatus(BehaviourStatus.FAILURE);
             return getStatus();
@@ -57,6 +58,7 @@ public class MoveToEntity extends BehaviourNode {
             return getStatus();
         }
 
+
         Vector2 fromLoc = physics.getBody().getPosition();
 
         PhysicsComponent targetPhysics = target.getComponent(ComponentTypes.Physics);
@@ -66,6 +68,7 @@ public class MoveToEntity extends BehaviourNode {
 
             return getStatus();
         }
+
 
         Vector2 targetLoc = targetPhysics.getBody().getPosition();
 
@@ -79,6 +82,7 @@ public class MoveToEntity extends BehaviourNode {
         } else if (distance <= minDistance && this.physics.lineOfSight(fromLoc, targetLoc)) {
         	setStatus(BehaviourStatus.SUCCESS);
             input.setTarget(null);
+
 
         }
 
