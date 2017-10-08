@@ -84,7 +84,7 @@ public class BTVisualizer extends JFrame{
 	}
 
 	public boolean pause() {
-		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
+		if (paused && Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			Vector3 screenMousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0.0f);
 			Vector3 mousePosition = camera.unproject(screenMousePosition);
 			PhysicsComponent component = physicsSystem.queryComponentAt(mousePosition.x, mousePosition.y);
@@ -100,11 +100,9 @@ public class BTVisualizer extends JFrame{
 		
 		if(Gdx.input.isKeyPressed(Keys.P) && !paused){
 			paused = true;
-		}
-		else if(Gdx.input.isKeyPressed(Keys.P) && paused){
+		} else if(Gdx.input.isKeyPressed(Keys.P) && paused){
 			return false;
-		}
-		else if(Gdx.input.isKeyPressed(Keys.R)){
+		} else if(Gdx.input.isKeyPressed(Keys.R)){
 			paused = false;
 		}
 		

@@ -35,9 +35,9 @@ public class PlayerInputComponent extends EntityComponent{
 
 	@Override
 	public void tick(float delta) {
-//		HealthComponent healthComponent = getParent().getComponent(ComponentTypes.Health);
-//		if (healthComponent.health <= 0) isDead = true;
-//        if (isDead) return; // Do something else too??
+		HealthComponent healthComponent = getParent().getComponent(ComponentTypes.Health);
+		if (healthComponent.getHealth() <= 0) isDead = true;
+        if (isDead) return; // Do something else too??
 		
 		// Update sprite location
 		PhysicsComponent physicsComponent = getParent().getComponent(ComponentTypes.Physics);
