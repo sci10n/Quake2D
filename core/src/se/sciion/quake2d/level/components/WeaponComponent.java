@@ -79,7 +79,7 @@ public class WeaponComponent extends EntityComponent {
 						CircleShape circle = new CircleShape();
 						circle.setRadius(0.13f);
 						PhysicsComponent bulletPhysics = physicsSystem.createComponent(x, y, BodyType.DynamicBody,
-								circle);
+								circle, true);
 						bulletPhysics.getBody().setLinearDamping(0.0f);
 						bulletPhysics.getBody().setAngularDamping(100.0f);
 						e.addComponent(bulletPhysics);

@@ -141,7 +141,7 @@ public class LevelSandbox extends ApplicationAdapter {
 				Entity entity = level.createEntity();
 				PolygonShape shape = new PolygonShape();
 				shape.setAsBox(w/2.0f,h/2.0f);
-				entity.addComponent(physicsSystem.createComponent(x + w/2.0f, y + h/2.0f, BodyType.StaticBody, shape));
+				entity.addComponent(physicsSystem.createComponent(x + w/2.0f, y + h/2.0f, BodyType.StaticBody, shape, false));
 			}
 			
 		}
@@ -165,7 +165,7 @@ public class LevelSandbox extends ApplicationAdapter {
 
 				Vector2 origin = new Vector2(x + w/2.0f, y + h/2.0f);
 				
-				PhysicsComponent pickupPhysics = physicsSystem.createComponent(origin.x, origin.y, BodyType.DynamicBody,shape);
+				PhysicsComponent pickupPhysics = physicsSystem.createComponent(origin.x, origin.y, BodyType.DynamicBody,shape, false);
 				entity.addComponent(pickupPhysics);
 
 				if (name.equals("health")) {
@@ -207,7 +207,7 @@ public class LevelSandbox extends ApplicationAdapter {
 
 				Vector2 origin = new Vector2(x + w/2.0f, y + h/2.0f);
 				
-				PhysicsComponent pickupPhysics = physicsSystem.createComponent(origin.x, origin.y, BodyType.DynamicBody,shape);
+				PhysicsComponent pickupPhysics = physicsSystem.createComponent(origin.x, origin.y, BodyType.DynamicBody,shape, false);
 				entity.addComponent(pickupPhysics);
 				
 				float cooldown = r.getProperties().get("cooldown", Float.class);
@@ -259,7 +259,7 @@ public class LevelSandbox extends ApplicationAdapter {
 				float bodySize = 0.25f;
 				CircleShape shape = new CircleShape();
 				shape.setRadius(bodySize);
-				PhysicsComponent playerPhysics = physicsSystem.createComponent(x + w/2.0f, y + h/2.0f, BodyType.DynamicBody, shape);
+				PhysicsComponent playerPhysics = physicsSystem.createComponent(x + w/2.0f, y + h/2.0f, BodyType.DynamicBody, shape, false);
 				WeaponComponent playerWeapon = new WeaponComponent(level,physicsSystem);
 
 				SheetComponent playerSpriteSheet = new SheetComponent("gun");
@@ -317,7 +317,7 @@ public class LevelSandbox extends ApplicationAdapter {
 				float bodySize = 0.25f;
 				CircleShape shape = new CircleShape();
 				shape.setRadius(bodySize);
-				PhysicsComponent physics = physicsSystem.createComponent(x + w/2.0f, y + h/2.0f, BodyType.DynamicBody, shape);
+				PhysicsComponent physics = physicsSystem.createComponent(x + w/2.0f, y + h/2.0f, BodyType.DynamicBody, shape, false);
 				WeaponComponent weapon = new WeaponComponent(level,physicsSystem);
 				HealthComponent health = new HealthComponent(o.getProperties().get("health", Integer.class));
 				physicsSystem.registerCallback(health, entity);
@@ -359,7 +359,7 @@ public class LevelSandbox extends ApplicationAdapter {
 				robotSpriteSheet.addRegion(silencerRegion, "silencer");
 				robotSpriteSheet.addRegion(gunRegion, "gun");
 
-				BotInputComponent botInput = new BotInputComponent(pathfinding);
+				BotInputComponent botInput = new BotInputComponent(pathfinding, physicsSystem);
 
 				entity.addComponent(health);
 				entity.addComponent(physics);

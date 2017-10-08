@@ -164,9 +164,36 @@ public class PhysicsSystem {
 		return body;
 	}
 
-	public PhysicsComponent createComponent(float x, float y, BodyType type, Shape shape) {
-		
-		Body body = createBody(x, y, type, shape);
+	public Body createSensor(float x, float y, BodyType type, Shape shape){
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = type;
+		bodyDef.position.set(x, y);
+		bodyDef.angularDamping = 2.0f;
+		bodyDef.linearDamping  = 1.5f;
+
+		Body body = world.createBody(bodyDef);
+
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = shape;
+		fixtureDef.density = 1;
+		fixtureDef.friction = 0.2f;
+		fixtureDef.restitution = 0;
+		fixtureDef.isSensor = true;
+		body.createFixture(fixtureDef);
+
+		return body;
+	}
+	
+	
+	public PhysicsComponent createComponent(float x, float y, BodyType type, Shape shape, boolean sensor) {
+		Body body;
+
+		if(sensor){
+			 body = createSensor(x, y, type, shape);
+		}
+		else {
+			body = createBody(x, y, type, shape);
+		}
 		PhysicsComponent component = new PhysicsComponent(body,this);
 		components.add(component);
 		return component;

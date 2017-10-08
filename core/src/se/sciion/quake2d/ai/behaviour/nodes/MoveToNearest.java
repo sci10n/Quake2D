@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
+import net.dermetfan.utils.math.MathUtils;
 import se.sciion.quake2d.ai.behaviour.BehaviourNode;
 import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
 import se.sciion.quake2d.enums.ComponentTypes;
@@ -22,16 +23,16 @@ import se.sciion.quake2d.level.system.PhysicsSystem;
 public class MoveToNearest extends BehaviourNode {
     private static int moveToNearestId = 0;
 
-    private String id;
+    private String tag;
     private BotInputComponent input;
     private float minDistance;
     private PhysicsSystem physics;
     private Level level;
     private Pathfinding pathfinding;
 
-    public MoveToNearest(String id, Level level, Pathfinding pathfinding, PhysicsSystem physics, BotInputComponent input, float minDistance) {
+    public MoveToNearest(String tag, Level level, Pathfinding pathfinding, PhysicsSystem physics, BotInputComponent input, float minDistance) {
         super();
-        this.id = id;
+        this.tag = tag;
         this.level = level;
         this.input = input;
         this.minDistance = minDistance;
@@ -59,11 +60,11 @@ public class MoveToNearest extends BehaviourNode {
         int bestPath = Integer.MAX_VALUE;
 
         Vector2 targetPos = null;
-        for(Entity e: level.getEntities(id)) {
+        for(Entity e: level.getEntities(tag)) {
             PhysicsComponent ePhysics = e.getComponent(ComponentTypes.Physics);
             if(ePhysics != null) {
                 Vector2 ePos = ePhysics.getBody().getPosition();
-                int pathLength = pathfinding.findPath(fromLoc, ePos).size;
+                int pathLength = pathfinding.findPath(fromLoc,ePos).size;
                 if(pathLength < bestPath) {
                     bestPath = pathLength;
                     targetPos = ePos;
@@ -73,6 +74,7 @@ public class MoveToNearest extends BehaviourNode {
 
         if(targetPos == null) {
         	setStatus(BehaviourStatus.FAILURE);
+            input.setTarget(targetPos);
             return getStatus();
         }
 
@@ -96,7 +98,7 @@ public class MoveToNearest extends BehaviourNode {
         Node node = node("moveToNearest" + moveToNearestId++)
                     .with(Shape.RECTANGLE)
 					.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
-                    .with(Label.of("Move to " + id));
+                    .with(Label.of("Move to " + tag));
 
         return node;
     }

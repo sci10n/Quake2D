@@ -129,8 +129,30 @@ public class Pathfinding {
 	}
 	
 	// Get path from start to target using a* and euclidean distance as heuristic.
-	public Array<Vector2> findPath(Vector2 start, Vector2 target){
-
+	public Array<Vector2> findPath(Vector2 from, Vector2 to){
+		
+		Vector2 start = null;
+		Vector2 target = null;
+		float nearestStart = Float.MAX_VALUE;
+		float nearestEnd = Float.MAX_VALUE;
+		for(int x = 0; x < WIDTH; x++){
+			for(int y = 0; y < HEIGHT; y++){
+				if(grid[x][y] != null){
+					float d1 = Vector2.dst2(from.x, from.y, grid[x][y].x, grid[x][y].y);
+					float d2 = Vector2.dst2(to.x, to.y, grid[x][y].x, grid[x][y].y);
+					
+					if(d1 < nearestStart){
+						start = grid[x][y];
+						nearestStart = d1;
+					}
+					
+					if(d2 < nearestEnd){
+						target = grid[x][y];
+						nearestEnd = d2;
+					}
+				}
+			}
+		}
 		HashMap<Vector2,Vector2> cameFrom = new HashMap<Vector2, Vector2>();
 		HashMap<Vector2,Float> gScore = new HashMap<Vector2, Float>();
 		HashMap<Vector2,Float> fScore = new HashMap<Vector2, Float>();
@@ -153,7 +175,7 @@ public class Pathfinding {
 		
 		while(!openSet.isEmpty()){
 			Vector2 c = openSet.peek();
-			if(c.cpy().sub(target).len2() < 0.5f){
+			if(c.cpy().sub(target).len2() < 0.1f){
 				return reconstruct(cameFrom,c);
 			}
 			
