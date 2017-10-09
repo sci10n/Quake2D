@@ -111,6 +111,8 @@ public class BTVisualizer extends JFrame{
 					BotInputComponent newDebugBot = component.getParent().getComponent(ComponentTypes.BotInput);
 					if(newDebugBot != null) {
 						debugBot = newDebugBot;
+						visualize(debugBot.getBehaviourTree());
+                        setVisible(true);
 					}
 				}
 			} else debugBot = null;

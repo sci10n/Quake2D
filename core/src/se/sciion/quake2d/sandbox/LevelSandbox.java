@@ -440,19 +440,18 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 	
 	@Override
 	public void render() {
-		// Wait what. Pause? :(
-		if (visualizer.pause())
-			return;
-	
 		if (Gdx.input.isKeyJustPressed(Keys.O))
 			debugging = !debugging;
 
 		camera.update();
-		level.tick(Gdx.graphics.getDeltaTime());
-		physicsSystem.update(Gdx.graphics.getDeltaTime());
-		physicsSystem.cleanup();
 
-		pathfinding.update(physicsSystem);
+		if (!visualizer.pause()) {
+			level.tick(Gdx.graphics.getDeltaTime());
+			physicsSystem.update(Gdx.graphics.getDeltaTime());
+			physicsSystem.cleanup();
+			pathfinding.update(physicsSystem);
+		}
+
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 		model.setProjectionMatrix(camera.combined);

@@ -46,28 +46,28 @@ public class BotInputComponent extends EntityComponent {
 			Vector2 prev = origin;
 
 			if (targetPosition != null) {
-				batch.primitiveRenderer.begin(ShapeType.Line);
+				batch.primitiveRenderer.begin(ShapeType.Filled);
 				batch.primitiveRenderer.setColor(Color.WHITE);
-				batch.primitiveRenderer.x(targetPosition.x, targetPosition.y, 0.2f);
+				batch.primitiveRenderer.x(targetPosition, 0.03f);
 				batch.primitiveRenderer.end();
-			}
 
-			batch.primitiveRenderer.begin(ShapeType.Line);
-			if (currentPath.size != 0 && !hasTargetLos) {
-				for (int i = currentPath.size - 1; i >= 0; i--) {
-					Vector2 p = currentPath.get(i);
-					batch.primitiveRenderer.setColor(Color.WHITE);
-					batch.primitiveRenderer.line(prev, p);
-					prev = p;
+				batch.primitiveRenderer.begin(ShapeType.Filled);
+				if (currentPath.size != 0 && !hasTargetLos) {
+					for (int i = currentPath.size - 1; i >= 0; i--) {
+						Vector2 p = currentPath.get(i);
+						batch.primitiveRenderer.setColor(Color.WHITE);
+						batch.primitiveRenderer.rectLine(prev, p, 0.1f);
+						prev = p;
+					}
 				}
-			}
-			batch.primitiveRenderer.end();
-
-			if (hasTargetLos && lineOfSightHit != null && targetPosition != null) {
-				batch.primitiveRenderer.begin(ShapeType.Line);
-				batch.primitiveRenderer.setColor(Color.WHITE);
-				batch.primitiveRenderer.line(lineOfSightHit, targetPosition);
 				batch.primitiveRenderer.end();
+
+				if (hasTargetLos && lineOfSightHit != null) {
+					batch.primitiveRenderer.begin(ShapeType.Filled);
+					batch.primitiveRenderer.setColor(Color.WHITE);
+					batch.primitiveRenderer.rectLine(lineOfSightHit, targetPosition, 0.1f);
+					batch.primitiveRenderer.end();
+				}
 			}
 		}
 	}

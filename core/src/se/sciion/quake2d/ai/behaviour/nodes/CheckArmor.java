@@ -39,7 +39,7 @@ public class CheckArmor extends BehaviourNode {
 
     @Override
     public Node toDotNode() {
-        return node("checkHealth" + getNext())
+        return node("checkArmor" + getNext())
                .with(Shape.ELLIPSE)
 				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
                .with(Label.of("Armor > " + ratio));
