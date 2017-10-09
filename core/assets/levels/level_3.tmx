@@ -199,21 +199,6 @@
     <property name="amount" type="int" value="10"/>
    </properties>
   </object>
-  <object id="163" name="armor" type="Consumable" x="719.14" y="840.567" width="45" height="45">
-   <properties>
-    <property name="amount" type="int" value="10"/>
-   </properties>
-  </object>
-  <object id="164" name="armor" type="Consumable" x="328.705" y="457.605" width="45" height="45">
-   <properties>
-    <property name="amount" type="int" value="10"/>
-   </properties>
-  </object>
-  <object id="166" name="health" type="Consumable" x="328.705" y="842.436" width="45" height="45">
-   <properties>
-    <property name="amount" type="int" value="20"/>
-   </properties>
-  </object>
   <object id="171" name="rifle" type="Weapon" x="457.541" y="455.805" width="45" height="45">
    <properties>
     <property name="bullets" type="int" value="2"/>

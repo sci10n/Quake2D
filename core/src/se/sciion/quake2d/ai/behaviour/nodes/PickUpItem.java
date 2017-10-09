@@ -59,11 +59,12 @@ public class PickUpItem extends BehaviourNode {
         int bestPath = Integer.MAX_VALUE;
 
 
-        for(Entity e: level.getEntities(id)){
+        Array<Entity> entities = level.getEntities(id);
+        for(Entity e: entities){
         	PhysicsComponent p = e.getComponent(ComponentTypes.Physics);
             if(p != null){
                 Vector2 ePos = p.getBody().getPosition();
-                int pathLength = pathfinding.findPath(fromPos, ePos).size;
+                int pathLength = pathfinding.findPath(fromPos, ePos, parent).size;
 
                 if(pathLength < bestPath){
                     bestPath = pathLength;
