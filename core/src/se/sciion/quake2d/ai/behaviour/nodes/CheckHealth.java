@@ -43,23 +43,14 @@ public class CheckHealth extends BehaviourNode {
 
     @Override
     protected BehaviourStatus onUpdate() {
-
-    	if(health != null) {
-	        if(health != null && health.ratioHealth() > ratio) {
-	        	setStatus(BehaviourStatus.SUCCESS);
-	        }
-	        else {
-	        	setStatus(BehaviourStatus.FAILURE);
-	        }
-    	}
-    	else {
-    		Entity e;
-    		float nearest = Float.MAX_VALUE;
-    		for(Entity e: level.getEntities(tag)){
-    			if(e == )
-    		}
-    	}
-        return getStatus();
+		if(health != null && health.ratioHealth() > ratio) {
+			setStatus(BehaviourStatus.SUCCESS);
+		}
+		else {
+			setStatus(BehaviourStatus.FAILURE);
+		}
+		
+		return getStatus();
     }
 
     @Override

@@ -53,7 +53,7 @@ public class ParallelNode extends CompositeNode {
 		Node sequence = node("Parallel" + getNext())
 				.with(Shape.RECTANGLE)
 				.with(Style.FILLED, Color.rgb(getColor()).fill(),
-						Color.BLACK.radial()).with(Label.of("->\n->"))
+						Color.BLACK.radial()).with(Label.of("Parallel"))
 				.with(Rank.SAME);
 
 		for (BehaviourNode child : children)

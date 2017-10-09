@@ -100,7 +100,7 @@ public class LevelSandbox extends ApplicationAdapter {
 		int width = (int)(2*800 * Gdx.graphics.getDensity());
 		int height = (int)(2*600 * Gdx.graphics.getDensity());
 		Gdx.graphics.setWindowedMode(width, height);
-		Gdx.graphics.setTitle("Quake 2-D");
+		Gdx.graphics.setTitle("Quake 2D");
 
 		level = new Level();
 		camera = new OrthographicCamera();
@@ -216,9 +216,6 @@ public class LevelSandbox extends ApplicationAdapter {
                             new Vector2(1.0f / 75.0f, 1.0f / 75.0f), 0.0f);
 					entity.addComponent(damageSprite);
 				} 
-				else {
-					System.out.println(o.getName());
-				}
 				
 				PickupComponent pickup = new PickupComponent(c);
 				physicsSystem.registerCallback(pickup, entity);
@@ -404,10 +401,10 @@ public class LevelSandbox extends ApplicationAdapter {
 				PickUpItem pickupWeaponShotgun = new PickUpItem("shotgun",level,pathfinding, botInput);
 				PickUpItem pickupWeaponRifle = new PickUpItem("rifle",level,pathfinding, botInput);
 
-				AttackNearest attackPlayer = new AttackNearest("bot", botInput, level);
-				MoveToNearest moveToPlayer = new MoveToNearest("bot",level ,pathfinding,physicsSystem, botInput, 10.0f);
+				AttackNearest attackPlayer = new AttackNearest("player", botInput, level);
+				MoveToNearest moveToPlayer = new MoveToNearest("player",level ,pathfinding,physicsSystem, botInput, 10.0f);
 				
-				CheckEntityDistance distanceCheck = new CheckEntityDistance(physics, "bot", 15, level);
+				CheckEntityDistance distanceCheck = new CheckEntityDistance(physics, "player", 15, level);
 				
 				SequenceNode s1 = new SequenceNode(new InverterNode(checkHealth), pickupHealth);
 				SequenceNode s2 = new SequenceNode(new ParallelNode(1,new SequenceNode(distanceCheck, pickupWeaponShotgun), new SequenceNode(new InverterNode(distanceCheck), pickupWeaponRifle)),  new SucceederNode(pickupArmor), new SucceederNode(pickupBoost), moveToPlayer, attackPlayer);
@@ -425,7 +422,7 @@ public class LevelSandbox extends ApplicationAdapter {
 		// Wait what. Pause? :(
 		if (visualizer.pause())
 			return;
-
+	
 		if (Gdx.input.isKeyJustPressed(Keys.O))
 			debugging = !debugging;
 
@@ -442,7 +439,6 @@ public class LevelSandbox extends ApplicationAdapter {
 		renderer.setView(camera);
 		int[] layers = {0, 1, 2};
 		renderer.render(layers);
-
 
 		model.begin();
 		level.render(model);

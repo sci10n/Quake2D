@@ -29,23 +29,22 @@ public class BTVisualizer extends JFrame{
 
 	private int windowSize;
 	private boolean paused = false;
-	
 	private boolean running = true;
 	
 	public BTVisualizer(int size, OrthographicCamera camera, PhysicsSystem physicsSystem) {
-		super("Tree Visualizer");
+		super("Quake 2D - Behaviour Tree");
 		this.physicsSystem = physicsSystem;
 		this.windowSize = size;
 		this.camera = camera;
 
 		setFocusableWindowState(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setResizable(false);
 		setVisible(true);
 		
 		createBufferStrategy(2);
 		setVisible(false);
 
-		
 		new Thread(){
 		
 			public void run() {
@@ -75,16 +74,16 @@ public class BTVisualizer extends JFrame{
 			                            .width(windowSize)
 			                            .render(Format.PNG).toImage();
 
-		setSize(btImage.getWidth(), btImage.getHeight() + 50);
+		setSize(btImage.getWidth(), btImage.getHeight() + getInsets().top);
 		BufferStrategy bs = getBufferStrategy();
 		
 		Graphics g = bs.getDrawGraphics();
 		g.setColor(Color.WHITE);
-		g.drawRect(0,0,getWidth(),getHeight());
-		g.drawImage(btImage, 0, 50, null);
+		g.drawRect(0, getInsets().top, btImage.getWidth(),
+				   btImage.getHeight());
+		g.drawImage(btImage, 0, getInsets().top, null);
 		g.dispose();
 		bs.show();
-		
 	}
 	
 	public void setRunning(boolean running){

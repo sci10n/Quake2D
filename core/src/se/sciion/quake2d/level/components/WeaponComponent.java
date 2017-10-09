@@ -133,7 +133,6 @@ public class WeaponComponent extends EntityComponent {
 						if(boost != null)
 							boostScl = boost.boost;
 						
-						System.out.println(currentWeapon.baseDamage + " "  + boostScl);
 						DamageComponent damage = new DamageComponent((int) (currentWeapon.baseDamage * boostScl));
 						e.addComponent(damage);
 

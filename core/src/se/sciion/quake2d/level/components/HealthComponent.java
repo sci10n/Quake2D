@@ -25,6 +25,7 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 	
 	private int armor;
 	private int health;
+	private boolean isDead;
 	
     private TextureRegion amountTexture;
     private TextureRegion[][] amountBar;
@@ -47,8 +48,8 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 
 		float ratioHealthLeft = ratioHealth();
 		float ratioArmorLeft  = ratioArmor();
-
-		if (health == 0) return; // It's dead Jim!
+		
+		if (isDead) return;
 
 		batch.spriteRenderer.setColor(0.8f, 0.1f, 0.1f, 1.0f);
 		batch.spriteRenderer.draw(amountBar[1][0], playerPosition.x - 0.5f, playerPosition.y - 0.7f, 0.0f, 0.0f,
@@ -108,6 +109,8 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 	
 	@Override
 	public void tick(float delta) {
+		if (health <= 0)
+			isDead = true;
 	}
 
 	@Override

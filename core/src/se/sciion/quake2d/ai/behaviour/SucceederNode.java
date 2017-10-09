@@ -37,7 +37,7 @@ public class SucceederNode extends DecoratorNode {
         return node("succeeder" + getNext())
                    .with(Shape.RECTANGLE)
 					.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
-                   .with(Label.of("Succeeder"))
+                   .with(Label.of("Succeed"))
                    .link(child.toDotNode());
     }
 
