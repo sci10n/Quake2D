@@ -35,6 +35,7 @@ import se.sciion.quake2d.level.items.DamageBoost;
 import se.sciion.quake2d.level.items.HealthRestore;
 import se.sciion.quake2d.level.items.Item;
 import se.sciion.quake2d.level.items.Weapon;
+import se.sciion.quake2d.level.system.HealthListener;
 import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
@@ -65,7 +66,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 
 
-public class LevelSandbox extends ApplicationAdapter {
+public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 
 	private AssetManager assets;
 
@@ -84,7 +85,9 @@ public class LevelSandbox extends ApplicationAdapter {
 	private Level level;
 	private RenderModel model;
 	
-    boolean debugging = false;
+	private int playersAlive = 0;
+    private boolean debugging = false;
+    private boolean gameEnded = false;
 	private Pathfinding pathfinding;
 	private BTVisualizer visualizer;
 	private PhysicsSystem physicsSystem;
@@ -112,6 +115,9 @@ public class LevelSandbox extends ApplicationAdapter {
 
 		visualizer = new BTVisualizer(width, camera, physicsSystem);
 
+		// Reset the game.
+		gameEnded = false;
+		playersAlive = 0;
 		loadAssets();
 
 		pathfinding.update(physicsSystem);
@@ -273,6 +279,7 @@ public class LevelSandbox extends ApplicationAdapter {
 			String type = r.getProperties().get("type", String.class);
 			
 			if(type.equals("PlayerSpawn")) {
+				playersAlive += 1;
 				Entity player = level.createEntity("player");
 				// Player components
 				PlayerInputComponent playerMovement = new PlayerInputComponent(camera, pathfinding);
@@ -321,6 +328,8 @@ public class LevelSandbox extends ApplicationAdapter {
 				playerSpriteSheet.addRegion(gunRegion, "gun");
 
 				HealthComponent playerHealth = new HealthComponent(o.getProperties().get("health", Integer.class),10, amountTexture);
+				playerHealth.addListener(this);
+
 				physicsSystem.registerCallback(playerHealth, player);
 				
 				player.addComponent(playerHealth);
@@ -331,9 +340,11 @@ public class LevelSandbox extends ApplicationAdapter {
 				player.addComponent(playerSpriteSheet);
 				player.addComponent(new DamageBoostComponent());
 
+
 				pathfinding.setPlayerPosition(playerPhysics.getBody().getPosition());
 			}
 			else if(type.equals("BotSpawn")) {
+				playersAlive += 1;
 				Entity entity = level.createEntity("bot");
 
 				float bodySize = 0.25f;
@@ -343,6 +354,8 @@ public class LevelSandbox extends ApplicationAdapter {
 				PhysicsComponent physics = physicsSystem.createComponent(x + w/2.0f, y + h/2.0f, BodyType.DynamicBody, shape, false);
 				WeaponComponent weapon = new WeaponComponent(level,physicsSystem, bulletTexture, muzzleTexture);
 				HealthComponent health = new HealthComponent(o.getProperties().get("health", Integer.class),10, amountTexture);
+				health.addListener(this);
+
 				physicsSystem.registerCallback(health, entity);
 
 				SheetComponent robotSpriteSheet = new SheetComponent("gun");
@@ -417,6 +430,10 @@ public class LevelSandbox extends ApplicationAdapter {
 		
 	}
 	
+	public void restartGame() {
+		dispose(); create();
+	}
+	
 	@Override
 	public void render() {
 		// Wait what. Pause? :(
@@ -453,13 +470,19 @@ public class LevelSandbox extends ApplicationAdapter {
 			physicsSystem.render(camera.combined);
 		}
 		
-		if(Gdx.input.isKeyJustPressed(Keys.Q)){
-			dispose();
-			create();
-		}
+		if(Gdx.input.isKeyJustPressed(Keys.Q) || gameEnded)
+			restartGame();
 	}
 	
 	@Override
 	public void resize(int width, int height) {
+	}
+
+	@Override
+	public void onStatusChanged(HealthComponent healthComponent) {
+		if (healthComponent.isDead()) --playersAlive;
+		if (playersAlive <= 1) {
+			gameEnded = true;
+		}
 	}
 }

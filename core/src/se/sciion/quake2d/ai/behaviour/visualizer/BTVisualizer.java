@@ -101,7 +101,6 @@ public class BTVisualizer extends JFrame{
 					if(newDebugBot != null)
 						debugBot = newDebugBot;
 				}
-				
 			}
 		}
 		
