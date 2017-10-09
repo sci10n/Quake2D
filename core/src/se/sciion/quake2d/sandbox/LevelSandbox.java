@@ -37,6 +37,7 @@ import se.sciion.quake2d.level.items.Item;
 import se.sciion.quake2d.level.items.Weapon;
 import se.sciion.quake2d.level.system.HealthListener;
 import se.sciion.quake2d.level.system.Pathfinding;
+import se.sciion.quake2d.level.system.SoundSystem;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -90,6 +91,8 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
     private boolean gameEnded = false;
 	private Pathfinding pathfinding;
 	private BTVisualizer visualizer;
+
+	private SoundSystem soundSystem;
 	private PhysicsSystem physicsSystem;
 	
 	private final Array<String> levels;
@@ -99,7 +102,6 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 	
 	public LevelSandbox(String ... levels) {
 		this.levels = new Array<String>(levels);
-
 	}
 	
 	@Override
@@ -110,6 +112,12 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 		Gdx.graphics.setWindowedMode(width, height);
 		Gdx.graphics.setTitle("Quake 2D");
 
+		setup();
+		loadAssets();
+		loadMap(levels.random());
+	}
+
+	public void setup() {
 		level = new Level();
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 30, 30);
@@ -117,13 +125,12 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 		model = new RenderModel();
 		physicsSystem = new PhysicsSystem();
 		pathfinding = new Pathfinding(30, 30);
-
-		visualizer = new BTVisualizer(width, camera, physicsSystem);
+		visualizer = new BTVisualizer(width, camera,
+				                      physicsSystem);
 
 		// Reset the game.
 		gameEnded = false;
 		playersAlive = 0;
-		loadAssets();
 
 		pathfinding.update(physicsSystem);
 	}
@@ -132,6 +139,7 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 	public void dispose() {
 		assets.dispose();
 		map.dispose();
+		soundSystem.dispose();
 		model.spriteRenderer.dispose();
 		physicsSystem.cleanup();
 		visualizer.setRunning(false);
@@ -145,8 +153,22 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 		bulletTexture = new TextureRegion(new Texture(Gdx.files.internal("images/bullet.png")));
 		amountTexture = new TextureRegion(new Texture(Gdx.files.internal("images/amount.png")));
 		muzzleTexture = new TextureRegion(new Texture(Gdx.files.internal("images/muzzle.png")));
+
+		soundSystem = new SoundSystem(0.25f);
+		soundSystem.addSound("armor", Gdx.audio.newSound(Gdx.files.internal("audio/armor.wav")));
+		soundSystem.addSound("damage", Gdx.audio.newSound(Gdx.files.internal("audio/damage.wav")));
+		soundSystem.addSound("fight", Gdx.audio.newSound(Gdx.files.internal("audio/fight.wav")));
+		soundSystem.addSound("health", Gdx.audio.newSound(Gdx.files.internal("audio/health.wav")));
+		// soundSystem.addSound("hit", Gdx.audio.newSound(Gdx.files.internal("audio/hit.wav"))); 8-bit wtf?
+		soundSystem.addSound("impressive", Gdx.audio.newSound(Gdx.files.internal("audio/impressive.wav")));
+		soundSystem.addSound("move1", Gdx.audio.newSound(Gdx.files.internal("audio/move1.wav")));
+		soundSystem.addSound("move2", Gdx.audio.newSound(Gdx.files.internal("audio/move2.wav")));
+		soundSystem.addSound("rifle", Gdx.audio.newSound(Gdx.files.internal("audio/rifle.wav")));
+		soundSystem.addSound("shotgun", Gdx.audio.newSound(Gdx.files.internal("audio/shotgun.wav")));
+		soundSystem.addSound("sniper", Gdx.audio.newSound(Gdx.files.internal("audio/sniper.wav")));
+		soundSystem.addSound("weapon", Gdx.audio.newSound(Gdx.files.internal("audio/weapon.wav")));
+
 		assets.finishLoading();
-		loadMap(levels.random());
 	}
 
 	private void loadMap(String mapPath) {
@@ -431,11 +453,17 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 				botInput.setBehaviourTree(tree);
 			}
 		}
-		
+
+		// Let's rock and roll baby! :)
+		soundSystem.playSound("fight");
 	}
 	
-	public void restartGame() {
-		dispose(); create();
+	public void restart() {
+		// Rewards a player or bot that won.
+		soundSystem.playSound("impressive");
+		visualizer.setRunning(false);
+		setup();
+		loadMap(levels.random());
 	}
 	
 	@Override
@@ -475,7 +503,7 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 		}
 		
 		if(Gdx.input.isKeyJustPressed(Keys.Q) || gameEnded)
-			restartGame();
+			restart(); // Restart the game never terminate.
 	}
 	
 	@Override
