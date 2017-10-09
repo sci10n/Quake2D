@@ -410,7 +410,7 @@ public class LevelSandbox extends ApplicationAdapter {
 				CheckEntityDistance distanceCheck = new CheckEntityDistance(physics, "bot", 15, level);
 				
 				SequenceNode s1 = new SequenceNode(new InverterNode(checkHealth), pickupHealth);
-				SequenceNode s2 = new SequenceNode(new ParallelNode(1,new SequenceNode(distanceCheck, pickupWeaponShotgun), pickupWeaponRifle),  new SucceederNode(pickupArmor), new SucceederNode(pickupBoost), moveToPlayer, attackPlayer);
+				SequenceNode s2 = new SequenceNode(new ParallelNode(1,new SequenceNode(distanceCheck, pickupWeaponShotgun), new SequenceNode(new InverterNode(distanceCheck), pickupWeaponRifle)),  new SucceederNode(pickupArmor), new SucceederNode(pickupBoost), moveToPlayer, attackPlayer);
 				SelectorNode s3 = new SelectorNode(s1,s2);
 				
 				BehaviourTree tree = new BehaviourTree(s3);

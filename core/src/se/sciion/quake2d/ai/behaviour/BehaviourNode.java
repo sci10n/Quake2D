@@ -59,7 +59,6 @@ public abstract class BehaviourNode{
 
 
     public abstract Node toDotNode();
-
      
     public String getColor() {
     	switch (status) {
