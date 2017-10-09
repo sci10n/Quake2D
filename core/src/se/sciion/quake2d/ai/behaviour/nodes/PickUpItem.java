@@ -26,13 +26,11 @@ public class PickUpItem extends BehaviourNode {
     private String id;
     private Level level;
     private Pathfinding pathfinding;
-    private BotInputComponent input;
 
-    public PickUpItem(String id, Level level, Pathfinding pathfinding, BotInputComponent input) {
+    public PickUpItem(String id, Level level, Pathfinding pathfinding) {
         this.id = id;
         this.level = level;
         this.pathfinding = pathfinding;
-        this.input = input;
     }
 
     @Override
@@ -43,20 +41,16 @@ public class PickUpItem extends BehaviourNode {
     @Override
     protected BehaviourStatus onUpdate() {
 
-        InventoryComponent inventory = input.getParent().getComponent(ComponentTypes.Inventory);
-        if(inventory == null){
-        	setStatus(BehaviourStatus.SUCCESS);
+        PhysicsComponent physics = parent.getComponent(ComponentTypes.Physics);
+        InventoryComponent inventory = parent.getComponent(ComponentTypes.Inventory);
+        BotInputComponent input = parent.getComponent(ComponentTypes.BotInput);
+        if(inventory == null || physics == null || input == null){
+        	setStatus(BehaviourStatus.FAILURE);
             return getStatus();
         }
 
         if(inventory.containsItem(id)){
         	setStatus(BehaviourStatus.SUCCESS);
-            return getStatus();
-        }
-
-        PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
-        if(physics == null) {
-        	setStatus(BehaviourStatus.FAILURE);
             return getStatus();
         }
 

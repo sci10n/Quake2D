@@ -15,6 +15,7 @@ import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.components.BotInputComponent;
+import se.sciion.quake2d.level.components.InventoryComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
@@ -22,15 +23,12 @@ import se.sciion.quake2d.level.system.PhysicsSystem;
 public class MoveToEntity extends BehaviourNode {
 
     private Entity target;
-    private BotInputComponent input;
     private float minDistance;
     private PhysicsSystem physics;
 
-    public MoveToEntity(Entity target, PhysicsSystem physics, BotInputComponent input,
-            float minDistance) {
+    public MoveToEntity(Entity target, PhysicsSystem physics, float minDistance) {
         super();
         this.target = target;
-        this.input = input;
         this.minDistance = minDistance;
         this.physics = physics;
 
@@ -51,12 +49,17 @@ public class MoveToEntity extends BehaviourNode {
             return getStatus();
         }
 
-        PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
+        PhysicsComponent physics = parent.getComponent(ComponentTypes.Physics);
         if (physics == null) {
         	setStatus(BehaviourStatus.FAILURE);
             return getStatus();
         }
-
+        
+		BotInputComponent input = parent.getComponent(ComponentTypes.BotInput);
+		if(input == null){
+			setStatus(BehaviourStatus.FAILURE);
+			return getStatus();
+		}
 
         Vector2 fromLoc = physics.getBody().getPosition();
 

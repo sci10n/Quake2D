@@ -94,14 +94,19 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 	
 	private final Array<String> levels;
 	
+	private int width;
+	private int height;
+	
 	public LevelSandbox(String ... levels) {
 		this.levels = new Array<String>(levels);
+
 	}
 	
 	@Override
 	public void create() {
-		int width = (int)(2*800 * Gdx.graphics.getDensity());
-		int height = (int)(2*600 * Gdx.graphics.getDensity());
+		width = (int)(3*600 * Gdx.graphics.getDensity());
+		height = (int)(3*600 * Gdx.graphics.getDensity());
+		
 		Gdx.graphics.setWindowedMode(width, height);
 		Gdx.graphics.setTitle("Quake 2D");
 
@@ -397,7 +402,6 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 
 				BotInputComponent botInput = new BotInputComponent(pathfinding, physicsSystem);
 
-
 				entity.addComponent(health);
 				entity.addComponent(physics);
 				entity.addComponent(weapon);
@@ -406,18 +410,18 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 				entity.addComponent(robotSpriteSheet);
 				entity.addComponent(new DamageBoostComponent());
 				
-				CheckHealth checkHealth = new CheckHealth(health, 0.25f);
+				CheckHealth checkHealth = new CheckHealth(0.25f);
 				PickupHealth pickupHealth = new PickupHealth(botInput, level, "health");
 				PickupArmor pickupArmor = new PickupArmor(botInput, level, "armor");
 				PickupDamageBoost pickupBoost = new PickupDamageBoost(botInput, level, "damage");
 				
-				PickUpItem pickupWeaponShotgun = new PickUpItem("shotgun",level,pathfinding, botInput);
-				PickUpItem pickupWeaponRifle = new PickUpItem("rifle",level,pathfinding, botInput);
+				PickUpItem pickupWeaponShotgun = new PickUpItem("shotgun",level,pathfinding);
+				PickUpItem pickupWeaponRifle = new PickUpItem("rifle",level,pathfinding);
 
-				AttackNearest attackPlayer = new AttackNearest("player", botInput, level);
-				MoveToNearest moveToPlayer = new MoveToNearest("player",level ,pathfinding,physicsSystem, botInput, 10.0f);
+				AttackNearest attackPlayer = new AttackNearest("bot", level);
+				MoveToNearest moveToPlayer = new MoveToNearest("bot",level ,pathfinding,physicsSystem, 10.0f);
 				
-				CheckEntityDistance distanceCheck = new CheckEntityDistance(physics, "player", 15, level);
+				CheckEntityDistance distanceCheck = new CheckEntityDistance("bot", 15, level);
 				
 				SequenceNode s1 = new SequenceNode(new InverterNode(checkHealth), pickupHealth);
 				SequenceNode s2 = new SequenceNode(new ParallelNode(1,new SequenceNode(distanceCheck, pickupWeaponShotgun), new SequenceNode(new InverterNode(distanceCheck), pickupWeaponRifle)),  new SucceederNode(pickupArmor), new SucceederNode(pickupBoost), moveToPlayer, attackPlayer);

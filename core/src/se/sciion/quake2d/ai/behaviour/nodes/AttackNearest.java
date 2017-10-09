@@ -21,11 +21,9 @@ public class AttackNearest extends BehaviourNode{
 
     private String id;
     private Level level;
-    private BotInputComponent input;
 
-    public AttackNearest(String id,  BotInputComponent input, Level level) {
+    public AttackNearest(String id, Level level) {
         this.id = id;
-        this.input = input;
         this.level = level;
     }
 
@@ -38,7 +36,8 @@ public class AttackNearest extends BehaviourNode{
     @Override
     protected BehaviourStatus onUpdate() {
 
-        PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
+        BotInputComponent input = parent.getComponent(ComponentTypes.BotInput);
+        PhysicsComponent physics =parent.getComponent(ComponentTypes.Physics);
         if (physics == null) {
         	setStatus(BehaviourStatus.FAILURE);
             return getStatus();
@@ -64,12 +63,16 @@ public class AttackNearest extends BehaviourNode{
             }
         }
 
+        if(nearestTarget == null){
+        	setStatus(BehaviourStatus.FAILURE);
+        	return getStatus();
+        }
+        
         PhysicsComponent targetPhysics = nearestTarget.getComponent(ComponentTypes.Physics);
         if(targetPhysics == null) {
         	setStatus(BehaviourStatus.FAILURE);
             return getStatus();
         }
-
 
         Vector2 direction = targetPhysics.getBody().getPosition().cpy().sub(physics.getBody().getPosition());
         if(input.fire(direction.nor())) {

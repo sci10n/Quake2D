@@ -10,13 +10,13 @@ public class PickupHealth extends PickupConsumable{
 	private int previousHealth;
 	
 	public PickupHealth(BotInputComponent input, Level level, String tag) {
-		super(input, level, tag);
+		super(level, tag);
 		previousHealth = 0;
 	}
 
 	@Override
 	protected boolean restored() {
-		HealthComponent health = input.getParent().getComponent(ComponentTypes.Health);
+		HealthComponent health = parent.getComponent(ComponentTypes.Health);
 		boolean restored = false;
 		if(health != null){
 			restored = health.getHealth() > previousHealth;

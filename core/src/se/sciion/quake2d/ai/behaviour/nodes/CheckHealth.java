@@ -13,26 +13,20 @@ import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 import se.sciion.quake2d.ai.behaviour.BehaviourNode;
 import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
+import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.Level;
 import se.sciion.quake2d.level.components.HealthComponent;
+import se.sciion.quake2d.level.components.PhysicsComponent;
 
 public class CheckHealth extends BehaviourNode {
 
-    private HealthComponent health;
     private float ratio;
 
     private String tag;
     private Level level;
     
-    public CheckHealth(String tag, Level level, float ratio){
-    	this.tag = tag;
-    	this.ratio = ratio;
-    	this.level = level;
-    }
-    
-    public CheckHealth(HealthComponent health, float ratio) {
-        this.health = health;
+    public CheckHealth(float ratio) {
         this.ratio = ratio;
     }
 
@@ -43,6 +37,8 @@ public class CheckHealth extends BehaviourNode {
 
     @Override
     protected BehaviourStatus onUpdate() {
+    	
+		HealthComponent health = parent.getComponent(ComponentTypes.Health);
 		if(health != null && health.ratioHealth() > ratio) {
 			setStatus(BehaviourStatus.SUCCESS);
 		}

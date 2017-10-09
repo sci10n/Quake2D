@@ -25,17 +25,15 @@ import se.sciion.quake2d.level.system.PhysicsSystem;
 public class MoveToNearest extends BehaviourNode {
 
     private String tag;
-    private BotInputComponent input;
     private float minDistance;
     private PhysicsSystem physics;
     private Level level;
     private Pathfinding pathfinding;
 
-    public MoveToNearest(String tag, Level level, Pathfinding pathfinding, PhysicsSystem physics, BotInputComponent input, float minDistance) {
+    public MoveToNearest(String tag, Level level, Pathfinding pathfinding, PhysicsSystem physics, float minDistance) {
         super();
         this.tag = tag;
         this.level = level;
-        this.input = input;
         this.minDistance = minDistance;
         this.physics = physics;
         this.pathfinding = pathfinding;
@@ -51,7 +49,8 @@ public class MoveToNearest extends BehaviourNode {
     @Override
     protected BehaviourStatus onUpdate() {
 
-        PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
+    	BotInputComponent input = parent.getComponent(ComponentTypes.BotInput);
+        PhysicsComponent physics = parent.getComponent(ComponentTypes.Physics);
         if (physics == null) {
         	setStatus(BehaviourStatus.FAILURE);
             return getStatus();

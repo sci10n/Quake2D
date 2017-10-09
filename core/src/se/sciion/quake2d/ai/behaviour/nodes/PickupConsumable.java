@@ -19,13 +19,11 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class PickupConsumable extends BehaviourNode {
 	
-	protected BotInputComponent input;
 	private Level level;
 	private String tag;
 
-	public PickupConsumable(BotInputComponent input, Level level, String tag) {
+	public PickupConsumable(Level level, String tag) {
 		super();
-		this.input = input;
 		this.level = level;
 		this.tag = tag;
 		
@@ -45,8 +43,9 @@ public abstract class PickupConsumable extends BehaviourNode {
 			return getStatus();
 		}
 		
-		PhysicsComponent physicsComponent = input.getParent().getComponent(ComponentTypes.Physics);
-		if(physicsComponent == null){
+		PhysicsComponent physicsComponent = parent.getComponent(ComponentTypes.Physics);
+		BotInputComponent input = parent.getComponent(ComponentTypes.BotInput);
+		if(physicsComponent == null || input == null){
 			setStatus(BehaviourStatus.FAILURE);
 			return getStatus();
 		}

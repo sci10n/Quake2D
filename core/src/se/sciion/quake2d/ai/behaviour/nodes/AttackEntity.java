@@ -18,25 +18,24 @@ import se.sciion.quake2d.level.components.PhysicsComponent;
 public class AttackEntity extends BehaviourNode{
 
     private Entity target;
-    private BotInputComponent input;
 
-    public AttackEntity(Entity target, BotInputComponent input) {
+    public AttackEntity(Entity target) {
         this.target = target;
-        this.input = input;
     }
 
     @Override
     protected void onEnter() {
         super.onEnter();
-        setStatus( BehaviourStatus.RUNNING);
+        setStatus(BehaviourStatus.RUNNING);
     }
 
     @Override
     protected BehaviourStatus onUpdate() {
 
         PhysicsComponent targetPhysics = target.getComponent(ComponentTypes.Physics);
-        PhysicsComponent physics = input.getParent().getComponent(ComponentTypes.Physics);
-        if(targetPhysics == null || physics == null) {
+        PhysicsComponent physics = parent.getComponent(ComponentTypes.Physics);
+        BotInputComponent input = parent.getComponent(ComponentTypes.BotInput);
+        if(targetPhysics == null || physics == null || input == null) {
         	setStatus(BehaviourStatus.FAILURE);
             return getStatus();
         }

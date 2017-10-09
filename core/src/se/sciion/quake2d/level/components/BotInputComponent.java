@@ -132,6 +132,7 @@ public class BotInputComponent extends EntityComponent {
 
 	public void setBehaviourTree(BehaviourTree behaviourTree) {
 		this.behaviourTree = behaviourTree;
+		this.behaviourTree.setParent(parent);
 	}
 
 	public BehaviourTree getBehaviourTree() {
