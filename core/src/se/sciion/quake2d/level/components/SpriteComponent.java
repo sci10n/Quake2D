@@ -24,6 +24,7 @@ public class SpriteComponent extends EntityComponent {
 
 	@Override
 	public void render(RenderModel batch) {
+		if (batch.debugging) return; // No debugging graphics for this thing.
 		PhysicsComponent physics = getParent().getComponent(ComponentTypes.Physics);
 		if (physics == null)
 			return;

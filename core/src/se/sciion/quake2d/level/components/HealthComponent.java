@@ -45,6 +45,7 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 
 	@Override
 	public void render(RenderModel batch) {
+		if (batch.debugging) return; // No debug drawings for this thing.
 		PhysicsComponent playerPhysics = getParent().getComponent(ComponentTypes.Physics);
 		Vector2 playerPosition = playerPhysics.getBody().getPosition();
 

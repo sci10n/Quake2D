@@ -77,6 +77,14 @@ public class Level {
 			entities.get(i).render(model);
 		}
 	}
+
+	public void debugRender(RenderModel model) {
+		model.debugging = true;
+		for(int i = 0; i < entities.size; i++){
+			entities.get(i).render(model);
+		}
+		model.debugging = false;
+	}
 	
 	public Array<Entity> getEntities() {
 		return entities;

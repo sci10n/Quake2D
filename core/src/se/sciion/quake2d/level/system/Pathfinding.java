@@ -32,7 +32,7 @@ public class Pathfinding {
 		grid = new Vector2[WIDTH][HEIGHT];
 	}
 	
-	public void render(RenderModel model) { 		
+	public void render(RenderModel model) {
 		model.primitiveRenderer.begin(ShapeType.Line);
 		for(int x = 0; x < WIDTH; x++){
 			for(int y = 0; y < HEIGHT; y++){
@@ -47,9 +47,7 @@ public class Pathfinding {
 				}
 			}
 		}
-		
 		model.primitiveRenderer.end();
-
 	}
 	
 	public void setPlayerPosition(Vector2 playerPosition){

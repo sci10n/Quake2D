@@ -414,10 +414,10 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 				PickUpItem pickupWeaponShotgun = new PickUpItem("shotgun",level,pathfinding, botInput);
 				PickUpItem pickupWeaponRifle = new PickUpItem("rifle",level,pathfinding, botInput);
 
-				AttackNearest attackPlayer = new AttackNearest("player", botInput, level);
-				MoveToNearest moveToPlayer = new MoveToNearest("player",level ,pathfinding,physicsSystem, botInput, 10.0f);
+				AttackNearest attackPlayer = new AttackNearest("bot", botInput, level);
+				MoveToNearest moveToPlayer = new MoveToNearest("bot",level ,pathfinding,physicsSystem, botInput, 10.0f);
 				
-				CheckEntityDistance distanceCheck = new CheckEntityDistance(physics, "player", 15, level);
+				CheckEntityDistance distanceCheck = new CheckEntityDistance(physics, "bot", 15, level);
 				
 				SequenceNode s1 = new SequenceNode(new InverterNode(checkHealth), pickupHealth);
 				SequenceNode s2 = new SequenceNode(new ParallelNode(1,new SequenceNode(distanceCheck, pickupWeaponShotgun), new SequenceNode(new InverterNode(distanceCheck), pickupWeaponRifle)),  new SucceederNode(pickupArmor), new SucceederNode(pickupBoost), moveToPlayer, attackPlayer);
@@ -468,6 +468,7 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 		if (debugging) {
 			pathfinding.render(model);
 			physicsSystem.render(camera.combined);
+			level.debugRender(model);
 		}
 		
 		if(Gdx.input.isKeyJustPressed(Keys.Q) || gameEnded)

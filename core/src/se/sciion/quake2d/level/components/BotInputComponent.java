@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import se.sciion.quake2d.ai.behaviour.BehaviourTree;
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
@@ -19,6 +21,9 @@ public class BotInputComponent extends EntityComponent {
 	private Vector2 targetPosition;
 	private Array<Vector2> currentPath;
 
+	private Vector2 lineOfSightHit;
+	private boolean hasTargetLos = false;
+
 	private PhysicsSystem physicsSystem;
 	
 	private Vector2 previousPos;
@@ -31,27 +36,40 @@ public class BotInputComponent extends EntityComponent {
 
 	@Override
 	public void render(RenderModel batch) {
-		// PhysicsComponent spriteComponent = getParent().getComponent(ComponentTypes.Physics);
-		// if (spriteComponent == null)
-		// 	return;
+		if (batch.debugging) {
+			PhysicsComponent spriteComponent = getParent().getComponent(ComponentTypes.Physics);
+			if (spriteComponent == null)
+				return;
 
-		// Body body = spriteComponent.getBody();
-		// Vector2 origin = body.getPosition();
-		// Vector2 prev = origin;
+			Body body = spriteComponent.getBody();
+			Vector2 origin = body.getPosition();
+			Vector2 prev = origin;
 
-		// batch.primitiveRenderer.begin();
+			if (targetPosition != null) {
+				batch.primitiveRenderer.begin(ShapeType.Line);
+				batch.primitiveRenderer.setColor(Color.WHITE);
+				batch.primitiveRenderer.x(targetPosition.x, targetPosition.y, 0.2f);
+				batch.primitiveRenderer.end();
+			}
 
-		// if (currentPath.size != 0) {
-		// 	for (int i = currentPath.size - 1; i >= 0; i--) {
-		// 		Vector2 p = currentPath.get(i);
-		// 		batch.primitiveRenderer.setColor(Color.RED);
-		// 		batch.primitiveRenderer.line(prev, p);
-		// 		prev = p;
-		// 	}
-		// }
+			batch.primitiveRenderer.begin(ShapeType.Line);
+			if (currentPath.size != 0 && !hasTargetLos) {
+				for (int i = currentPath.size - 1; i >= 0; i--) {
+					Vector2 p = currentPath.get(i);
+					batch.primitiveRenderer.setColor(Color.WHITE);
+					batch.primitiveRenderer.line(prev, p);
+					prev = p;
+				}
+			}
+			batch.primitiveRenderer.end();
 
-		// batch.primitiveRenderer.end();
-
+			if (hasTargetLos && lineOfSightHit != null && targetPosition != null) {
+				batch.primitiveRenderer.begin(ShapeType.Line);
+				batch.primitiveRenderer.setColor(Color.WHITE);
+				batch.primitiveRenderer.line(lineOfSightHit, targetPosition);
+				batch.primitiveRenderer.end();
+			}
+		}
 	}
 
 	@Override
@@ -78,6 +96,7 @@ public class BotInputComponent extends EntityComponent {
 		
 		// Only pathfind if we cant walk straight ahead
 		if(!physicsSystem.lineOfSight(origin, targetPosition)){
+			hasTargetLos = false; // We need to pathfind here.
 			Array<Vector2> path = pathfinding.findPath(origin, targetPosition);
 			if (path.size > 1)
 				path.pop(); // Current position;
@@ -90,6 +109,9 @@ public class BotInputComponent extends EntityComponent {
 				currentPath.pop();
 			}
 
+		} else {
+			lineOfSightHit = physicsSystem.getLineOfSightHit();
+			hasTargetLos = true;
 		}
 	
 		previousPos = origin;

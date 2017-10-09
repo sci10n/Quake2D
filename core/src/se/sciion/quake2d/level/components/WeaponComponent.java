@@ -48,7 +48,7 @@ public class WeaponComponent extends EntityComponent {
 
 	@Override
 	public void render(RenderModel batch) {
-
+		if (batch.debugging) return; // No debug render for this thing.
 		SheetComponent spriteSheet = getParent().getComponent(ComponentTypes.Sheet);
 		if (spriteSheet == null) return;
 

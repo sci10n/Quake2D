@@ -21,6 +21,7 @@ public class SheetComponent extends EntityComponent {
 
 	@Override
 	public void render(RenderModel batch) {
+		if (batch.debugging) return; // No debug render for this thing.
 		PhysicsComponent physics = getParent().getComponent(ComponentTypes.Physics);
 		if (physics == null)
 			return;

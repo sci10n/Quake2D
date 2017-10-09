@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
@@ -221,6 +222,10 @@ public class PhysicsSystem implements Disposable {
 		return dist <= 1.0f;
 	}
 
+	public Vector2 getLineOfSightHit() {
+		return p1;
+	}
+
 	public Vector2 rayCast(Vector2 origin, Vector2 direction) {
 		world.rayCast(rayCastCallback, origin, origin.cpy().add(direction).scl(300));
 		return rayCastCallback.targetPos;
@@ -237,14 +242,6 @@ public class PhysicsSystem implements Disposable {
 	
 	public void render(Matrix4 combined) {
 		debugRenderer.render(world, combined);
-		
-		renderer.setProjectionMatrix(combined);
-		
-		if(p1 != null && p2 != null){
-			renderer.begin(ShapeType.Line);
-			renderer.line(p1, p2);
-			renderer.end();
-		}
 	}
 
 	public void update(float delta) {

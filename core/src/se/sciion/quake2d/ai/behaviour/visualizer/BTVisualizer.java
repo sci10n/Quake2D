@@ -38,7 +38,17 @@ public class BTVisualizer extends JFrame{
 		this.camera = camera;
 
 		setFocusableWindowState(false);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+		// Don't destroy the window just yet baby. Allow users
+		// to close the window if they really want to mkay....
+		addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+				setVisible(false);
+				debugBot = null;
+			}
+		});
 		setResizable(false);
 		setVisible(true);
 		
@@ -49,7 +59,8 @@ public class BTVisualizer extends JFrame{
 		
 			public void run() {
 				while(running){
-					if(debugBot != null && debugBot.getBehaviourTree().isDirty()){
+					if (debugBot == null) setVisible(false);
+					else if(debugBot.getBehaviourTree().isDirty()) {
 						setVisible(true);
 						visualize(debugBot.getBehaviourTree());
 					}
@@ -74,14 +85,14 @@ public class BTVisualizer extends JFrame{
 			                            .width(windowSize)
 			                            .render(Format.PNG).toImage();
 
-		setSize(btImage.getWidth(), btImage.getHeight() + getInsets().top);
+		setSize(btImage.getWidth() + 10, btImage.getHeight() + getInsets().top + 5);
 		BufferStrategy bs = getBufferStrategy();
 		
 		Graphics g = bs.getDrawGraphics();
 		g.setColor(Color.WHITE);
-		g.drawRect(0, getInsets().top, btImage.getWidth(),
-				   btImage.getHeight());
-		g.drawImage(btImage, 0, getInsets().top, null);
+		g.drawRect(0, getInsets().top, btImage.getWidth() + 10,
+				   btImage.getHeight() + 5);
+		g.drawImage(btImage, 5, getInsets().top, null);
 		g.dispose();
 		bs.show();
 	}
@@ -98,10 +109,11 @@ public class BTVisualizer extends JFrame{
 			if (component != null) {
 				if(component.getParent() != null){
 					BotInputComponent newDebugBot = component.getParent().getComponent(ComponentTypes.BotInput);
-					if(newDebugBot != null)
+					if(newDebugBot != null) {
 						debugBot = newDebugBot;
+					}
 				}
-			}
+			} else debugBot = null;
 		}
 		
 		if(Gdx.input.isKeyPressed(Keys.P) && !paused){
