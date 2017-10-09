@@ -24,23 +24,21 @@ public class Pathfinding {
 	
 	private PhysicsSystem physics;
 	private Vector2 playerPosition;
-		
+	
+	
 	public Pathfinding(int width, int height) {
 		WIDTH = width;
 		HEIGHT = height;
 		grid = new Vector2[WIDTH][HEIGHT];
 	}
 	
-	public void render(RenderModel model) { 
-		if(playerPosition == null)
-			return;
-		
+	public void render(RenderModel model) { 		
 		model.primitiveRenderer.begin(ShapeType.Line);
 		for(int x = 0; x < WIDTH; x++){
 			for(int y = 0; y < HEIGHT; y++){
 				if(grid[x][y] != null){
 					model.primitiveRenderer.setColor(Color.DARK_GRAY);
-					if(physics.lineOfSight(playerPosition,grid[x][y])){
+					if(playerPosition != null && physics.lineOfSight(playerPosition,grid[x][y])){
 						model.primitiveRenderer.setColor(Color.LIGHT_GRAY);
 					}
 					for(Vector2 neighbor: neighbors(grid[x][y])){

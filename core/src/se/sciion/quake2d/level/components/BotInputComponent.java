@@ -94,12 +94,12 @@ public class BotInputComponent extends EntityComponent {
 	
 		previousPos = origin;
 
-		body.setLinearVelocity(body.getLinearVelocity().scl(0.35f));
+		body.setLinearVelocity(body.getLinearVelocity().scl(0.55f));
 		
 		if(body.getLinearVelocity().len() > 7.0f){
 			body.getLinearVelocity().clamp(0, 7.0f);
 		}
-		Vector2 direction = closestPoint.cpy().sub(origin).nor().scl(1.8f);
+		Vector2 direction = closestPoint.cpy().sub(origin).nor().scl(2.3f);
 
 		Vector2 vel = body.getLinearVelocity();
 		body.setLinearVelocity(vel.add(direction));

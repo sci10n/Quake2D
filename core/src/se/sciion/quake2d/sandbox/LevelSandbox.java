@@ -434,6 +434,7 @@ public class LevelSandbox extends ApplicationAdapter {
 		physicsSystem.update(Gdx.graphics.getDeltaTime());
 		physicsSystem.cleanup();
 
+		pathfinding.update(physicsSystem);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 		model.setProjectionMatrix(camera.combined);

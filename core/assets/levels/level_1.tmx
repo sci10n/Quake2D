@@ -236,7 +236,7 @@
   </object>
  </objectgroup>
  <objectgroup name="Spawns">
-  <object id="30" name="BotSpawn" type="BotSpawn" x="768" y="1792" width="64" height="64">
+  <object id="30" name="PlayerSpawn" type="PlayerSpawn" x="768" y="1792" width="64" height="64">
    <properties>
     <property name="health" type="int" value="10"/>
    </properties>

@@ -19,7 +19,7 @@ public class PickupArmor extends PickupConsumable {
 		HealthComponent health = input.getParent().getComponent(ComponentTypes.Health);
 		boolean restored = false;
 		if(health != null){
-			restored = health.getArmor() > previousArmor;
+			restored = health.getArmor() > previousArmor || health.getArmor() == health.MAX_ARMOR;
 		}
 		
 		previousArmor = health.getArmor();
