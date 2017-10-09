@@ -15,19 +15,12 @@ import guru.nidi.graphviz.model.Node;
 // Process each child in order. Fails if one fails.
 public class SequenceNode extends CompositeNode{
 
-    private static int sequenceId = 0;
-
     public SequenceNode() {
         super();
     }
 
-    public SequenceNode(List<BehaviourNode> behaviours) {
-        super(behaviours);
-        currentChild = 0;
-
-    }
     public SequenceNode(BehaviourNode ...behaviourNodes){
-        super(Arrays.asList(behaviourNodes));
+        super(behaviourNodes);
         currentChild = 0;
 
     }
@@ -52,7 +45,7 @@ public class SequenceNode extends CompositeNode{
     }
 
     public Node toDotNode() {
-        Node sequence = node("sequence" + sequenceId++)
+        Node sequence = node("sequence" + getNext())
                         .with(Shape.RECTANGLE)
                         .with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
                         .with(Label.of("Sequence"))

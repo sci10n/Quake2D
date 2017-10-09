@@ -4,21 +4,18 @@ import static guru.nidi.graphviz.model.Factory.node;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
-
-import org.omg.PortableInterceptor.SUCCESSFUL;
-
 import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 import se.sciion.quake2d.ai.behaviour.BehaviourNode;
 import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
 import se.sciion.quake2d.level.components.HealthComponent;
 
-public class CheckHealth extends BehaviourNode {
+public class CheckArmor extends BehaviourNode {
 
     private HealthComponent health;
     private float ratio;
 
-    public CheckHealth(HealthComponent health, float ratio) {
+    public CheckArmor(HealthComponent health, float ratio) {
         this.health = health;
         this.ratio = ratio;
     }
@@ -31,7 +28,7 @@ public class CheckHealth extends BehaviourNode {
     @Override
     protected BehaviourStatus onUpdate() {
 
-        if(health != null && health.ratioHealth() > ratio) {
+        if(health != null && health.ratioArmor() > ratio) {
         	setStatus(BehaviourStatus.SUCCESS);
         }
         else {
@@ -45,6 +42,7 @@ public class CheckHealth extends BehaviourNode {
         return node("checkHealth" + getNext())
                .with(Shape.ELLIPSE)
 				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
-               .with(Label.of("Health > " + ratio));
+               .with(Label.of("Armor > " + ratio));
     }
 }
+

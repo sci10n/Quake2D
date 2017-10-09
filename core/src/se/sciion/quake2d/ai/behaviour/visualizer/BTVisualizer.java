@@ -30,6 +30,8 @@ public class BTVisualizer extends JFrame{
 	private int windowSize;
 	private boolean paused = false;
 	
+	private boolean running = true;
+	
 	public BTVisualizer(int size, OrthographicCamera camera, PhysicsSystem physicsSystem) {
 		super("Tree Visualizer");
 		this.physicsSystem = physicsSystem;
@@ -38,7 +40,6 @@ public class BTVisualizer extends JFrame{
 
 		setFocusableWindowState(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setResizable(false);
 		setVisible(true);
 		
 		createBufferStrategy(2);
@@ -48,7 +49,7 @@ public class BTVisualizer extends JFrame{
 		new Thread(){
 		
 			public void run() {
-				while(true){
+				while(running){
 					if(debugBot != null && debugBot.getBehaviourTree().isDirty()){
 						setVisible(true);
 						visualize(debugBot.getBehaviourTree());
@@ -59,6 +60,9 @@ public class BTVisualizer extends JFrame{
 						e.printStackTrace();
 					}
 				}
+				
+				setVisible(false);
+				dispose();
 			};
 		}.start();
 		
@@ -71,7 +75,7 @@ public class BTVisualizer extends JFrame{
 			                            .width(windowSize)
 			                            .render(Format.PNG).toImage();
 
-		setSize(btImage.getWidth(), btImage.getHeight()+ 150);
+		setSize(btImage.getWidth(), btImage.getHeight() + 50);
 		BufferStrategy bs = getBufferStrategy();
 		
 		Graphics g = bs.getDrawGraphics();
@@ -82,7 +86,11 @@ public class BTVisualizer extends JFrame{
 		bs.show();
 		
 	}
-
+	
+	public void setRunning(boolean running){
+		this.running = running;
+	}
+	
 	public boolean pause() {
 		if (paused && Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			Vector3 screenMousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0.0f);

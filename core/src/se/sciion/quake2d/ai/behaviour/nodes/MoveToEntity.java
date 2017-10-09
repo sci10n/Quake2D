@@ -20,7 +20,6 @@ import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
 public class MoveToEntity extends BehaviourNode {
-    private static int moveToEntityId = 0;
 
     private Entity target;
     private BotInputComponent input;
@@ -91,7 +90,7 @@ public class MoveToEntity extends BehaviourNode {
 
     @Override
     public Node toDotNode() {
-        return node("moveToEntity" + moveToEntityId++)
+        return node("moveToEntity" + getNext())
                .with(Shape.RECTANGLE)
 				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
                .with(Label.of("Move to"));

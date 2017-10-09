@@ -22,19 +22,13 @@ import guru.nidi.graphviz.model.Node;
  *
  */
 public class SelectorNode extends CompositeNode {
-    private static int selectorId = 0;
 
     public SelectorNode() {
         super();
     }
 
-    public SelectorNode(List<BehaviourNode> behaviours) {
-        super(behaviours);
-        currentChild = 0;
-    }
-
     public SelectorNode(BehaviourNode... behaviourNodes) {
-        super(Arrays.asList(behaviourNodes));
+        super(behaviourNodes);
         currentChild = 0;
 
     }
@@ -62,7 +56,7 @@ public class SelectorNode extends CompositeNode {
 
     @Override
     public Node toDotNode() {
-        Node selector = node("selector" + selectorId++)
+        Node selector = node("selector" + getNext())
                         .with(Shape.RECTANGLE)
                         .with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
                         .with(Label.of("Selector"))

@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.components.PhysicsComponent;
@@ -26,9 +27,11 @@ import se.sciion.quake2d.level.components.PhysicsComponent;
  * @author sciion
  *
  */
-public class PhysicsSystem {
+public class PhysicsSystem implements Disposable {
 
 	private Vector2 p1,p2;
+	private ShapeRenderer renderer;
+	
 	private Array<PhysicsComponent> components;
 
 
@@ -109,6 +112,7 @@ public class PhysicsSystem {
 		debugRenderer = new Box2DDebugRenderer();
 		solidcallback = new OverlapCallback();
 		components = new Array<PhysicsComponent>();
+		renderer = new ShapeRenderer();
 	}
 
 	public void cleanup() {
@@ -233,10 +237,24 @@ public class PhysicsSystem {
 	
 	public void render(Matrix4 combined) {
 		debugRenderer.render(world, combined);
+		
+		renderer.setProjectionMatrix(combined);
+		
+		if(p1 != null && p2 != null){
+			renderer.begin(ShapeType.Line);
+			renderer.line(p1, p2);
+			renderer.end();
+		}
 	}
 
 	public void update(float delta) {
 		world.step(delta, 10, 10);
+	}
+
+	@Override
+	public void dispose() {
+		world.clearForces();
+		world.dispose();
 	}
 
 }

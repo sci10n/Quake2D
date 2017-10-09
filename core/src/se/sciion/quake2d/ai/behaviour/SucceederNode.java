@@ -12,8 +12,6 @@ import guru.nidi.graphviz.model.Node;
 
 public class SucceederNode extends DecoratorNode {
 
-    private static int succeederId = 0;
-
     public SucceederNode(BehaviourNode behaviour) {
         super(behaviour);
     }
@@ -36,7 +34,7 @@ public class SucceederNode extends DecoratorNode {
 
     @Override
     public Node toDotNode() {
-        return node("succeeder" + succeederId++)
+        return node("succeeder" + getNext())
                    .with(Shape.RECTANGLE)
 					.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
                    .with(Label.of("Succeeder"))

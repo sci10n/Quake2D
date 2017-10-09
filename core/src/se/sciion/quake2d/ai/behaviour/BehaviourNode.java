@@ -6,6 +6,11 @@ import guru.nidi.graphviz.model.Node;
 import se.sciion.quake2d.ai.behaviour.visualizer.BehaviorListener;
 
 public abstract class BehaviourNode{
+	protected static int nodeId = 0;
+	
+	protected static int getNext(){
+		return nodeId++;
+	}
 	
 	// Array to keep track of listeners
 	private Array<BehaviorListener> listeners;

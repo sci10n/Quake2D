@@ -167,7 +167,7 @@
  <objectgroup name="Pickups">
   <object id="14" name="health" type="Consumable" x="522" y="585.5" width="45" height="45">
    <properties>
-    <property name="amount" type="int" value="5"/>
+    <property name="amount" type="int" value="10"/>
    </properties>
   </object>
   <object id="23" name="shotgun" type="Weapon" x="137.273" y="1737.09" width="45" height="45">
@@ -183,7 +183,7 @@
   </object>
   <object id="37" name="health" type="Consumable" x="1353.17" y="1288.83" width="45" height="45">
    <properties>
-    <property name="amount" type="int" value="5"/>
+    <property name="amount" type="int" value="10"/>
    </properties>
   </object>
   <object id="115" name="damage" type="Consumable" x="969" y="938.167" width="45" height="45">
@@ -236,7 +236,7 @@
   </object>
  </objectgroup>
  <objectgroup name="Spawns">
-  <object id="30" name="PlayerSpawn" type="PlayerSpawn" x="768" y="1792" width="64" height="64">
+  <object id="30" name="BotSpawn" type="BotSpawn" x="768" y="1792" width="64" height="64">
    <properties>
     <property name="health" type="int" value="10"/>
    </properties>

@@ -16,7 +16,6 @@ import se.sciion.quake2d.level.components.BotInputComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
 
 public class AttackEntity extends BehaviourNode{
-    private static int attackId = 0;
 
     private Entity target;
     private BotInputComponent input;
@@ -56,7 +55,7 @@ public class AttackEntity extends BehaviourNode{
 
     @Override
     public Node toDotNode() {
-        return node("attackEntity" + attackId++)
+        return node("attackEntity" + getNext())
                .with(Shape.RECTANGLE)
 				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
                .with(Label.of("Attack"));

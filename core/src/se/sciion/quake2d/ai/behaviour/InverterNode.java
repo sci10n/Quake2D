@@ -9,7 +9,6 @@ import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 
 public class InverterNode extends DecoratorNode {
-    private static int inverterNodeId = 0;
 
     public InverterNode(BehaviourNode behaviour) {
         super(behaviour);
@@ -34,7 +33,7 @@ public class InverterNode extends DecoratorNode {
 
     @Override
     public Node toDotNode() {
-        return node("inverter" + inverterNodeId++)
+        return node("inverter" + getNext())
                .with(Shape.DIAMOND)
 				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
                .with(Label.of("Inverter"))

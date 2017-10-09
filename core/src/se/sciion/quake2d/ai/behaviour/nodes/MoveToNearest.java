@@ -23,7 +23,6 @@ import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
 public class MoveToNearest extends BehaviourNode {
-    private static int moveToNearestId = 0;
 
     private String tag;
     private BotInputComponent input;
@@ -63,6 +62,10 @@ public class MoveToNearest extends BehaviourNode {
 
         Vector2 targetPos = null;
         for(Entity e: level.getEntities(tag)) {
+        	if(e == input.getParent()){
+        		continue;
+        	}
+        	
             PhysicsComponent ePhysics = e.getComponent(ComponentTypes.Physics);
             if(ePhysics != null) {
                 Vector2 ePos = ePhysics.getBody().getPosition();
@@ -75,7 +78,7 @@ public class MoveToNearest extends BehaviourNode {
         }
 
         if(targetPos == null) {
-        	setStatus(BehaviourStatus.FAILURE);
+        	setStatus(BehaviourStatus.SUCCESS);
             input.setTarget(targetPos);
             return getStatus();
         }
@@ -97,7 +100,7 @@ public class MoveToNearest extends BehaviourNode {
 
     @Override
     public Node toDotNode() {
-        Node node = node("moveToNearest" + moveToNearestId++)
+        Node node = node("moveToNearest" + getNext())
                     .with(Shape.RECTANGLE)
 					.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
                     .with(Label.of("Move to " + tag));

@@ -17,6 +17,6 @@ public class SandboxLauncher {
 		config.gles30ContextMajorVersion = 4;
 		config.gles30ContextMinorVersion = 5;
 		
-		new LwjglApplication(new LevelSandbox(), config);
+		new LwjglApplication(new LevelSandbox("levels/level.tmx", "levels/level_test.tmx"), config);
 	}
 }

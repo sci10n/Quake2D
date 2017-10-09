@@ -24,7 +24,7 @@ public class Pathfinding {
 	
 	private PhysicsSystem physics;
 	private Vector2 playerPosition;
-	
+		
 	public Pathfinding(int width, int height) {
 		WIDTH = width;
 		HEIGHT = height;
@@ -49,6 +49,7 @@ public class Pathfinding {
 				}
 			}
 		}
+		
 		model.primitiveRenderer.end();
 
 	}

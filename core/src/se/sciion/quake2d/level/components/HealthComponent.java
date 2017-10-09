@@ -45,9 +45,8 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 		PhysicsComponent playerPhysics = getParent().getComponent(ComponentTypes.Physics);
 		Vector2 playerPosition = playerPhysics.getBody().getPosition();
 
-		float ratioHealthLeft = health / (float)(MAX_HEALTH);
-		// TODO: change this later to consider armor amounts.
-		float ratioArmorLeft  = armor / (float)(MAX_ARMOR);
+		float ratioHealthLeft = ratioHealth();
+		float ratioArmorLeft  = ratioArmor();
 
 		if (health == 0) return; // It's dead Jim!
 

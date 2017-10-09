@@ -18,7 +18,6 @@ import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.system.Pathfinding;
 
 public class AttackNearest extends BehaviourNode{
-    private static int attackId = 0;
 
     private String id;
     private Level level;
@@ -50,6 +49,10 @@ public class AttackNearest extends BehaviourNode{
     	Entity nearestTarget = null;
     	double nearestDistance = 300.0;
         for(Entity e: level.getEntities(id)) {
+        	if(e == input.getParent()){
+        		continue;
+        	}
+        	
             PhysicsComponent ePhysics = e.getComponent(ComponentTypes.Physics);
             if(ePhysics != null) {
                 Vector2 ePos = ePhysics.getBody().getPosition();
@@ -81,7 +84,7 @@ public class AttackNearest extends BehaviourNode{
 
     @Override
     public Node toDotNode() {
-        return node("attackNearest" + attackId++)
+        return node("attackNearest" + getNext())
                .with(Shape.RECTANGLE)
 				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
                .with(Label.of("Attack " + id));

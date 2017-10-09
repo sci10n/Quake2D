@@ -1,43 +1,20 @@
 package se.sciion.quake2d.sandbox;
 
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.TextureLoader;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.graphics.Cursor.SystemCursor;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader.Parameters;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-
 import se.sciion.quake2d.ai.behaviour.BehaviourTree;
 import se.sciion.quake2d.ai.behaviour.InverterNode;
+import se.sciion.quake2d.ai.behaviour.ParallelNode;
 import se.sciion.quake2d.ai.behaviour.SelectorNode;
 import se.sciion.quake2d.ai.behaviour.SequenceNode;
+import se.sciion.quake2d.ai.behaviour.SucceederNode;
 import se.sciion.quake2d.ai.behaviour.nodes.AttackNearest;
+import se.sciion.quake2d.ai.behaviour.nodes.CheckEntityDistance;
 import se.sciion.quake2d.ai.behaviour.nodes.CheckHealth;
 import se.sciion.quake2d.ai.behaviour.nodes.MoveToNearest;
 import se.sciion.quake2d.ai.behaviour.nodes.PickUpItem;
+import se.sciion.quake2d.ai.behaviour.nodes.PickupArmor;
+import se.sciion.quake2d.ai.behaviour.nodes.PickupDamageBoost;
+import se.sciion.quake2d.ai.behaviour.nodes.PickupHealth;
 import se.sciion.quake2d.ai.behaviour.visualizer.BTVisualizer;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.graphics.SheetRegion;
@@ -60,6 +37,32 @@ import se.sciion.quake2d.level.items.Item;
 import se.sciion.quake2d.level.items.Weapon;
 import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
+
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader.Parameters;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.utils.Array;
 
 
 public class LevelSandbox extends ApplicationAdapter {
@@ -86,14 +89,18 @@ public class LevelSandbox extends ApplicationAdapter {
 	private BTVisualizer visualizer;
 	private PhysicsSystem physicsSystem;
 	
+	private final Array<String> levels;
+	
+	public LevelSandbox(String ... levels) {
+		this.levels = new Array<String>(levels);
+	}
+	
 	@Override
 	public void create() {
-		int width = (int)(800 * Gdx.graphics.getDensity());
-		int height = (int)(600 * Gdx.graphics.getDensity());
+		int width = (int)(2*800 * Gdx.graphics.getDensity());
+		int height = (int)(2*600 * Gdx.graphics.getDensity());
 		Gdx.graphics.setWindowedMode(width, height);
 		Gdx.graphics.setTitle("Quake 2-D");
-
-		Gdx.graphics.setSystemCursor(SystemCursor.Crosshair);
 
 		level = new Level();
 		camera = new OrthographicCamera();
@@ -103,16 +110,20 @@ public class LevelSandbox extends ApplicationAdapter {
 		physicsSystem = new PhysicsSystem();
 		pathfinding = new Pathfinding(30, 30);
 
-		visualizer = new BTVisualizer(width * 2, camera, physicsSystem);
+		visualizer = new BTVisualizer(width, camera, physicsSystem);
 
 		loadAssets();
 
 		pathfinding.update(physicsSystem);
 	}
-
+	
 	@Override
 	public void dispose() {
-
+		assets.dispose();
+		map.dispose();
+		model.spriteRenderer.dispose();
+		physicsSystem.cleanup();
+		visualizer.setRunning(false);
 	}
 
 	public void loadAssets() {
@@ -124,14 +135,14 @@ public class LevelSandbox extends ApplicationAdapter {
 		amountTexture = new TextureRegion(new Texture(Gdx.files.internal("images/amount.png")));
 		muzzleTexture = new TextureRegion(new Texture(Gdx.files.internal("images/muzzle.png")));
 		assets.finishLoading();
-		loadMap();
+		loadMap(levels.random());
 	}
 
-	private void loadMap() {
+	private void loadMap(String mapPath) {
 		TmxMapLoader loader = new TmxMapLoader(new InternalFileHandleResolver());
 		// TmxMapLoader.Parameters
 		Parameters params = new Parameters();		
-		map = loader.load("levels/level.tmx", params);
+		map = loader.load(mapPath, params);
 		
 		tileSet = map.getTileSets().getTileSet(0);
 		renderer = new OrthogonalTiledMapRenderer(map,1.0f/64.0f);
@@ -386,13 +397,20 @@ public class LevelSandbox extends ApplicationAdapter {
 				entity.addComponent(new DamageBoostComponent());
 				
 				CheckHealth checkHealth = new CheckHealth(health, 0.25f);
-				MoveToNearest pickupHealth = new MoveToNearest("health", level, pathfinding,physicsSystem, botInput, 0.25f);
-				PickUpItem pickupWeapon = new PickUpItem("shotgun",level,pathfinding, botInput);
-				AttackNearest attackPlayer = new AttackNearest("player", botInput, level);
-				MoveToNearest moveToPlayer = new MoveToNearest("player",level ,pathfinding,physicsSystem, botInput, 10.0f);
+				PickupHealth pickupHealth = new PickupHealth(botInput, level, "health");
+				PickupArmor pickupArmor = new PickupArmor(botInput, level, "armor");
+				PickupDamageBoost pickupBoost = new PickupDamageBoost(botInput, level, "damage");
+				
+				PickUpItem pickupWeaponShotgun = new PickUpItem("shotgun",level,pathfinding, botInput);
+				PickUpItem pickupWeaponRifle = new PickUpItem("rifle",level,pathfinding, botInput);
+
+				AttackNearest attackPlayer = new AttackNearest("bot", botInput, level);
+				MoveToNearest moveToPlayer = new MoveToNearest("bot",level ,pathfinding,physicsSystem, botInput, 10.0f);
+				
+				CheckEntityDistance distanceCheck = new CheckEntityDistance(physics, "bot", 15, level);
 				
 				SequenceNode s1 = new SequenceNode(new InverterNode(checkHealth), pickupHealth);
-				SequenceNode s2 = new SequenceNode(pickupWeapon, moveToPlayer, attackPlayer);
+				SequenceNode s2 = new SequenceNode(new ParallelNode(1,new SequenceNode(distanceCheck, pickupWeaponShotgun), pickupWeaponRifle),  new SucceederNode(pickupArmor), new SucceederNode(pickupBoost), moveToPlayer, attackPlayer);
 				SelectorNode s3 = new SelectorNode(s1,s2);
 				
 				BehaviourTree tree = new BehaviourTree(s3);
@@ -436,6 +454,11 @@ public class LevelSandbox extends ApplicationAdapter {
 		if (debugging) {
 			pathfinding.render(model);
 			physicsSystem.render(camera.combined);
+		}
+		
+		if(Gdx.input.isKeyJustPressed(Keys.Q)){
+			dispose();
+			create();
 		}
 	}
 	

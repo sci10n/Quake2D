@@ -4,23 +4,21 @@ import static guru.nidi.graphviz.model.Factory.node;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
-
-import org.omg.PortableInterceptor.SUCCESSFUL;
-
 import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 import se.sciion.quake2d.ai.behaviour.BehaviourNode;
 import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
-import se.sciion.quake2d.level.components.HealthComponent;
+import se.sciion.quake2d.level.components.InventoryComponent;
+import se.sciion.quake2d.level.items.Weapon;
 
-public class CheckHealth extends BehaviourNode {
+public class CheckWeapon extends BehaviourNode {
 
-    private HealthComponent health;
-    private float ratio;
-
-    public CheckHealth(HealthComponent health, float ratio) {
-        this.health = health;
-        this.ratio = ratio;
+    private String weaponType;
+    private InventoryComponent inventory;
+    
+    public CheckWeapon(String weaponType, InventoryComponent inventory) {
+    	this.weaponType = weaponType;
+    	this.inventory = inventory;
     }
 
     @Override
@@ -31,8 +29,12 @@ public class CheckHealth extends BehaviourNode {
     @Override
     protected BehaviourStatus onUpdate() {
 
-        if(health != null && health.ratioHealth() > ratio) {
-        	setStatus(BehaviourStatus.SUCCESS);
+        if(inventory != null) {
+        	for(Weapon w: inventory.getItems(Weapon.class)){
+        		if(w.getTag().equals(weaponType)){
+                	setStatus(BehaviourStatus.SUCCESS);
+        		}
+        	}
         }
         else {
         	setStatus(BehaviourStatus.FAILURE);
@@ -45,6 +47,7 @@ public class CheckHealth extends BehaviourNode {
         return node("checkHealth" + getNext())
                .with(Shape.ELLIPSE)
 				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
-               .with(Label.of("Health > " + ratio));
+               .with(Label.of("Weapon of type > " + weaponType));
     }
 }
+

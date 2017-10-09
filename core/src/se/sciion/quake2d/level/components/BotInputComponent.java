@@ -21,6 +21,8 @@ public class BotInputComponent extends EntityComponent {
 
 	private PhysicsSystem physicsSystem;
 	
+	private Vector2 previousPos;
+	
 	public BotInputComponent(Pathfinding pathfinding, PhysicsSystem physicsSystem) {
 		this.pathfinding = pathfinding;
 		this.physicsSystem  = physicsSystem;
@@ -75,7 +77,7 @@ public class BotInputComponent extends EntityComponent {
 		Vector2 closestPoint = targetPosition;
 		
 		// Only pathfind if we cant walk straight ahead
-		if(!physicsSystem.lineOfSight(origin, targetPosition)){
+		if(!physicsSystem.lineOfSight(origin, targetPosition) || ((previousPos != null) && previousPos.cpy().sub(origin).len2() < 0.01f)){
 			Array<Vector2> path = pathfinding.findPath(origin, targetPosition);
 			if (path.size > 1)
 				path.pop(); // Current position;
@@ -90,6 +92,8 @@ public class BotInputComponent extends EntityComponent {
 
 		}
 	
+		previousPos = origin;
+
 		body.setLinearVelocity(body.getLinearVelocity().scl(0.35f));
 		
 		if(body.getLinearVelocity().len() > 7.0f){
@@ -110,6 +114,7 @@ public class BotInputComponent extends EntityComponent {
 		}
 		
 		WeaponComponent weapon = getParent().getComponent(ComponentTypes.Weapon);
+		physics.getBody().setTransform(physics.getBody().getPosition(),heading.angleRad());
 		if(weapon != null){
 			return weapon.fire(heading, physics.getBody().getPosition());
 			

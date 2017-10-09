@@ -22,7 +22,6 @@ import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
 public class PickUpItem extends BehaviourNode {
-    private static int pickUpItem = 0;
 
     private String id;
     private Level level;
@@ -91,7 +90,7 @@ public class PickUpItem extends BehaviourNode {
 
     @Override
     public Node toDotNode() {
-        return node("pickUpItem" + pickUpItem++)
+        return node("pickUpItem" + getNext())
                .with(Shape.RECTANGLE)
 			   .with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
                .with(Label.of("Pick up " + id));
