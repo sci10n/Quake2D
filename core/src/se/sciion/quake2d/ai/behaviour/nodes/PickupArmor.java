@@ -10,13 +10,13 @@ public class PickupArmor extends PickupConsumable {
 	private int previousArmor;
 	
 	public PickupArmor(BotInputComponent input, Level level, String tag) {
-		super(input, level, tag);
+		super(level, tag);
 		previousArmor = 0;
 	}
 
 	@Override
 	protected boolean restored() {
-		HealthComponent health = input.getParent().getComponent(ComponentTypes.Health);
+		HealthComponent health = parent.getComponent(ComponentTypes.Health);
 		boolean restored = false;
 		if(health != null){
 			restored = health.getArmor() > previousArmor || health.getArmor() == health.MAX_ARMOR;

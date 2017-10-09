@@ -11,12 +11,13 @@ public class SandboxLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
 		config.useGL30 = false;
-		config.width = 800;
+		config.width = 600;
 		config.height = 600;
 		config.resizable = false;
 		config.gles30ContextMajorVersion = 4;
 		config.gles30ContextMinorVersion = 5;
 		
-		new LwjglApplication(new LevelSandbox("levels/level_2.tmx"), config);
+		new LwjglApplication(new LevelSandbox("levels/level_3.tmx",
+                                              "levels/level_2.tmx"), config);
 	}
 }

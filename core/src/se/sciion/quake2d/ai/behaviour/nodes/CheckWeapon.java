@@ -8,17 +8,17 @@ import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 import se.sciion.quake2d.ai.behaviour.BehaviourNode;
 import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
+import se.sciion.quake2d.enums.ComponentTypes;
+import se.sciion.quake2d.level.components.HealthComponent;
 import se.sciion.quake2d.level.components.InventoryComponent;
 import se.sciion.quake2d.level.items.Weapon;
 
 public class CheckWeapon extends BehaviourNode {
 
     private String weaponType;
-    private InventoryComponent inventory;
     
-    public CheckWeapon(String weaponType, InventoryComponent inventory) {
+    public CheckWeapon(String weaponType) {
     	this.weaponType = weaponType;
-    	this.inventory = inventory;
     }
 
     @Override
@@ -28,6 +28,8 @@ public class CheckWeapon extends BehaviourNode {
 
     @Override
     protected BehaviourStatus onUpdate() {
+
+		InventoryComponent inventory = parent.getComponent(ComponentTypes.Inventory);
 
         if(inventory != null) {
         	for(Weapon w: inventory.getItems(Weapon.class)){

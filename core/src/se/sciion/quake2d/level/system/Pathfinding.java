@@ -224,11 +224,11 @@ public class Pathfinding {
 		this.physics = physics;
 		for(int x = 0; x < WIDTH; x++){
 			for(int y = 0; y < HEIGHT; y++){
-				if(physics.containsSolidObject(x,y,0.25f,0.25f)){
+				if(physics.containsSolidObject(x + 0.5f,y + 0.5f,0.25f,0.25f)){
 					grid[x][y] = null;
 				}
 				else {
-					grid[x][y] = new Vector2(x, y);
+					grid[x][y] = new Vector2(x + 0.5f, y + 0.5f);
 				}
 			}
 		}

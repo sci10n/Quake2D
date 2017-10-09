@@ -8,15 +8,14 @@ import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 import se.sciion.quake2d.ai.behaviour.BehaviourNode;
 import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
+import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.level.components.HealthComponent;
 
 public class CheckArmor extends BehaviourNode {
 
-    private HealthComponent health;
     private float ratio;
 
-    public CheckArmor(HealthComponent health, float ratio) {
-        this.health = health;
+    public CheckArmor(float ratio) {
         this.ratio = ratio;
     }
 
@@ -28,7 +27,8 @@ public class CheckArmor extends BehaviourNode {
     @Override
     protected BehaviourStatus onUpdate() {
 
-        if(health != null && health.ratioArmor() > ratio) {
+    	HealthComponent health = parent.getComponent(ComponentTypes.Health);
+    	if(health != null && health.ratioArmor() > ratio) {
         	setStatus(BehaviourStatus.SUCCESS);
         }
         else {

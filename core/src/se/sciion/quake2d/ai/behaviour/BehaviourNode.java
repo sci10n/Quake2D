@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Array;
 
 import guru.nidi.graphviz.model.Node;
 import se.sciion.quake2d.ai.behaviour.visualizer.BehaviorListener;
+import se.sciion.quake2d.level.Entity;
 
 public abstract class BehaviourNode{
 	protected static int nodeId = 0;
@@ -18,12 +19,15 @@ public abstract class BehaviourNode{
     // set the current status of these nodes to become undefined.
     private BehaviourStatus status = BehaviourStatus.UNDEFINED;
     
+    // Parent entity
+	protected Entity parent;
+
     // When we traverse some behaviour in the tree, and it hasn't
     // been running yet, we enter this behaviour. If we have been
     // running, but just recently left it, the we left behaviour.
     // If otherwise, we just update the behaviour for traversing.
 
-    public BehaviourNode() {
+	public BehaviourNode() {
 		listeners = new Array<BehaviorListener>();
 	}
     
@@ -78,4 +82,8 @@ public abstract class BehaviourNode{
     	listeners.removeValue(l, true);
     }
     
+    public void setParent(Entity parent) {
+		this.parent = parent;
+	}
+
 }

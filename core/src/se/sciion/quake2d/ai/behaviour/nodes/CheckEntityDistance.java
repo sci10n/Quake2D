@@ -16,6 +16,7 @@ import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.Level;
+import se.sciion.quake2d.level.components.HealthComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
 
 /**
@@ -25,14 +26,12 @@ import se.sciion.quake2d.level.components.PhysicsComponent;
  */
 public class CheckEntityDistance extends BehaviourNode{
 
-	private PhysicsComponent physics;
 	private String targetId;
 	private float threshold;
 	private Level level;
 
-	public CheckEntityDistance(PhysicsComponent physics, String targetId, float threshold, Level level) {
+	public CheckEntityDistance(String targetId, float threshold, Level level) {
 		super();
-		this.physics = physics;
 		this.targetId = targetId;
 		this.threshold = threshold;
 		this.level = level;
@@ -41,6 +40,7 @@ public class CheckEntityDistance extends BehaviourNode{
 	@Override
 	protected BehaviourStatus onUpdate() {
 		
+		PhysicsComponent physics = parent.getComponent(ComponentTypes.Physics);
 		if(physics == null){
 			setStatus(BehaviourStatus.FAILURE);
 			return getStatus();
@@ -49,7 +49,7 @@ public class CheckEntityDistance extends BehaviourNode{
 		Vector2 fromPos = physics.getBody().getPosition();
 		float nearest = Float.MAX_VALUE;
 		for(Entity e: level.getEntities(targetId)){
-			if(e == physics.getParent()){
+			if(e == parent){
 				continue;
 			}
 			

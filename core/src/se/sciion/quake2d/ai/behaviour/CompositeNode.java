@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import se.sciion.quake2d.level.Entity;
+
 public abstract class CompositeNode extends BehaviourNode {
     protected List<BehaviourNode> children; // Sibling children.
     protected int currentChild;	// Current index
@@ -28,5 +30,13 @@ public abstract class CompositeNode extends BehaviourNode {
     public void removeChild(BehaviourNode node){
     	if(currentChild == 0)	// Prevent modifying during execution.
     		children.remove(node);
+    }
+    
+    @Override
+    public void setParent(Entity parent) {
+    	this.parent = parent;
+    	for(BehaviourNode n: children){
+    		n.setParent(parent);
+    	}
     }
 }
