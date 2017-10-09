@@ -470,6 +470,8 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 	public void render() {
 		if (Gdx.input.isKeyJustPressed(Keys.O))
 			debugging = !debugging;
+        if (Gdx.input.isKeyJustPressed(Keys.M))
+            soundSystem.toggleMute();
 
 		camera.update();
 

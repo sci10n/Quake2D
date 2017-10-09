@@ -7,9 +7,11 @@ import com.badlogic.gdx.utils.Disposable;
 public class SoundSystem implements Disposable {
 	private HashMap<String, Sound> sounds;
 	private HashMap<String, Music> musics;
+    private boolean muted;
 	private float volume;
 
 	public SoundSystem(float volume) {
+        this.muted = false;
 		this.volume = volume;
 		this.sounds = new HashMap<String, Sound>();
 		this.musics = new HashMap<String, Music>();
@@ -46,11 +48,18 @@ public class SoundSystem implements Disposable {
 		stopMusic();
 	}
 
+    public void toggleMute() {
+        stopAll();
+        muted = !muted;
+    }
+
 	public void playSound(String id) {
-		getSound(id).play(volume);
+        if (!muted)
+            getSound(id).play(volume);
 	}
 
 	public void loopMusic(String id) {
+        if (muted) return;
 		getMusic(id).setLooping(true);
 		getMusic(id).setVolume(volume);
 		getMusic(id).play();
