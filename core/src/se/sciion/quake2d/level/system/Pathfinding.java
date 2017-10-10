@@ -6,12 +6,14 @@ import java.util.PriorityQueue;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
+import se.sciion.quake2d.level.Level;
 import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.items.Item;
 
@@ -23,13 +25,14 @@ public class Pathfinding {
 	private Vector2 grid[][];
 	
 	private PhysicsSystem physics;
-	private Vector2 playerPosition;
 	
+	private Level level;
 	
-	public Pathfinding(int width, int height) {
+	public Pathfinding(int width, int height, Level level) {
 		WIDTH = width;
 		HEIGHT = height;
 		grid = new Vector2[WIDTH][HEIGHT];
+		this.level = level;
 	}
 	
 	public void render(RenderModel model) {
@@ -38,9 +41,23 @@ public class Pathfinding {
 			for(int y = 0; y < HEIGHT; y++){
 				if(grid[x][y] != null){
 					model.primitiveRenderer.setColor(Color.DARK_GRAY);
-					if(playerPosition != null && physics.lineOfSight(playerPosition,grid[x][y])){
-						model.primitiveRenderer.setColor(Color.LIGHT_GRAY);
+					
+					Array<Entity> entities = level.getEntities("player");
+					float vs[] = new float[entities.size];
+					for(int i = 0; i < entities.size; i++){
+						Entity e = entities.get(i);
+						PhysicsComponent c = e.getComponent(ComponentTypes.Physics);
+						if(c != null) {
+							Vector2 start = c.getBody().getPosition();
+							vs[i] = enemyLineOfSight(grid[x][y], start, e);
+							if(physics.lineOfSight(start,grid[x][y])){
+							}
+						}
+								
 					}
+					model.primitiveRenderer.setColor(new Color(vs[0] / net.dermetfan.utils.math.MathUtils.max(vs), 0.0f, vs[1] / net.dermetfan.utils.math.MathUtils.max(vs),1.0f));
+					
+					//model.primitiveRenderer.rect(grid[x][y].x - 0.5f, grid[x][y].y - 0.5f, 1.0f, 1.0f);
 					for(Vector2 neighbor: neighbors(grid[x][y])){
 						model.primitiveRenderer.line(grid[x][y], neighbor);
 					}
@@ -50,28 +67,27 @@ public class Pathfinding {
 		model.primitiveRenderer.end();
 	}
 	
-	public void setPlayerPosition(Vector2 playerPosition){
-		this.playerPosition = playerPosition;	
-	}
+
 	
 	private ArrayList<Vector2> neighbors(Vector2 v){
 		int x = (int) v.x;
 		int y = (int) v.y;
 		ArrayList<Vector2> n = new ArrayList<Vector2>();
 		try{
-			// Diagonals
-			if (x > 0 && y > 0 && grid[x - 1][y - 1] != null){
-				n.add(grid[x - 1][y - 1]);
-			}
-			if (x < WIDTH-1 && y > 0 && grid[x + 1][y - 1] != null){
-				n.add(grid[x + 1][y - 1]);
-			}
-			if (x < WIDTH-1 && y < HEIGHT-1 && grid[x + 1][y + 1] != null){
-				n.add(grid[x + 1][y + 1]);
-			}
-			if (x > 0 && y < HEIGHT-1 && grid[x - 1][y + 1] != null){
-				n.add(grid[x - 1][y + 1]);
-			}
+			
+			// Diagonals cannot be trusted
+//			if (x > 0 && y > 0 && grid[x - 1][y - 1] != null && physics.lineOfSight(v, grid[x - 1][y - 1])){
+//				n.add(grid[x - 1][y - 1]);
+//			}
+//			if (x < WIDTH-1 && y > 0 && grid[x + 1][y - 1] != null && physics.lineOfSight(v, grid[x + 1][y - 1])){
+//				n.add(grid[x + 1][y - 1]);
+//			}
+//			if (x < WIDTH-1 && y < HEIGHT-1 && grid[x + 1][y + 1] != null && physics.lineOfSight(v, grid[x + 1][y + 1])){
+//				n.add(grid[x + 1][y + 1]);
+//			}
+//			if (x > 0 && y < HEIGHT-1 && grid[x - 1][y + 1] != null && physics.lineOfSight(v, grid[x - 1][y + 1])){
+//				n.add(grid[x - 1][y + 1]);
+//			}
 			
 			// Manhattan
 			if (x > 0 && grid[x - 1][y] != null){
@@ -125,8 +141,9 @@ public class Pathfinding {
 		return path;
 	}
 	
+	
 	// Get path from start to target using a* and euclidean distance as heuristic.
-	public Array<Vector2> findPath(Vector2 from, Vector2 to){
+	public Array<Vector2> findPath(Vector2 from, Vector2 to, Entity requestor){
 		
 		Vector2 start = null;
 		Vector2 target = null;
@@ -184,11 +201,9 @@ public class Pathfinding {
 				if(!openSet.contains(n))
 					openSet.add(n);
 				
-				// Should not be concerned with player position. Should be moved to sepparate function.
-				float extraScore = 1;
-				if(playerPosition != null && physics.lineOfSight(playerPosition,n)){
-					extraScore += 4;
-				}
+				// Should not be concerned with player position. Should be moved to separate function.
+				float extraScore = 1 + enemyLineOfSight(n,from,requestor);
+				
 				float tentative_gScore = gScore.get(c) + c.cpy().sub(n).len2() + extraScore;
 				
 				if(tentative_gScore >= gScore.get(n))
@@ -204,6 +219,33 @@ public class Pathfinding {
 
 	}
 	
+	private float enemyLineOfSight(Vector2 target,Vector2 start, Entity requestor) {
+		float total = 0;
+		
+		Array<Entity> enemies = level.getEntities("player");
+		for(int i = 0; i < enemies.size; i++){
+			Entity e = enemies.get(i);
+			if(e == requestor){
+				continue;
+			}
+			
+			PhysicsComponent p = e.getComponent(ComponentTypes.Physics);
+			if(p == null)
+				continue;
+			
+			Vector2 enemyPos = p.getBody().getPosition();
+			
+			if(Vector2.dst(enemyPos.x, enemyPos.y, target.x,target.y) < 0.001f){
+				continue;
+			}
+			
+			if(physics.lineOfSight(enemyPos,target)){
+				total += 2;
+			}
+		}
+		return total;
+	}
+	
 	// Does not check for disjoint graphs
 	public boolean reachable(Vector2 p){
 		try{
@@ -215,16 +257,12 @@ public class Pathfinding {
 		return false;
 	}
 	
-	public Vector2 playerPosition(){
-		return playerPosition;
-	}
-	
 	// Update graph. Should only be called after static objects have been removed/added/modified
 	public void update(PhysicsSystem physics){
 		this.physics = physics;
 		for(int x = 0; x < WIDTH; x++){
 			for(int y = 0; y < HEIGHT; y++){
-				if(physics.containsSolidObject(x + 0.5f,y + 0.5f,0.25f,0.25f)){
+				if(physics.containsSolidObject(x + 0.5f,y + 0.5f,0.5f,0.5f)){
 					grid[x][y] = null;
 				}
 				else {

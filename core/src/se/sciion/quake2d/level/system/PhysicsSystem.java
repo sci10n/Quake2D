@@ -35,37 +35,20 @@ public class PhysicsSystem implements Disposable {
 	
 	private Array<PhysicsComponent> components;
 
-
-	private class EntityRayCast implements RayCastCallback {
-
-		public Entity target;
-		public Vector2 targetPos;
-		public EntityRayCast() {
-			target = null;
-		}
-
-		@Override
-		public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
-			try {
-				target = (Entity) fixture.getBody().getUserData();
-				targetPos = point;
-			} catch (NullPointerException e1) {
-
-			} catch (ClassCastException e2) {
-
-			}
-			return fraction;
-		}
-	}
-
 	private class LineOfSightCallback implements RayCastCallback {
 
 		public Vector2 target;
-
+		private float minFraction = Float.MAX_VALUE;
+		public boolean foundSomehting = false;
 		@Override
 		public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
-			target = point;
-			return fraction;
+			if(fraction < minFraction){
+				foundSomehting = true;
+				minFraction = fraction;
+				target = point.cpy();
+			}
+			
+			return 1;
 		}
 
 	}
@@ -97,7 +80,6 @@ public class PhysicsSystem implements Disposable {
 
 	private EntityContactResolver contactResolver;
 	private Box2DDebugRenderer debugRenderer;
-	private EntityRayCast rayCastCallback;
 
 	private Array<Body> removalList;
 	private OverlapCallback solidcallback;
@@ -106,7 +88,6 @@ public class PhysicsSystem implements Disposable {
 
 	public PhysicsSystem() {
 		world = new World(new Vector2(0, 0), true);
-		rayCastCallback = new EntityRayCast();
 		removalList = new Array<Body>();
 		contactResolver = new EntityContactResolver();
 		world.setContactListener(contactResolver);
@@ -213,24 +194,23 @@ public class PhysicsSystem implements Disposable {
 		if (origin.cpy().sub(target).len2() < 0) {
 			return false;
 		}
+		
 		LineOfSightCallback callback = new LineOfSightCallback();
-		callback.target = target;
+		callback.target = target.cpy();
 		world.rayCast(callback, origin, target);
-		p1 = origin;
-		p2 = callback.target;
-		float dist = callback.target.cpy().sub(target).len();
-		return dist <= 1.0f;
+		p1 = origin.cpy();
+		p2 = callback.target.cpy();
+		
+		if(callback.target == null){
+			return false;
+		}
+		
+		return target.cpy().sub(callback.target).len2() < 1.0f;
 	}
 
 	public Vector2 getLineOfSightHit() {
 		return p1;
 	}
-
-	public Vector2 rayCast(Vector2 origin, Vector2 direction) {
-		world.rayCast(rayCastCallback, origin, origin.cpy().add(direction).scl(300));
-		return rayCastCallback.targetPos;
-	}
-	
 
 	public void registerCallback(CollisionCallback callback, Entity e) {
 		contactResolver.addCollisionCallback(callback, e);
