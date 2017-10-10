@@ -65,7 +65,9 @@ public abstract class BehaviourNode{
 
 
     public abstract Node toDotNode();
-     
+    public abstract void mutate(float chance);
+    public abstract BehaviourNode randomized(Array<BehaviourNode> prototypes);
+    
     public String getColor() {
     	switch (status) {
     	case RUNNING: return "f3b61f";

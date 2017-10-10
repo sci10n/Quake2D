@@ -8,6 +8,8 @@ import guru.nidi.graphviz.attribute.Style;
 import org.omg.PortableInterceptor.SUCCESSFUL;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 
 import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
@@ -22,9 +24,6 @@ import se.sciion.quake2d.level.components.PhysicsComponent;
 public class CheckHealth extends BehaviourNode {
 
     private float ratio;
-
-    private String tag;
-    private Level level;
     
     public CheckHealth(float ratio) {
         this.ratio = ratio;
@@ -56,4 +55,17 @@ public class CheckHealth extends BehaviourNode {
 				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
                .with(Label.of("Health > " + ratio));
     }
+    
+	@Override
+	public void mutate(float chance) {
+		if(MathUtils.randomBoolean(chance)){
+			ratio += MathUtils.random(0.2f) - 0.1f;
+			ratio = MathUtils.clamp(ratio, 0.0f, 1.0f);
+		}
+	}
+
+	@Override
+	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+		return new CheckHealth(MathUtils.random());
+	}
 }

@@ -1,6 +1,8 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 import static guru.nidi.graphviz.model.Factory.node;
 import guru.nidi.graphviz.attribute.Shape;
@@ -19,11 +21,11 @@ import se.sciion.quake2d.level.system.Pathfinding;
 
 public class AttackNearest extends BehaviourNode{
 
-    private String id;
+    private String tag;
     private Level level;
 
-    public AttackNearest(String id, Level level) {
-        this.id = id;
+    public AttackNearest(String tag, Level level) {
+        this.tag = tag;
         this.level = level;
     }
 
@@ -47,7 +49,7 @@ public class AttackNearest extends BehaviourNode{
    
     	Entity nearestTarget = null;
     	double nearestDistance = 300.0;
-        for(Entity e: level.getEntities(id)) {
+        for(Entity e: level.getEntities(tag)) {
         	if(e == input.getParent()){
         		continue;
         	}
@@ -90,7 +92,20 @@ public class AttackNearest extends BehaviourNode{
         return node("attackNearest" + getNext())
                .with(Shape.RECTANGLE)
 				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
-               .with(Label.of("Attack " + id));
+               .with(Label.of("Attack " + tag));
     }
+
+	@Override
+	public void mutate(float chance) {
+		if(MathUtils.randomBoolean(chance)){
+			String tag = level.getTags().random();
+			this.tag = tag;
+		}
+	}
+
+	@Override
+	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+		return new AttackNearest(level.getTags().random(), level);
+	}
 
 }

@@ -1,6 +1,10 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
 import static guru.nidi.graphviz.model.Factory.node;
+
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
+
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
@@ -44,5 +48,18 @@ public class CheckArmor extends BehaviourNode {
 				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
                .with(Label.of("Armor > " + ratio));
     }
+
+	@Override
+	public void mutate(float chance) {
+		if(MathUtils.randomBoolean(chance)){
+			ratio += MathUtils.random(0.2f) - 0.1f;
+			ratio = MathUtils.clamp(ratio, 0.0f, 1.0f);
+		}
+	}
+	
+	@Override
+	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+		return new CheckArmor(MathUtils.random());
+	}
 }
 

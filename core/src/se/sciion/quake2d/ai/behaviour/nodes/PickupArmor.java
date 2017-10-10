@@ -1,5 +1,8 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
+import com.badlogic.gdx.utils.Array;
+
+import se.sciion.quake2d.ai.behaviour.BehaviourNode;
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.level.Level;
 import se.sciion.quake2d.level.components.BotInputComponent;
@@ -24,6 +27,11 @@ public class PickupArmor extends PickupConsumable {
 		
 		previousArmor = health.getArmor();
 		return restored;
+	}
+
+	@Override
+	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+		return new PickupArmor(level, tag);
 	}
 
 }

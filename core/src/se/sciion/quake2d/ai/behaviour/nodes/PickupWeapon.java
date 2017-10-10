@@ -5,6 +5,7 @@ import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -18,6 +19,7 @@ import se.sciion.quake2d.level.Level;
 import se.sciion.quake2d.level.components.BotInputComponent;
 import se.sciion.quake2d.level.components.InventoryComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
+import se.sciion.quake2d.level.items.Weapon;
 import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
@@ -90,5 +92,17 @@ public class PickupWeapon extends BehaviourNode {
 			   .with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
                .with(Label.of("Pick up " + id));
     }
+
+	@Override
+	public void mutate(float chance) {
+		if(MathUtils.randomBoolean(chance)){
+			id = Weapon.tags.random();
+		}
+	}
+
+	@Override
+	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+		return new PickupWeapon(Weapon.tags.random(), level, pathfinding);
+	}
 
 }

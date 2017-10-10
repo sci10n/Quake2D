@@ -15,12 +15,14 @@ import se.sciion.quake2d.level.components.BotInputComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 public abstract class PickupConsumable extends BehaviourNode {
 	
-	private Level level;
-	private String tag;
+	protected Level level;
+	protected String tag;
 
 	public PickupConsumable(Level level, String tag) {
 		super();
@@ -78,6 +80,11 @@ public abstract class PickupConsumable extends BehaviourNode {
 	}
 	
 	protected abstract boolean restored();
+	
+	@Override
+	public void mutate(float chance) {
+		
+	}
 	
 	@Override
 	public Node toDotNode() {

@@ -22,6 +22,10 @@ import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
 public class BTVisualizer extends JFrame{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private OrthographicCamera camera;
 	private PhysicsSystem physicsSystem;
 
@@ -133,6 +137,9 @@ public class BTVisualizer extends JFrame{
 		}
 		
 		BufferStrategy bs = getBufferStrategy();
+		if(bs == null)
+			return;
+		
 		Graphics g = bs.getDrawGraphics();
 		g.setColor(Color.WHITE);
 		g.drawRect(0, getInsets().top, offscreen.getWidth() + 10,

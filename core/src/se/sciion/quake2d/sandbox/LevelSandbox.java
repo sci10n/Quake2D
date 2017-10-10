@@ -7,6 +7,7 @@ import se.sciion.quake2d.ai.behaviour.ParallelNode;
 import se.sciion.quake2d.ai.behaviour.SelectorNode;
 import se.sciion.quake2d.ai.behaviour.SequenceNode;
 import se.sciion.quake2d.ai.behaviour.SucceederNode;
+import se.sciion.quake2d.ai.behaviour.TreePool;
 import se.sciion.quake2d.ai.behaviour.nodes.AttackNearest;
 import se.sciion.quake2d.ai.behaviour.nodes.CheckEntityDistance;
 import se.sciion.quake2d.ai.behaviour.nodes.CheckHealth;
@@ -213,8 +214,13 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 			float h = rect.height/ 64.0f;
 			String type = r.getProperties().get("type", String.class);
 			
+			Entity entity = level.createEntity(o.getName());
+			
+			HealthComponent health = new HealthComponent(2, 0, amountTexture);
+			physicsSystem.registerCallback(health, entity);
+			entity.addComponent(health);
+			
 			if(type.equals("Consumable")) {
-				Entity entity = level.createEntity(o.getName());
 				PolygonShape shape = new PolygonShape();
 				shape.setAsBox(w/2.0f,h/2.0f);
 
@@ -257,7 +263,6 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 				entity.addComponent(pickup);
 			}
 			else if(type.equals("Weapon")) {
-				Entity entity = level.createEntity(o.getName());
 				PolygonShape shape = new PolygonShape();
 				shape.setAsBox(w/2.0f,h/2.0f);
 
@@ -273,6 +278,9 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 				float spread = r.getProperties().get("spread",Float.class);
 				float speed = r.getProperties().get("speed", Float.class);
 				int baseDamage = r.getProperties().get("damage", Integer.class);
+				//int graphicsTile = r.getProperties().get("tile", Integer.class);
+				
+				Weapon.tags.add(o.getName());
 				if (o.getName().equals("shotgun")) {
 					SpriteComponent shotgunSprite = new SpriteComponent(tileSet.getTile(158 + 1).getTextureRegion(),
 					                                                  new Vector2(0.0f, 0.0f), new Vector2(-0.4f, -0.4f),
@@ -433,24 +441,26 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 				entity.addComponent(robotSpriteSheet);
 				entity.addComponent(new DamageBoostComponent());
 				
-				CheckHealth checkHealth = new CheckHealth(0.25f);
-				PickupHealth pickupHealth = new PickupHealth(level, "health");
-				PickupArmor pickupArmor = new PickupArmor(level, "armor");
-				PickupDamageBoost pickupBoost = new PickupDamageBoost(level, "damage");
+//				CheckHealth checkHealth = new CheckHealth(0.25f);
+//				PickupHealth pickupHealth = new PickupHealth(level, "health");
+//				PickupArmor pickupArmor = new PickupArmor(level, "armor");
+//				PickupDamageBoost pickupBoost = new PickupDamageBoost(level, "damage");
+//				
+//				PickupWeapon pickupWeaponShotgun = new PickupWeapon("shotgun",level,pathfinding);
+//				PickupWeapon pickupWeaponRifle = new PickupWeapon("rifle",level,pathfinding);
+//
+//				AttackNearest attackPlayer = new AttackNearest("player", level);
+//				MoveToNearest moveToPlayer = new MoveToNearest("player",level ,pathfinding,physicsSystem, 10.0f);
+//				
+//				CheckEntityDistance distanceCheck = new CheckEntityDistance("player", 15, level);
+//				
+//				SequenceNode s1 = new SequenceNode(new InverterNode(checkHealth), pickupHealth);
+//				SequenceNode s2 = new SequenceNode(new ParallelNode(1,new SequenceNode(distanceCheck, pickupWeaponShotgun), new SequenceNode(new InverterNode(distanceCheck), pickupWeaponRifle)),  new SucceederNode(pickupArmor), new SucceederNode(pickupBoost), moveToPlayer, attackPlayer);
+//				SelectorNode s3 = new SelectorNode(s1,s2);
 				
-				PickupWeapon pickupWeaponShotgun = new PickupWeapon("shotgun",level,pathfinding);
-				PickupWeapon pickupWeaponRifle = new PickupWeapon("rifle",level,pathfinding);
-
-				AttackNearest attackPlayer = new AttackNearest("player", level);
-				MoveToNearest moveToPlayer = new MoveToNearest("player",level ,pathfinding,physicsSystem, 10.0f);
-				
-				CheckEntityDistance distanceCheck = new CheckEntityDistance("player", 15, level);
-				
-				SequenceNode s1 = new SequenceNode(new InverterNode(checkHealth), pickupHealth);
-				SequenceNode s2 = new SequenceNode(new ParallelNode(1,new SequenceNode(distanceCheck, pickupWeaponShotgun), new SequenceNode(new InverterNode(distanceCheck), pickupWeaponRifle)),  new SucceederNode(pickupArmor), new SucceederNode(pickupBoost), moveToPlayer, attackPlayer);
-				SelectorNode s3 = new SelectorNode(s1,s2);
-				
-				BehaviourTree tree = new BehaviourTree(s3);
+				TreePool pool = new TreePool();
+				BehaviourTree tree = new BehaviourTree();
+				tree.randomize(pool.getPrototypes(level, physicsSystem, pathfinding));
 				botInput.setBehaviourTree(tree);
 			}
 		}

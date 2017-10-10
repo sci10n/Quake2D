@@ -1,15 +1,20 @@
 package se.sciion.quake2d.ai.behaviour;
 
-import static guru.nidi.graphviz.model.Factory.*;
+import static guru.nidi.graphviz.model.Factory.node;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
-
 import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 
+import com.badlogic.gdx.utils.Array;
+
 public class InverterNode extends DecoratorNode {
 
+	public InverterNode(){
+		super();
+	}
+	
     public InverterNode(BehaviourNode behaviour) {
         super(behaviour);
     }
@@ -40,6 +45,11 @@ public class InverterNode extends DecoratorNode {
 				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
                .with(Label.of("Invert"))
                .link(child.toDotNode());
+    }
+    
+    @Override
+    public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+    	return new InverterNode(prototypes.random().randomized(prototypes));
     }
 
 }

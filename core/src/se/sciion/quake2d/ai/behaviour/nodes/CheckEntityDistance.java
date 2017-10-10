@@ -4,7 +4,9 @@ import static guru.nidi.graphviz.model.Factory.node;
 
 import org.apache.bcel.generic.CPInstruction;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
@@ -26,13 +28,13 @@ import se.sciion.quake2d.level.components.PhysicsComponent;
  */
 public class CheckEntityDistance extends BehaviourNode{
 
-	private String targetId;
+	private String tag;
 	private float threshold;
 	private Level level;
 
-	public CheckEntityDistance(String targetId, float threshold, Level level) {
+	public CheckEntityDistance(String tag, float threshold, Level level) {
 		super();
-		this.targetId = targetId;
+		this.tag = tag;
 		this.threshold = threshold;
 		this.level = level;
 	}
@@ -48,7 +50,7 @@ public class CheckEntityDistance extends BehaviourNode{
 		
 		Vector2 fromPos = physics.getBody().getPosition();
 		float nearest = Float.MAX_VALUE;
-		for(Entity e: level.getEntities(targetId)){
+		for(Entity e: level.getEntities(tag)){
 			if(e == entityOwner){
 				continue;
 			}
@@ -81,7 +83,21 @@ public class CheckEntityDistance extends BehaviourNode{
 		 return node("entityDistance" + getNext())
 	               .with(Shape.ELLIPSE)
 					.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
-	               .with(Label.of("Distance to " + targetId + " < " + threshold));
+	               .with(Label.of("Distance to " + tag + " < " + threshold));
+	}
+
+	@Override
+	public void mutate(float chance) {
+		if(MathUtils.randomBoolean(chance)){
+			threshold += MathUtils.random(-2, 2);
+			threshold = MathUtils.clamp(threshold, 0, 40);
+			tag = level.getTags().random();
+		}
+	}
+
+	@Override
+	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+		return new CheckEntityDistance(level.getTags().random(), MathUtils.random(0, 40), level);
 	}
 
 }

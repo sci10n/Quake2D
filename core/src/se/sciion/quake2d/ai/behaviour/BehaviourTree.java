@@ -14,6 +14,11 @@ public class BehaviourTree implements BehaviorListener{
 	
     protected BehaviourNode root;
 
+    
+    public BehaviourTree(){
+    	
+    }
+    
     // Wrapper for the BehaviourTree. It is usually
     // easier to using BehaviourTreeBuilder though.
     public BehaviourTree(BehaviourNode behaviour) {
@@ -84,6 +89,22 @@ public class BehaviourTree implements BehaviorListener{
 		
 		dirty = true;
 		tree.dirty = true;
+	}
+	
+	public float getFitness(){
+		return 0.0f;
+	}
+
+	public void mutate(float mutationChance) {
+		Array<BehaviourNode> nodes = new Array<BehaviourNode>();
+		root.flatten(nodes);
+		nodes.random().mutate(mutationChance);
+		dirty = true;
+	}
+	
+	public void randomize(Array<BehaviourNode> prototypes){
+		root = prototypes.random().randomized(prototypes);
+		dirty = true;
 	}
 	
 	

@@ -5,6 +5,9 @@ import static guru.nidi.graphviz.model.Factory.node;
 import java.util.Arrays;
 import java.util.List;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
+
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Rank;
 import guru.nidi.graphviz.attribute.Shape;
@@ -17,6 +20,10 @@ public class SequenceNode extends CompositeNode{
 
     public SequenceNode() {
         super();
+    }
+    
+    public SequenceNode(Array<BehaviourNode> children){
+    	super(children);
     }
 
     public SequenceNode(BehaviourNode ...behaviourNodes){
@@ -56,5 +63,15 @@ public class SequenceNode extends CompositeNode{
 
         return sequence;
     }
+    
+	@Override
+	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+		int numChildren = MathUtils.random(1, 5);
+		Array<BehaviourNode> children = new Array<BehaviourNode>();
+		for(int i = 0; i <numChildren; i++){
+			children.add(prototypes.random().randomized(prototypes));
+		}
+		return new SequenceNode(children);
+	}
 
 }

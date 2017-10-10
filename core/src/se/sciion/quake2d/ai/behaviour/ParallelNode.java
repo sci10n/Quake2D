@@ -4,6 +4,9 @@ import static guru.nidi.graphviz.model.Factory.node;
 
 import org.apache.bcel.generic.RET;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
+
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Rank;
 import guru.nidi.graphviz.attribute.Shape;
@@ -15,11 +18,20 @@ public class ParallelNode extends CompositeNode {
 
 	private int threshold;
 
+	public ParallelNode(){
+		super();
+	}
+	
 	public ParallelNode(int threshold, BehaviourNode... nodes) {
 		super(nodes);
 		this.threshold = threshold;
 	}
 
+	public ParallelNode(int threshold, Array<BehaviourNode> nodes) {
+		super(nodes);
+		this.threshold = threshold;
+	}
+	
 	@Override
 	protected void onEnter() {
 		setStatus(BehaviourStatus.RUNNING);
@@ -60,5 +72,15 @@ public class ParallelNode extends CompositeNode {
 			sequence = sequence.link(child.toDotNode());
 
 		return sequence;
+	}
+
+	@Override
+	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+		int numChildren = MathUtils.random(1, 5);
+		Array<BehaviourNode> children = new Array<BehaviourNode>();
+		for(int i = 0; i <numChildren; i++){
+			children.add(prototypes.random().randomized(prototypes));
+		}
+		return new ParallelNode(MathUtils.random(1, numChildren), children);
 	}
 }

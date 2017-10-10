@@ -2,6 +2,9 @@ package se.sciion.quake2d.ai.behaviour;
 
 import static guru.nidi.graphviz.model.Factory.node;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
+
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Rank;
 import guru.nidi.graphviz.attribute.Shape;
@@ -21,6 +24,10 @@ public class SelectorNode extends CompositeNode {
         super();
     }
 
+    public SelectorNode(Array<BehaviourNode> children){
+    	super(children);
+    }
+    
     public SelectorNode(BehaviourNode... behaviourNodes) {
         super(behaviourNodes);
         currentChild = 0;
@@ -60,4 +67,15 @@ public class SelectorNode extends CompositeNode {
             selector = selector.link(child.toDotNode());
         return selector;
     }
+    
+	@Override
+	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+		int numChildren = MathUtils.random(1, 5);
+		Array<BehaviourNode> children = new Array<BehaviourNode>();
+		for(int i = 0; i <numChildren; i++){
+			children.add(prototypes.random().randomized(prototypes));
+		}
+		return new SelectorNode(children);
+	}
+	
 }

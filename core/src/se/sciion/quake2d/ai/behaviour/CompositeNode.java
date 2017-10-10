@@ -8,6 +8,19 @@ public abstract class CompositeNode extends BehaviourNode {
 	protected Array<BehaviourNode> children; // Sibling children.
 	protected int currentChild; // Current index
 
+	public CompositeNode(){
+		children = new Array<BehaviourNode>();
+		currentChild = 0;
+	}
+	
+	public CompositeNode(Array<BehaviourNode> nodes){
+		children = nodes;
+		for(BehaviourNode n : children) {
+			n.setParent(this);
+		}
+		currentChild = 0;
+	}
+	
 	public CompositeNode(BehaviourNode... nodes) {
 		children = new Array<BehaviourNode>(nodes);
 		for (BehaviourNode n : children) {
@@ -16,10 +29,11 @@ public abstract class CompositeNode extends BehaviourNode {
 		currentChild = 0;
 	}
 
-	// Default constructor if we want to dynamically add behaviours.
-	public CompositeNode() {
-		children = new Array<BehaviourNode>();
-		currentChild = 0;
+	@Override
+	public void mutate(float chance) {
+		for (BehaviourNode n : children) {
+			n.mutate(chance);
+		}
 	}
 
 	public void addChild(BehaviourNode node) {
@@ -57,4 +71,5 @@ public abstract class CompositeNode extends BehaviourNode {
 			n.setOwner(parent);
 		}
 	}
+	
 }

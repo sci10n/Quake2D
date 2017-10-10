@@ -4,7 +4,15 @@ import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.components.InventoryComponent;
 
+import com.badlogic.gdx.utils.Array;
+
 public class Weapon extends Item {
+	public static Array<String> tags;
+	
+	static {
+		tags = new Array<String>();
+	}
+	
 	public final float cooldown;
 	public final int bullets;
 	public final int capacity;

@@ -2,6 +2,7 @@ package se.sciion.quake2d.level;
 
 import java.util.HashMap;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.graphics.RenderModel;
@@ -11,6 +12,7 @@ public class Level {
 	protected Array<Entity> entities;
 	protected HashMap<String,Array<Entity>> complexEntities;
 	
+	private Array<String> tags;
 	private Array<Entity> removalList;
 	
 	
@@ -18,6 +20,7 @@ public class Level {
 		entities = new Array<Entity>(true, 16);
 		complexEntities = new HashMap<String,Array<Entity>>();
 		removalList = new Array<Entity>(true,16);
+		tags = new Array<String>();
 	}
 		
 	public void tick(float delta){
@@ -71,6 +74,7 @@ public class Level {
 	public Entity createEntity(String id){
 		Entity e = new Entity();
 		addComplexEntity(e, id);
+		tags.add(id);
 		entities.add(e);
 		return e;
 	}
@@ -91,6 +95,10 @@ public class Level {
 	
 	public Array<Entity> getEntities() {
 		return entities;
+	}
+
+	public Array<String> getTags() {
+		return tags;
 	}
 
 }

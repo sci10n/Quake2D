@@ -5,13 +5,12 @@ import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
 
-
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
-import net.dermetfan.utils.math.MathUtils;
-
 import se.sciion.quake2d.ai.behaviour.BehaviourNode;
 import se.sciion.quake2d.ai.behaviour.BehaviourStatus;
 import se.sciion.quake2d.enums.ComponentTypes;
@@ -106,5 +105,19 @@ public class MoveToNearest extends BehaviourNode {
 
         return node;
     }
+
+	@Override
+	public void mutate(float chance) {
+		if(MathUtils.randomBoolean(chance)){
+			tag = level.getTags().random();
+			minDistance += MathUtils.random(0.2f) - 0.1f;
+			minDistance = MathUtils.clamp(minDistance, 0, 40);
+		}
+	}
+
+	@Override
+	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+		return new MoveToNearest(level.getTags().random(), level, pathfinding, physics, MathUtils.random(40));
+	}
 
 }
