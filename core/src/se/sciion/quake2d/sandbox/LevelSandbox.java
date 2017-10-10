@@ -197,7 +197,7 @@ public class LevelSandbox extends ApplicationAdapter {
 			if(Gdx.input.isKeyJustPressed(Keys.Q))
 				endMatch();
 
-		}
+		} else endMatch();
 	}
 	
 }

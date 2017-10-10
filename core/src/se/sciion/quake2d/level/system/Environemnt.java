@@ -146,7 +146,7 @@ public class Environemnt implements Disposable{
 			
 			Entity entity = level.createEntity(o.getName());
 			
-			HealthComponent health = new HealthComponent(2, 0, amountRegion, level);
+			HealthComponent health = new HealthComponent(8, 0, amountRegion, level);
 			physicsSystem.registerCallback(health, entity);
 			entity.addComponent(health);
 			
@@ -208,7 +208,6 @@ public class Environemnt implements Disposable{
 				float spread = r.getProperties().get("spread",Float.class);
 				float speed = r.getProperties().get("speed", Float.class);
 				int baseDamage = r.getProperties().get("damage", Integer.class);
-				//int graphicsTile = r.getProperties().get("tile", Integer.class);
 				
 				Weapon.tags.add(o.getName());
 				if (o.getName().equals("shotgun")) {
@@ -254,7 +253,7 @@ public class Environemnt implements Disposable{
 				CircleShape shape = new CircleShape();
 				shape.setRadius(bodySize);
 				PhysicsComponent playerPhysics = physicsSystem.createComponent(x + w/2.0f, y + h/2.0f, BodyType.DynamicBody, shape, false);
-				WeaponComponent playerWeapon = new WeaponComponent(level,physicsSystem, bulletRegion, amountRegion);
+				WeaponComponent playerWeapon = new WeaponComponent(level,physicsSystem, bulletRegion, muzzleRegion);
 
 				SheetComponent playerSpriteSheet = new SheetComponent("stand");
 
