@@ -57,7 +57,6 @@ public class Pathfinding {
 					}
 					model.primitiveRenderer.setColor(new Color(vs[0] / net.dermetfan.utils.math.MathUtils.max(vs), 0.0f, vs[1] / net.dermetfan.utils.math.MathUtils.max(vs),1.0f));
 					
-					//model.primitiveRenderer.rect(grid[x][y].x - 0.5f, grid[x][y].y - 0.5f, 1.0f, 1.0f);
 					for(Vector2 neighbor: neighbors(grid[x][y])){
 						model.primitiveRenderer.line(grid[x][y], neighbor);
 					}

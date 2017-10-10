@@ -51,23 +51,26 @@ public class BotInputComponent extends EntityComponent {
 				batch.primitiveRenderer.setColor(Color.WHITE);
 				batch.primitiveRenderer.x(targetPosition, 0.03f);
 				batch.primitiveRenderer.end();
+			}
 
-			batch.primitiveRenderer.begin(ShapeType.Line);
 			if (currentPath.size != 0 && !hasTargetLos) {
 				for (int i = currentPath.size - 1; i >= 0; i--) {
+					batch.primitiveRenderer.begin(ShapeType.Line);
 					Vector2 p = currentPath.get(i);
 					batch.primitiveRenderer.setColor(Color.GOLD);
 					batch.primitiveRenderer.line(prev, p);
 					prev = p;
-				}
-				batch.primitiveRenderer.end();
+					batch.primitiveRenderer.end();
 
+				}
+			
 				if (hasTargetLos && lineOfSightHit != null) {
 					batch.primitiveRenderer.begin(ShapeType.Filled);
 					batch.primitiveRenderer.setColor(Color.WHITE);
 					batch.primitiveRenderer.rectLine(lineOfSightHit, targetPosition, 0.1f);
 					batch.primitiveRenderer.end();
 				}
+			
 			}
 		}
 	}
