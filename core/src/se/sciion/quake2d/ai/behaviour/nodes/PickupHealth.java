@@ -9,7 +9,7 @@ public class PickupHealth extends PickupConsumable{
 
 	private int previousHealth;
 	
-	public PickupHealth(BotInputComponent input, Level level, String tag) {
+	public PickupHealth(Level level, String tag) {
 		super(level, tag);
 		previousHealth = 0;
 	}

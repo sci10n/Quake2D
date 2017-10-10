@@ -21,13 +21,13 @@ import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
-public class PickUpItem extends BehaviourNode {
+public class PickupWeapon extends BehaviourNode {
 
     private String id;
     private Level level;
     private Pathfinding pathfinding;
 
-    public PickUpItem(String id, Level level, Pathfinding pathfinding) {
+    public PickupWeapon(String id, Level level, Pathfinding pathfinding) {
         this.id = id;
         this.level = level;
         this.pathfinding = pathfinding;

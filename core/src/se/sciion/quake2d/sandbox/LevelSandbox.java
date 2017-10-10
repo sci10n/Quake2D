@@ -1,6 +1,43 @@
 package se.sciion.quake2d.sandbox;
 
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import se.sciion.quake2d.ai.behaviour.BehaviourTree;
+import se.sciion.quake2d.ai.behaviour.InverterNode;
+import se.sciion.quake2d.ai.behaviour.ParallelNode;
+import se.sciion.quake2d.ai.behaviour.SelectorNode;
+import se.sciion.quake2d.ai.behaviour.SequenceNode;
+import se.sciion.quake2d.ai.behaviour.SucceederNode;
+import se.sciion.quake2d.ai.behaviour.nodes.AttackNearest;
+import se.sciion.quake2d.ai.behaviour.nodes.CheckEntityDistance;
+import se.sciion.quake2d.ai.behaviour.nodes.CheckHealth;
+import se.sciion.quake2d.ai.behaviour.nodes.MoveToNearest;
+import se.sciion.quake2d.ai.behaviour.nodes.PickupArmor;
+import se.sciion.quake2d.ai.behaviour.nodes.PickupDamageBoost;
+import se.sciion.quake2d.ai.behaviour.nodes.PickupHealth;
+import se.sciion.quake2d.ai.behaviour.nodes.PickupWeapon;
+import se.sciion.quake2d.ai.behaviour.visualizer.BTVisualizer;
+import se.sciion.quake2d.graphics.RenderModel;
+import se.sciion.quake2d.graphics.SheetRegion;
+import se.sciion.quake2d.level.Entity;
+import se.sciion.quake2d.level.Level;
+import se.sciion.quake2d.level.components.BotInputComponent;
+import se.sciion.quake2d.level.components.DamageBoostComponent;
+import se.sciion.quake2d.level.components.HealthComponent;
+import se.sciion.quake2d.level.components.InventoryComponent;
+import se.sciion.quake2d.level.components.PhysicsComponent;
+import se.sciion.quake2d.level.components.PickupComponent;
+import se.sciion.quake2d.level.components.PlayerInputComponent;
+import se.sciion.quake2d.level.components.SheetComponent;
+import se.sciion.quake2d.level.components.SpriteComponent;
+import se.sciion.quake2d.level.components.WeaponComponent;
+import se.sciion.quake2d.level.items.ArmorRestore;
+import se.sciion.quake2d.level.items.DamageBoost;
+import se.sciion.quake2d.level.items.HealthRestore;
+import se.sciion.quake2d.level.items.Item;
+import se.sciion.quake2d.level.items.Weapon;
+import se.sciion.quake2d.level.system.HealthListener;
+import se.sciion.quake2d.level.system.Pathfinding;
+import se.sciion.quake2d.level.system.PhysicsSystem;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -27,37 +64,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
-
-import se.sciion.quake2d.ai.behaviour.BehaviourTree;
-import se.sciion.quake2d.ai.behaviour.SequenceNode;
-import se.sciion.quake2d.ai.behaviour.SucceederNode;
-import se.sciion.quake2d.ai.behaviour.nodes.AttackNearest;
-import se.sciion.quake2d.ai.behaviour.nodes.MoveToNearest;
-import se.sciion.quake2d.ai.behaviour.nodes.PickUpItem;
-import se.sciion.quake2d.ai.behaviour.nodes.PickupArmor;
-import se.sciion.quake2d.ai.behaviour.visualizer.BTVisualizer;
-import se.sciion.quake2d.graphics.RenderModel;
-import se.sciion.quake2d.graphics.SheetRegion;
-import se.sciion.quake2d.level.Entity;
-import se.sciion.quake2d.level.Level;
-import se.sciion.quake2d.level.components.BotInputComponent;
-import se.sciion.quake2d.level.components.DamageBoostComponent;
-import se.sciion.quake2d.level.components.HealthComponent;
-import se.sciion.quake2d.level.components.InventoryComponent;
-import se.sciion.quake2d.level.components.PhysicsComponent;
-import se.sciion.quake2d.level.components.PickupComponent;
-import se.sciion.quake2d.level.components.PlayerInputComponent;
-import se.sciion.quake2d.level.components.SheetComponent;
-import se.sciion.quake2d.level.components.SpriteComponent;
-import se.sciion.quake2d.level.components.WeaponComponent;
-import se.sciion.quake2d.level.items.ArmorRestore;
-import se.sciion.quake2d.level.items.DamageBoost;
-import se.sciion.quake2d.level.items.HealthRestore;
-import se.sciion.quake2d.level.items.Item;
-import se.sciion.quake2d.level.items.Weapon;
-import se.sciion.quake2d.level.system.HealthListener;
-import se.sciion.quake2d.level.system.Pathfinding;
-import se.sciion.quake2d.level.system.PhysicsSystem;
 
 
 public class LevelSandbox extends ApplicationAdapter implements HealthListener {
@@ -403,25 +409,24 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 				entity.addComponent(robotSpriteSheet);
 				entity.addComponent(new DamageBoostComponent());
 				
-//				CheckHealth checkHealth = new CheckHealth(0.25f);
-//				PickupHealth pickupHealth = new PickupHealth(botInput, level, "health");
-//				PickupArmor pickupArmor = new PickupArmor(botInput, level, "armor");
-//				PickupDamageBoost pickupBoost = new PickupDamageBoost(botInput, level, "damage");
-//				
-//				PickUpItem pickupWeaponShotgun = new PickUpItem("shotgun",level,pathfinding);
-//				PickUpItem pickupWeaponRifle = new PickUpItem("rifle",level,pathfinding);
-//
-//				AttackNearest attackPlayer = new AttackNearest("player", level);
-//				MoveToNearest moveToPlayer = new MoveToNearest("player",level ,pathfinding,physicsSystem, 10.0f);
-//				
-//				CheckEntityDistance distanceCheck = new CheckEntityDistance("player", 15, level);
-//				
-//				SequenceNode s1 = new SequenceNode(new InverterNode(checkHealth), pickupHealth);
-//				SequenceNode s2 = new SequenceNode(new ParallelNode(1,new SequenceNode(distanceCheck, pickupWeaponShotgun), new SequenceNode(new InverterNode(distanceCheck), pickupWeaponRifle)),  new SucceederNode(pickupArmor), new SucceederNode(pickupBoost), moveToPlayer, attackPlayer);
-//				SelectorNode s3 = new SelectorNode(s1,s2);
+				CheckHealth checkHealth = new CheckHealth(0.25f);
+				PickupHealth pickupHealth = new PickupHealth(level, "health");
+				PickupArmor pickupArmor = new PickupArmor(level, "armor");
+				PickupDamageBoost pickupBoost = new PickupDamageBoost(level, "damage");
 				
+				PickupWeapon pickupWeaponShotgun = new PickupWeapon("shotgun",level,pathfinding);
+				PickupWeapon pickupWeaponRifle = new PickupWeapon("rifle",level,pathfinding);
+
+				AttackNearest attackPlayer = new AttackNearest("player", level);
+				MoveToNearest moveToPlayer = new MoveToNearest("player",level ,pathfinding,physicsSystem, 10.0f);
 				
-				BehaviourTree tree = new BehaviourTree(new SequenceNode(new SucceederNode(new PickUpItem("shotgun", level, pathfinding)), new SequenceNode( new MoveToNearest("player", level, pathfinding, physicsSystem, 10.0f), new AttackNearest("player", level))));
+				CheckEntityDistance distanceCheck = new CheckEntityDistance("player", 15, level);
+				
+				SequenceNode s1 = new SequenceNode(new InverterNode(checkHealth), pickupHealth);
+				SequenceNode s2 = new SequenceNode(new ParallelNode(1,new SequenceNode(distanceCheck, pickupWeaponShotgun), new SequenceNode(new InverterNode(distanceCheck), pickupWeaponRifle)),  new SucceederNode(pickupArmor), new SucceederNode(pickupBoost), moveToPlayer, attackPlayer);
+				SelectorNode s3 = new SelectorNode(s1,s2);
+				
+				BehaviourTree tree = new BehaviourTree(s3);
 				botInput.setBehaviourTree(tree);
 			}
 		}

@@ -204,8 +204,8 @@ public class PhysicsSystem implements Disposable {
 		if(callback.target == null){
 			return false;
 		}
-		float dist = callback.target.cpy().sub(target).len();
-		return dist <= 1.0f;
+		
+		return target.cpy().sub(callback.target).len2() < 1.0f;
 	}
 
 	public Vector2 getLineOfSightHit() {

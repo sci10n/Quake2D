@@ -57,6 +57,7 @@ public class Pathfinding {
 					}
 					model.primitiveRenderer.setColor(new Color(vs[0] / net.dermetfan.utils.math.MathUtils.max(vs), 0.0f, vs[1] / net.dermetfan.utils.math.MathUtils.max(vs),1.0f));
 					
+					//model.primitiveRenderer.rect(grid[x][y].x - 0.5f, grid[x][y].y - 0.5f, 1.0f, 1.0f);
 					for(Vector2 neighbor: neighbors(grid[x][y])){
 						model.primitiveRenderer.line(grid[x][y], neighbor);
 					}
@@ -73,17 +74,18 @@ public class Pathfinding {
 		int y = (int) v.y;
 		ArrayList<Vector2> n = new ArrayList<Vector2>();
 		try{
+			
 			// Diagonals cannot be trusted
-//			if (x > 0 && y > 0 && grid[x - 1][y - 1] != null){
+//			if (x > 0 && y > 0 && grid[x - 1][y - 1] != null && physics.lineOfSight(v, grid[x - 1][y - 1])){
 //				n.add(grid[x - 1][y - 1]);
 //			}
-//			if (x < WIDTH-1 && y > 0 && grid[x + 1][y - 1] != null){
+//			if (x < WIDTH-1 && y > 0 && grid[x + 1][y - 1] != null && physics.lineOfSight(v, grid[x + 1][y - 1])){
 //				n.add(grid[x + 1][y - 1]);
 //			}
-//			if (x < WIDTH-1 && y < HEIGHT-1 && grid[x + 1][y + 1] != null){
+//			if (x < WIDTH-1 && y < HEIGHT-1 && grid[x + 1][y + 1] != null && physics.lineOfSight(v, grid[x + 1][y + 1])){
 //				n.add(grid[x + 1][y + 1]);
 //			}
-//			if (x > 0 && y < HEIGHT-1 && grid[x - 1][y + 1] != null){
+//			if (x > 0 && y < HEIGHT-1 && grid[x - 1][y + 1] != null && physics.lineOfSight(v, grid[x - 1][y + 1])){
 //				n.add(grid[x - 1][y + 1]);
 //			}
 			
@@ -238,7 +240,7 @@ public class Pathfinding {
 			}
 			
 			if(physics.lineOfSight(enemyPos,target)){
-				total += 4;
+				total += 2;
 			}
 		}
 		return total;

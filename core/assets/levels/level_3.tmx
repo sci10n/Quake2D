@@ -291,12 +291,12 @@
  <objectgroup name="Spawns">
   <object id="35" name="BotSpawn" type="BotSpawn" x="1664" y="192" width="64" height="64">
    <properties>
-    <property name="health" type="int" value="100"/>
+    <property name="health" type="int" value="20"/>
    </properties>
   </object>
   <object id="172" name="BotSpawn" type="BotSpawn" x="192" y="1664" width="64" height="64">
    <properties>
-    <property name="health" type="int" value="100"/>
+    <property name="health" type="int" value="20"/>
    </properties>
   </object>
  </objectgroup>

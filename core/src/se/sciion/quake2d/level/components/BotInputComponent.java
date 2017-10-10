@@ -98,7 +98,7 @@ public class BotInputComponent extends EntityComponent {
 		Vector2 closestPoint = targetPosition;
 
 		// Only pathfind if we cant walk straight ahead
-		if (!physicsSystem.lineOfSight(origin, targetPosition) ) {
+		if (!physicsSystem.lineOfSight(origin, targetPosition) || Vector2.dst(origin.x, origin.y,targetPosition.x,targetPosition.y) > 10.0f ) {
 			hasTargetLos = false; // We need to pathfind here.
 
 			Array<Vector2> path = pathfinding.findPath(origin, targetPosition, parent);
