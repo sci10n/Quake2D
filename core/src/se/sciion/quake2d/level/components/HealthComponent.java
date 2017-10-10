@@ -143,6 +143,7 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 	@Override
 	public void tick(float delta) {
 		if (health <= 0 && hasBeenKilled == false) {
+			parent.setActive(false);
 			hasBeenKilled = true;
 			notifyListeners();
 		}
