@@ -97,7 +97,7 @@ public class PlayerInputComponent extends EntityComponent{
 		}
 		
 		// Set to weight pathfinding
-		//pathfinding.setPlayerPosition(body.getPosition());
+		// pathfinding.setPlayerPosition(body.getPosition());
 	}
 
 	@Override

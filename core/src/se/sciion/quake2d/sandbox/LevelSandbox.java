@@ -109,8 +109,8 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 		width = (int)(2*600 * Gdx.graphics.getDensity());
 		height = (int)(2*600 * Gdx.graphics.getDensity());
 		
-		Gdx.graphics.setWindowedMode(width, height);
 		Gdx.graphics.setTitle("Quake 2D");
+		Gdx.graphics.setWindowedMode(width, height);
 
 		setup();
 		loadAssets();
@@ -159,7 +159,7 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 		soundSystem.addSound("damage", Gdx.audio.newSound(Gdx.files.internal("audio/damage.wav")));
 		soundSystem.addSound("fight", Gdx.audio.newSound(Gdx.files.internal("audio/fight.wav")));
 		soundSystem.addSound("health", Gdx.audio.newSound(Gdx.files.internal("audio/health.wav")));
-		// soundSystem.addSound("hit", Gdx.audio.newSound(Gdx.files.internal("audio/hit.wav"))); 8-bit wtf?
+		soundSystem.addSound("hit", Gdx.audio.newSound(Gdx.files.internal("audio/hit.wav")));
 		soundSystem.addSound("impressive", Gdx.audio.newSound(Gdx.files.internal("audio/impressive.wav")));
 		soundSystem.addSound("move1", Gdx.audio.newSound(Gdx.files.internal("audio/move1.wav")));
 		soundSystem.addSound("move2", Gdx.audio.newSound(Gdx.files.internal("audio/move2.wav")));
@@ -167,6 +167,8 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 		soundSystem.addSound("shotgun", Gdx.audio.newSound(Gdx.files.internal("audio/shotgun.wav")));
 		soundSystem.addSound("sniper", Gdx.audio.newSound(Gdx.files.internal("audio/sniper.wav")));
 		soundSystem.addSound("weapon", Gdx.audio.newSound(Gdx.files.internal("audio/weapon.wav")));
+		soundSystem.addMusic("music", Gdx.audio.newMusic(Gdx.files.internal("audio/music.ogg")));
+		soundSystem.loopMusic("music");
 
 		assets.finishLoading();
 	}

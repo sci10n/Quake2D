@@ -85,8 +85,8 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 			armor = 0;
 		}
 		
-		// SoundSystem.getInstance()
-		//            .playSound("hit");
+		SoundSystem.getInstance()
+		           .playSound("hit");
 	}
 
     public void addListener(HealthListener l){
