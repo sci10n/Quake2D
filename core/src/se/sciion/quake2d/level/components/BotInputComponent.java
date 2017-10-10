@@ -47,11 +47,10 @@ public class BotInputComponent extends EntityComponent {
 			Vector2 prev = origin;
 
 			if (targetPosition != null) {
-				batch.primitiveRenderer.begin(ShapeType.Line);
+				batch.primitiveRenderer.begin(ShapeType.Filled);
 				batch.primitiveRenderer.setColor(Color.WHITE);
-				batch.primitiveRenderer.x(targetPosition.x, targetPosition.y, 0.2f);
+				batch.primitiveRenderer.x(targetPosition, 0.03f);
 				batch.primitiveRenderer.end();
-			}
 
 			batch.primitiveRenderer.begin(ShapeType.Line);
 			if (currentPath.size != 0 && !hasTargetLos) {
@@ -61,14 +60,14 @@ public class BotInputComponent extends EntityComponent {
 					batch.primitiveRenderer.line(prev, p);
 					prev = p;
 				}
-			}
-			batch.primitiveRenderer.end();
-
-			if (hasTargetLos && lineOfSightHit != null && targetPosition != null) {
-				batch.primitiveRenderer.begin(ShapeType.Line);
-				batch.primitiveRenderer.setColor(Color.WHITE);
-				batch.primitiveRenderer.line(lineOfSightHit, targetPosition);
 				batch.primitiveRenderer.end();
+
+				if (hasTargetLos && lineOfSightHit != null) {
+					batch.primitiveRenderer.begin(ShapeType.Filled);
+					batch.primitiveRenderer.setColor(Color.WHITE);
+					batch.primitiveRenderer.rectLine(lineOfSightHit, targetPosition, 0.1f);
+					batch.primitiveRenderer.end();
+				}
 			}
 		}
 	}

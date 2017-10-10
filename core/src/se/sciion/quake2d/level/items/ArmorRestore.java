@@ -23,4 +23,9 @@ public class ArmorRestore extends Item{
 		return false;
 	}
 
+	@Override
+	public String getPickUpSound() {
+		return "armor";
+	}
+
 }

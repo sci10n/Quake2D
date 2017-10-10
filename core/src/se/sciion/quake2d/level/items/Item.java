@@ -16,4 +16,6 @@ public abstract class Item {
 		return tag;
 	}
 	
+	public abstract String getPickUpSound();
+	
 }

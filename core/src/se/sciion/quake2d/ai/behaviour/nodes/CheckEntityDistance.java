@@ -78,10 +78,10 @@ public class CheckEntityDistance extends BehaviourNode{
 
 	@Override
 	public Node toDotNode() {
-		 return node("EntityDistance" + getNext())
-	               .with(Shape.RECTANGLE)
+		 return node("entityDistance" + getNext())
+	               .with(Shape.ELLIPSE)
 					.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
-	               .with(Label.of( targetId + " distance < " + threshold));
+	               .with(Label.of("Distance to " + targetId + " < " + threshold));
 	}
 
 }

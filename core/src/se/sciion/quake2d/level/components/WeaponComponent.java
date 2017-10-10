@@ -7,7 +7,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.Texture;
-
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.utils.Array;
 
@@ -17,6 +16,7 @@ import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.Level;
 import se.sciion.quake2d.level.items.Weapon;
 import se.sciion.quake2d.level.system.PhysicsSystem;
+import se.sciion.quake2d.level.system.SoundSystem;
 
 /**
  * Keep track of cooldowns related to weapons.
@@ -99,6 +99,8 @@ public class WeaponComponent extends EntityComponent {
 			Array<Weapon> weapons = inventory.getItems(Weapon.class);
 			if (weapons.size >= 1) {
 				Weapon currentWeapon = weapons.first();
+				SoundSystem.getInstance()
+				           .playSound(currentWeapon.getTag());
 
 				// Create bullets
 				for (int i = 0; i < currentWeapon.bullets; i++) {

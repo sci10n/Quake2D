@@ -24,4 +24,9 @@ public class DamageBoost extends Item{
 		return false;
 	}
 
+	@Override
+	public String getPickUpSound() {
+		return "damage";
+	}
+
 }

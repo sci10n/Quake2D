@@ -59,4 +59,9 @@ public class Weapon extends Item {
 		}
 		return super.equals(obj);
 	}
+
+	@Override
+	public String getPickUpSound() {
+		return "weapon";
+	}
 }

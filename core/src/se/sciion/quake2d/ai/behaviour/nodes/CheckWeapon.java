@@ -46,7 +46,7 @@ public class CheckWeapon extends BehaviourNode {
 
     @Override
     public Node toDotNode() {
-        return node("checkHealth" + getNext())
+        return node("checkWeapon" + getNext())
                .with(Shape.ELLIPSE)
 				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
                .with(Label.of("Weapon is " + weaponType));

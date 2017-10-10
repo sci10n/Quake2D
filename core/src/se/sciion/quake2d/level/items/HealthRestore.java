@@ -23,4 +23,9 @@ public class HealthRestore extends Item{
 		return false;
 	}
 
+	@Override
+	public String getPickUpSound() {
+		return "health";
+	}
+
 }
