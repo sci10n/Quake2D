@@ -58,7 +58,7 @@ public class TreePool {
 		prototypes.add(new PickupHealth(level, "health"));
 		prototypes.add(new PickupWeapon("", level, pathfinding));
 		prototypes.add(new InverterNode());
-		prototypes.add(new ParallelNode());
+		//prototypes.add(new ParallelNode());
 		prototypes.add(new SelectorNode());
 		prototypes.add(new SequenceNode());
 		prototypes.add(new SucceederNode());

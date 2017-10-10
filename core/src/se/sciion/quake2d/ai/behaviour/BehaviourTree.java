@@ -1,16 +1,16 @@
 package se.sciion.quake2d.ai.behaviour;
 import static guru.nidi.graphviz.model.Factory.graph;
-import guru.nidi.graphviz.model.Graph;
-import se.sciion.quake2d.ai.behaviour.visualizer.BehaviorListener;
-import se.sciion.quake2d.level.Entity;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
-public class BehaviourTree implements BehaviorListener{
+import guru.nidi.graphviz.model.Graph;
+import se.sciion.quake2d.level.Entity;
+
+public class BehaviourTree{
 	
+	public static boolean dirty = true;
 	// Node has changed state since last we checked;
-	private boolean dirty = true;
 	
     protected BehaviourNode root;
 
@@ -23,7 +23,6 @@ public class BehaviourTree implements BehaviorListener{
     // easier to using BehaviourTreeBuilder though.
     public BehaviourTree(BehaviourNode behaviour) {
         root = behaviour;
-        root.addListener(this);
     }
 
     public BehaviourStatus tick() {
@@ -34,11 +33,6 @@ public class BehaviourTree implements BehaviorListener{
         // Traverses the tree and produced a Graphviz traversable graph.
         return graph("BehaviourTree").directed().with(root.toDotNode());
     }
-
-	@Override
-	public void onStatusChanged(BehaviourNode node) {
-		dirty = true;
-	}
 	
 	public boolean isDirty(){
 		boolean tmp = dirty;
@@ -103,7 +97,15 @@ public class BehaviourTree implements BehaviorListener{
 	}
 	
 	public void randomize(Array<BehaviourNode> prototypes){
-		root = prototypes.random().randomized(prototypes);
+		BehaviourNode n = null;
+		while(n == null) {
+			n = prototypes.random();
+			if(!(n instanceof CompositeNode)) {
+				n = null;
+			}
+		}
+		
+		root = n.randomized(prototypes);
 		dirty = true;
 	}
 	

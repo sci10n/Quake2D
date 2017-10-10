@@ -22,7 +22,7 @@ public class PickupHealth extends PickupConsumable{
 		HealthComponent health = entityOwner.getComponent(ComponentTypes.Health);
 		boolean restored = false;
 		if(health != null){
-			restored = health.getHealth() > previousHealth;
+			restored = health.getHealth() > previousHealth || health.getHealth() >= health.MAX_HEALTH;
 		}
 		
 		previousHealth = health.getHealth();

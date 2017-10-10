@@ -191,7 +191,7 @@ public class PhysicsSystem implements Disposable {
 
 	// Check if two point are within each others line of sight
 	public boolean lineOfSight(Vector2 origin, Vector2 target) {
-		if (origin.cpy().sub(target).len2() < 0) {
+		if (origin.cpy().sub(target).len2() < 0.01f) {
 			return false;
 		}
 		

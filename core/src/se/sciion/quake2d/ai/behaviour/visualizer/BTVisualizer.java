@@ -84,6 +84,7 @@ public class BTVisualizer extends JFrame{
 		this.windowSize = size;
 		this.camera = camera;
 
+		running = true;
 		setFocusableWindowState(false);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
@@ -100,16 +101,13 @@ public class BTVisualizer extends JFrame{
 		setVisible(true);
 		
 		createBufferStrategy(2);
-		setVisible(false);
-
+		setVisible(true);
 		new Thread(){
-		
+			
 			public void run() {
 				while(running){
-					if (debugBot == null) setVisible(false);
-					else if(debugBot.getBehaviourTree().isDirty()) {
+					if (debugBot != null) {
 						visualize(debugBot.getBehaviourTree());
-						
 					}
 					try {
 						Thread.sleep(1000/Math.max(Gdx.graphics.getFramesPerSecond(),1));

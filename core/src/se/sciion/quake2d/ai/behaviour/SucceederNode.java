@@ -29,7 +29,7 @@ public class SucceederNode extends DecoratorNode {
     @Override
     protected BehaviourStatus onUpdate() {
     	BehaviourNode child = children.first();
-    	setStatus(child.tick());
+    	child.tick();
         if(child.getStatus() == BehaviourStatus.SUCCESS) {
         	setStatus(BehaviourStatus.SUCCESS);
         } else if(child.getStatus() == BehaviourStatus.FAILURE) {

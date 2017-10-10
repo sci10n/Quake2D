@@ -3,7 +3,6 @@ package se.sciion.quake2d.ai.behaviour;
 import com.badlogic.gdx.utils.Array;
 
 import guru.nidi.graphviz.model.Node;
-import se.sciion.quake2d.ai.behaviour.visualizer.BehaviorListener;
 import se.sciion.quake2d.level.Entity;
 
 public abstract class BehaviourNode{
@@ -13,8 +12,6 @@ public abstract class BehaviourNode{
 		return nodeId++;
 	}
 	
-	// Array to keep track of listeners
-	private Array<BehaviorListener> listeners;
 	// Since we haven't traversed this branch of the tree yet, we
     // set the current status of these nodes to become undefined.
     private BehaviourStatus status = BehaviourStatus.UNDEFINED;
@@ -30,7 +27,6 @@ public abstract class BehaviourNode{
     // If otherwise, we just update the behaviour for traversing.
 
 	public BehaviourNode() {
-		listeners = new Array<BehaviorListener>();
 	}
     
     protected void onEnter() {
@@ -41,15 +37,9 @@ public abstract class BehaviourNode{
     protected void onLeave() {
     }
     
-    protected void noitfyListeners(){
-    	for(BehaviorListener l: listeners){
-    		l.onStatusChanged(this);
-    	}
-    }
-    
     protected void setStatus(BehaviourStatus status) {
     	this.status = status;
-    	noitfyListeners();
+    	BehaviourTree.dirty = true;
     }
     
     protected BehaviourStatus getStatus(){
@@ -80,14 +70,6 @@ public abstract class BehaviourNode{
     
     public void flatten(Array<BehaviourNode> nodes){
     	nodes.add(this);
-    }
-    
-    public void addListener(BehaviorListener l){
-    	listeners.add(l);
-    }
-    
-    public void removeListener(BehaviorListener l){
-    	listeners.removeValue(l, true);
     }
     
     public void setOwner(Entity parent) {

@@ -7,7 +7,7 @@ import se.sciion.quake2d.level.Entity;
 public abstract class CompositeNode extends BehaviourNode {
 	protected Array<BehaviourNode> children; // Sibling children.
 	protected int currentChild; // Current index
-
+	
 	public CompositeNode(){
 		children = new Array<BehaviourNode>();
 		currentChild = 0;
@@ -25,6 +25,7 @@ public abstract class CompositeNode extends BehaviourNode {
 		children = new Array<BehaviourNode>(nodes);
 		for (BehaviourNode n : children) {
 			n.setParent(this);
+			n.setOwner(entityOwner);
 		}
 		currentChild = 0;
 	}
@@ -41,6 +42,7 @@ public abstract class CompositeNode extends BehaviourNode {
 		{
 			children.add(node);
 			node.setParent(this);
+			node.setOwner(entityOwner);
 		}
 	}
 

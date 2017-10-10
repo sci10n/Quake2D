@@ -135,7 +135,7 @@ public class WeaponComponent extends EntityComponent {
 						if(boost != null)
 							boostScl = boost.boost;
 						
-						DamageComponent damage = new DamageComponent((int) (currentWeapon.baseDamage * boostScl));
+						DamageComponent damage = new DamageComponent((int) (currentWeapon.baseDamage * boostScl), parent);
 						e.addComponent(damage);
 
 						physicsSystem.registerCallback(projectile, e);

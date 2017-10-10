@@ -39,8 +39,10 @@ public class CheckWeapon extends BehaviourNode {
         	for(Weapon w: inventory.getItems(Weapon.class)){
         		if(w.getTag().equals(weaponType)){
                 	setStatus(BehaviourStatus.SUCCESS);
+                	return getStatus();
         		}
         	}
+        	setStatus(BehaviourStatus.FAILURE);
         }
         else {
         	setStatus(BehaviourStatus.FAILURE);

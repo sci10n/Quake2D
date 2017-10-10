@@ -43,7 +43,8 @@ public class ParallelNode extends CompositeNode {
 		int numSuccess = 0;
 		int numFailures = 0;
 
-		for (BehaviourNode n : children) {
+		for(int i = 0; i < children.size; i++) {
+			BehaviourNode n = children.get(i);
 			BehaviourStatus status = n.tick();
 			if (status == BehaviourStatus.SUCCESS) {
 				numSuccess++;

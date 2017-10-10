@@ -50,7 +50,7 @@ public class AttackNearest extends BehaviourNode{
     	Entity nearestTarget = null;
     	double nearestDistance = 300.0;
         for(Entity e: level.getEntities(tag)) {
-        	if(e == input.getParent()){
+        	if(e == entityOwner || e.equals(entityOwner)){
         		continue;
         	}
         	

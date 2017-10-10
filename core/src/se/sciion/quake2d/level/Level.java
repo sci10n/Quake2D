@@ -15,12 +15,14 @@ public class Level {
 	private Array<String> tags;
 	private Array<Entity> removalList;
 	
+	private Statistics stats;
 	
 	public Level(){
 		entities = new Array<Entity>(true, 16);
 		complexEntities = new HashMap<String,Array<Entity>>();
 		removalList = new Array<Entity>(true,16);
 		tags = new Array<String>();
+		stats = new Statistics();
 	}
 		
 	public void tick(float delta){
@@ -99,6 +101,10 @@ public class Level {
 
 	public Array<String> getTags() {
 		return tags;
+	}
+	
+	public Statistics getStats() {
+		return stats;
 	}
 
 }
