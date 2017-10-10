@@ -1,5 +1,7 @@
 package se.sciion.quake2d.level.system;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -17,6 +19,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader.Parameters;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -28,18 +31,23 @@ import se.sciion.quake2d.ai.behaviour.ParallelNode;
 import se.sciion.quake2d.ai.behaviour.SelectorNode;
 import se.sciion.quake2d.ai.behaviour.SequenceNode;
 import se.sciion.quake2d.ai.behaviour.SucceederNode;
+import se.sciion.quake2d.ai.behaviour.nodes.NOPNode;
 import se.sciion.quake2d.ai.behaviour.nodes.AttackNearest;
+import se.sciion.quake2d.ai.behaviour.nodes.CheckWeapon;
 import se.sciion.quake2d.ai.behaviour.nodes.CheckEntityDistance;
 import se.sciion.quake2d.ai.behaviour.nodes.CheckHealth;
+import se.sciion.quake2d.ai.behaviour.nodes.CheckArmor;
 import se.sciion.quake2d.ai.behaviour.nodes.MoveToNearest;
 import se.sciion.quake2d.ai.behaviour.nodes.PickupArmor;
 import se.sciion.quake2d.ai.behaviour.nodes.PickupDamageBoost;
 import se.sciion.quake2d.ai.behaviour.nodes.PickupHealth;
 import se.sciion.quake2d.ai.behaviour.nodes.PickupWeapon;
+import se.sciion.quake2d.ai.behaviour.visualizer.BehaviourTreeVisualizer;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.graphics.SheetRegion;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.Level;
+import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.level.components.BotInputComponent;
 import se.sciion.quake2d.level.components.DamageBoostComponent;
 import se.sciion.quake2d.level.components.HealthComponent;
@@ -106,7 +114,6 @@ public class Environemnt implements Disposable{
 		TextureRegion amountRegion = new TextureRegion(assets.get("images/amount.png", Texture.class));
 		TextureRegion bulletRegion = new TextureRegion(assets.get("images/bullet.png", Texture.class));
 		TextureRegion muzzleRegion = new TextureRegion(assets.get("images/muzzle.png", Texture.class));
-
 		
 		MapLayer structuralLayer = map.getLayers().get("Structures");
 		for(MapObject o: structuralLayer.getObjects()) {
@@ -360,7 +367,8 @@ public class Environemnt implements Disposable{
 				entity.addComponent(robotSpriteSheet);
 				entity.addComponent(new DamageBoostComponent());
 				
-				CheckHealth checkHealth = new CheckHealth(0.25f);
+				CheckArmor checkArmor = new CheckArmor(0.25f);
+				CheckHealth checkHealth = new CheckHealth(0.50f);
 				PickupHealth pickupHealth = new PickupHealth(level, "health");
 				PickupArmor pickupArmor = new PickupArmor(level, "armor");
 				PickupDamageBoost pickupBoost = new PickupDamageBoost(level, "damage");
@@ -372,23 +380,43 @@ public class Environemnt implements Disposable{
 				MoveToNearest moveToPlayer = new MoveToNearest("player",level ,pathfinding,physicsSystem, 10.0f);
 				
 				CheckEntityDistance distanceCheck = new CheckEntityDistance("player", 15, level);
+				CheckEntityDistance otherDistanceCheck = new CheckEntityDistance("player", 5, level);
+				CheckWeapon rifleCheck = new CheckWeapon("rifle");
+				CheckWeapon shotgunCheck = new CheckWeapon("shotgun");
 				
 				SequenceNode s1 = new SequenceNode(new InverterNode(checkHealth), pickupHealth);
-				SequenceNode s2 = new SequenceNode(new ParallelNode(1,new SequenceNode(distanceCheck, pickupWeaponShotgun), new SequenceNode(new InverterNode(distanceCheck), pickupWeaponRifle)),  new SucceederNode(pickupArmor), new SucceederNode(pickupBoost), moveToPlayer, attackPlayer);
-				SelectorNode s3 = new SelectorNode(s1,s2);
+				SequenceNode s4 = new SequenceNode(new InverterNode(checkArmor), pickupArmor);
+				SequenceNode s2 = new SequenceNode(new SucceederNode(new SelectorNode(new SequenceNode(otherDistanceCheck, new InverterNode(shotgunCheck), pickupWeaponShotgun), new SequenceNode(distanceCheck, new InverterNode(rifleCheck), pickupWeaponRifle))),  new SucceederNode(pickupBoost), moveToPlayer, attackPlayer);
+				SelectorNode s3 = new SelectorNode(s1, s4, s2);
 				
 //				TreePool pool = new TreePool();
 				BehaviourTree tree = new BehaviourTree(s3);
 //				tree.randomize(pool.getPrototypes(level, physicsSystem, pathfinding));
+
 				botInput.setBehaviourTree(tree);
-//				visualizer.setDebugBot(botInput);
-//				System.out.println(entity);
+				BehaviourTreeVisualizer.getInstance().setDebugBot(botInput);
+			}
+		}
+	}
+
+	private void inspectBehaviourTree() {
+		if (BehaviourTreeVisualizer.getInstance().isPaused() && Gdx.input.isButtonPressed(Buttons.LEFT)) {
+			Vector3 screenMousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0.0f);
+			Vector3 mousePosition = camera.unproject(screenMousePosition);
+			PhysicsComponent component = physicsSystem.queryComponentAt(mousePosition.x, mousePosition.y);
+
+			if (component != null) {
+				if(component.getParent() != null){
+					BotInputComponent newDebugBot = component.getParent().getComponent(ComponentTypes.BotInput);
+					if(newDebugBot != null) BehaviourTreeVisualizer.getInstance().setDebugBot(newDebugBot);
+				}
 			}
 		}
 	}
 
 	public void render(RenderModel model) {
-		
+		inspectBehaviourTree();
+
 		renderer.setView(camera);
 		int[] layers = {0, 1, 2};
 		renderer.render(layers);
@@ -425,6 +453,7 @@ public class Environemnt implements Disposable{
 	public void dispose() {
 		map.dispose();
 		renderer.dispose();
+		BehaviourTreeVisualizer.getInstance().setDebugBot(null);
 	}
 	
 }

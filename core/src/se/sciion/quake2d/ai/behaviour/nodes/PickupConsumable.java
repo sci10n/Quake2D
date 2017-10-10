@@ -91,7 +91,7 @@ public abstract class PickupConsumable extends BehaviourNode {
 		  return node("pickupConsumable" + getNext())
 	               .with(Shape.RECTANGLE)
 				   .with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
-	               .with(Label.of("Pick up " + tag + " owner: " + entityOwner));
+	               .with(Label.of("Pick up " + tag));
 	}
 
 }

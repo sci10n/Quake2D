@@ -18,7 +18,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 
-import se.sciion.quake2d.ai.behaviour.visualizer.BTVisualizer;
+import se.sciion.quake2d.ai.behaviour.visualizer.BehaviourTreeVisualizer;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Level;
 import se.sciion.quake2d.level.Statistics;
@@ -39,7 +39,7 @@ public class LevelSandbox extends ApplicationAdapter {
     private boolean debugging = false;
 
     private Pathfinding pathfinding;
-	private BTVisualizer visualizer;
+	private BehaviourTreeVisualizer visualizer;
 
 	private PhysicsSystem physicsSystem;
 	private Environemnt environment;
@@ -55,14 +55,15 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	@Override
 	public void create() {
-		width = (int)(2*600 * Gdx.graphics.getDensity());
-		height = (int)(2*600 * Gdx.graphics.getDensity());
-		
-		Gdx.graphics.setTitle("Quake 2D");
+		width = (int)(3*600 * Gdx.graphics.getDensity());
+		height = (int)(3*600 * Gdx.graphics.getDensity());
 		Gdx.graphics.setWindowedMode(width, height);
+		Gdx.graphics.setTitle("Quake 2D");
 
-		visualizer = new BTVisualizer(width, camera, physicsSystem);
+		// This is a bit weird, but still make sense I guess...
+		visualizer = BehaviourTreeVisualizer.getInstance(width);
 		model = new RenderModel();
+
 		loadAssets();
 		beginMatch(levels.random());
 	}
@@ -128,6 +129,8 @@ public class LevelSandbox extends ApplicationAdapter {
 		
 		environment = new Environemnt(levelPath, level, physicsSystem, pathfinding, camera, assets);
 		environment.start();
+
+		SoundSystem.getInstance().playSound("fight");
 		
 		pathfinding.update(physicsSystem);
 	}
@@ -145,41 +148,56 @@ public class LevelSandbox extends ApplicationAdapter {
 		environment.dispose();
 		
 		Statistics stats = level.getStats();
-		System.out.println(stats.toString());
+
+		SoundSystem.getInstance().playSound("impressive");
+
+		beginMatch(levels.random());
+	}
+
+	private void toggleDebugDraw() {
+		debugging = !debugging;
+	}
+
+	private boolean isDebugging() {
+		return debugging;
 	}
 	
 	@Override
 	public void render() {
 		final float frameDelta = Gdx.graphics.getDeltaTime();
 		if (Gdx.input.isKeyJustPressed(Keys.O))
-			debugging = !debugging;
+			toggleDebugDraw();
 		
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
+
+		camera.update();
+
 		if(environment != null && environment.isRunning()) {
-			camera.update();
-	
-			if (!visualizer.pause()) {
+
+			if (!visualizer.isPaused()) {
 				level.tick(frameDelta);
 				physicsSystem.update(frameDelta);
 				physicsSystem.cleanup();
+
 				pathfinding.update(physicsSystem);
 				environment.tick(frameDelta);
 			}
-	
 
 			model.setProjectionMatrix(camera.combined);
 			environment.render(model);
-			if (debugging) {
+
+			if (isDebugging()) {
 				pathfinding.render(model);
 				physicsSystem.render(camera.combined);
 				level.debugRender(model);
 			}
 			
+			// Forcefully end the match right now.
 			if(Gdx.input.isKeyJustPressed(Keys.Q))
 				endMatch();
+
 		}
 	}
 	
-
 }

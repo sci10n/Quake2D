@@ -66,7 +66,11 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 		                          amountBar[0][0].getRegionWidth(), amountBar[0][0].getRegionHeight(),
 		                          1.0f / 48.0f, 1.0f / 48.0f, 0.0f);
 
-		batch.spriteRenderer.setColor(0.8f, 0.8f, 0.8f, 1.0f);
+		batch.spriteRenderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+		if (getArmor() == 0) return;
+
+		batch.spriteRenderer.setColor(0.1f, 0.1f, 0.8f, 1.0f);
 		batch.spriteRenderer.draw(amountBar[1][0], playerPosition.x - 0.5f, playerPosition.y - 1.0f, 0.0f, 0.0f,
 		                          amountBar[1][0].getRegionWidth(), amountBar[0][0].getRegionHeight(),
 		                          1.0f / 48.0f * ratioArmorLeft, 1.0f / 48.0f, 0.0f);
@@ -74,6 +78,7 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 		batch.spriteRenderer.draw(amountBar[0][0], playerPosition.x - 0.5f, playerPosition.y - 1.0f, 0.0f, 0.0f,
 		                          amountBar[0][0].getRegionWidth(), amountBar[0][0].getRegionHeight(),
 		                          1.0f / 48.0f, 1.0f / 48.0f, 0.0f);
+
 		batch.spriteRenderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	

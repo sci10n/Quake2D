@@ -58,6 +58,7 @@ public class ParallelNode extends CompositeNode {
 		} else if (numFailures > children.size - numSuccess) {
 			setStatus(BehaviourStatus.FAILURE);
 		}
+
 		return getStatus();
 	}
 
