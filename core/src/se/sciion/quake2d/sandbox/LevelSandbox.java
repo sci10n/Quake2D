@@ -18,7 +18,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 
-import se.sciion.quake2d.ai.behaviour.visualizer.BTVisualizer;
+import se.sciion.quake2d.ai.behaviour.visualizer.BehaviourTreeVisualizer;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Level;
 import se.sciion.quake2d.level.Statistics;
@@ -41,7 +41,7 @@ public class LevelSandbox extends ApplicationAdapter {
     private boolean paused = false;
     
     private Pathfinding pathfinding;
-	private BTVisualizer visualizer;
+	private BehaviourTreeVisualizer visualizer;
 
 	private PhysicsSystem physicsSystem;
 	private Environment environment;
@@ -59,17 +59,16 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	@Override
 	public void create() {
-		width = (int)(2*600 * Gdx.graphics.getDensity());
-		height = (int)(2*600 * Gdx.graphics.getDensity());
-
-		Gdx.graphics.setTitle("Quake 2D");
+		width = (int)(3*600 * Gdx.graphics.getDensity());
+		height = (int)(3*600 * Gdx.graphics.getDensity());
 		Gdx.graphics.setWindowedMode(width, height);
-		
-		//visualizer = new BTVisualizer(width, camera, physicsSystem);
+		Gdx.graphics.setTitle("Quake 2D");
+
+		// This is a bit weird, but still make sense I guess...
+		visualizer = BehaviourTreeVisualizer.getInstance(width);
 		model = new RenderModel();
 		assets = new AssetManager();
 
-		System.out.println("Hello World");
 		loadAssets();
 		beginMatch(levels.random());
 	}
@@ -79,27 +78,48 @@ public class LevelSandbox extends ApplicationAdapter {
 		assets.setLoader(TextureAtlas.class, new TextureAtlasLoader(new InternalFileHandleResolver()));
 		assets.setLoader(Sound.class, new SoundLoader(new InternalFileHandleResolver()));
 		assets.setLoader(Music.class, new MusicLoader(new InternalFileHandleResolver()));
-		
-		assets.load("images/spritesheet.atlas", TextureAtlas.class);
-		assets.load("images/bullet.png", Texture.class);
-		assets.load("images/amount.png", Texture.class);
-		assets.load("images/muzzle.png", Texture.class);
-		
-		assets.load("audio/armor.wav", Sound.class);
-		assets.load("audio/damage.wav", Sound.class);
-		assets.load("audio/fight.wav", Sound.class);
-		assets.load("audio/hit.wav", Sound.class);
-		assets.load("audio/impressive.wav", Sound.class);
-		assets.load("audio/move1.wav", Sound.class);
-		assets.load("audio/move2.wav", Sound.class);
-		assets.load("audio/rifle.wav", Sound.class);
-		assets.load("audio/shotgun.wav", Sound.class);
-		assets.load("audio/sniper.wav", Sound.class);
-		assets.load("audio/weapon.wav", Sound.class);
-		//assets.load("audio/music.ogg", Music.class);
+
+		String[] spriteSheets = {
+			"images/spritesheet.atlas"
+		};
+
+		for (String spriteSheetPath : spriteSheets) {
+			assets.load(spriteSheetPath, TextureAtlas.class);
+		}
+
+		String[] images = {
+			"images/bullet.png",
+			"images/amount.png",
+			"images/muzzle.png"
+		};
+
+		for (String imagePath : images) {
+			assets.load(imagePath, Texture.class);
+		}
+
+		String[] sounds = {
+			"audio/armor.wav",
+			"audio/damage.wav",
+			"audio/fight.wav",
+			"audio/health.wav",
+			"audio/hit.wav",
+			"audio/impressive.wav",
+			"audio/move1.wav",
+			"audio/move2.wav",
+			"audio/rifle.wav",
+			"audio/shotgun.wav",
+			"audio/sniper.wav",
+			"audio/weapon.wav",
+		};
+
+		for (String soundPath : sounds) {
+			assets.load(soundPath, Sound.class);
+		}
 
 		assets.finishLoading();
-		System.out.println("ASSETS LOADDED!");
+		
+		// Map over the path file names to logical name.
+		SoundSystem.getInstance().setup(assets, sounds);
 	}
 	
 	
@@ -112,6 +132,8 @@ public class LevelSandbox extends ApplicationAdapter {
 		
 		environment = new Environment(levelPath, level, physicsSystem, pathfinding, camera, assets);
 		environment.start();
+
+		SoundSystem.getInstance().playSound("fight");
 		
 		pathfinding.update(physicsSystem);
 	}
@@ -129,45 +151,58 @@ public class LevelSandbox extends ApplicationAdapter {
 		environment.dispose();
 		
 		Statistics stats = level.getStats();
-		System.out.println(stats.toString());
+
+		SoundSystem.getInstance().playSound("impressive");
+
+		beginMatch(levels.random());
+	}
+
+	private void toggleDebugDraw() {
+		DEBUG = !DEBUG;
+	}
+
+	private boolean isDebugging() {
+		return DEBUG;
 	}
 	
 	@Override
 	public void render() {
 		final float frameDelta = Gdx.graphics.getDeltaTime() * 1.0f;
 		if (Gdx.input.isKeyJustPressed(Keys.O))
-			DEBUG = !DEBUG;
+			toggleDebugDraw();
 		
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
-		
-		
-		if(environment.isRunning()) {
-			camera.update();
-			if(!paused){
+
+		camera.update();
+
+		if(environment != null && environment.isRunning()) {
+
+			if (!visualizer.isPaused()) {
 				level.tick(frameDelta);
 				physicsSystem.update(frameDelta);
 				physicsSystem.cleanup();
+
 				pathfinding.update(physicsSystem);
 				environment.tick(frameDelta);
 			}
 
 			model.setProjectionMatrix(camera.combined);
 			environment.render(model);
-			
-				physicsSystem.render(camera.combined);
-				if (DEBUG) {
-					level.debugRender(model);
-					pathfinding.render(model);
-				}
+
+			if (isDebugging()) {
+				pathfinding.render(model);
+				level.debugRender(model);
+				pathfinding.render(model);
+			}
+			physicsSystem.render(camera.combined);
+
 			
 		}
 		if(Gdx.input.isKeyJustPressed(Keys.Q) || !environment.isRunning()){
 			endMatch();
 			beginMatch(levels.random());
 		}
-
 	}
 	
-
 }

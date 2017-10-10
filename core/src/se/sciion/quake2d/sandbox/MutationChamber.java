@@ -19,7 +19,7 @@ import se.sciion.quake2d.ai.behaviour.nodes.PickupArmor;
 import se.sciion.quake2d.ai.behaviour.nodes.PickupDamageBoost;
 import se.sciion.quake2d.ai.behaviour.nodes.PickupHealth;
 import se.sciion.quake2d.ai.behaviour.nodes.PickupWeapon;
-import se.sciion.quake2d.ai.behaviour.visualizer.BTVisualizer;
+import se.sciion.quake2d.ai.behaviour.visualizer.BehaviourTreeVisualizer;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.Level;
 import se.sciion.quake2d.level.components.BotInputComponent;
@@ -32,8 +32,8 @@ import com.badlogic.gdx.utils.Array;
 
 public class MutationChamber extends ApplicationAdapter {
 	private Level level;
-	private BTVisualizer visualizer1;
-	private BTVisualizer visualizer2;
+	private BehaviourTreeVisualizer visualizer1;
+	private BehaviourTreeVisualizer visualizer2;
 	private BehaviourTree tree1;
 	private BehaviourTree tree2;
 	
@@ -46,8 +46,8 @@ public class MutationChamber extends ApplicationAdapter {
 	public void create() {
 		
 		level = new Level();
-		visualizer1 = new BTVisualizer(Gdx.graphics.getWidth());
-		visualizer2 = new BTVisualizer(Gdx.graphics.getWidth());
+		visualizer1 = new BehaviourTreeVisualizer(Gdx.graphics.getWidth());
+		visualizer2 = new BehaviourTreeVisualizer(Gdx.graphics.getWidth());
 		
 		Entity e1 = level.createEntity("player");
 		Entity e2 = level.createEntity("player");

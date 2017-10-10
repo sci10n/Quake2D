@@ -55,7 +55,7 @@ public class CheckWeapon extends BehaviourNode {
         return node("checkWeapon" + getNext())
                .with(Shape.ELLIPSE)
 				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
-               .with(Label.of("Weapon is " + weaponType));
+               .with(Label.of("Has " + weaponType + "?"));
     }
     
 	@Override

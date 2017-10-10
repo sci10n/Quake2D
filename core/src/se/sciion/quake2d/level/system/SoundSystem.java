@@ -2,12 +2,11 @@ package se.sciion.quake2d.level.system;
 
 import java.util.HashMap;
 import com.badlogic.gdx.audio.*;
-import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.assets.AssetManager;
 
-public class SoundSystem implements Disposable {
+public class SoundSystem {
 	private static SoundSystem instance;
 	private HashMap<String, Sound> sounds;
-	private HashMap<String, Music> musics;
     private boolean muted;
 	private float volume;
 
@@ -15,7 +14,13 @@ public class SoundSystem implements Disposable {
         this.muted = false;
 		this.volume = volume;
 		this.sounds = new HashMap<String, Sound>();
-		this.musics = new HashMap<String, Music>();
+	}
+
+	public void setup(AssetManager assetManager, String[] soundPaths) {
+		for (String soundPath : soundPaths) {
+			String soundName = soundPath.split("/")[1].split("\\.")[0];
+			addSound(soundName, assetManager.get(soundPath, Sound.class));
+		}
 	}
 	
 	public static SoundSystem getInstance() {
@@ -32,51 +37,23 @@ public class SoundSystem implements Disposable {
 		return true;
 	}
 
-	public boolean addMusic(String id, Music music) {
-		if(!musics.containsKey(id)) {
-			musics.put(id, music);
-		} else return false;
-
-		return true;
-	}
-
 	public void stopSounds() {
 		for (Sound sound : sounds.values())
 			sound.stop();
 	}
 
-	public void stopMusic() {
-		for (Music music : musics.values())
-			music.stop();
-	}
-
-	public void stopAll() {
-		stopSounds();
-		stopMusic();
-	}
-
     public void toggleMute() {
-        stopAll();
+        stopSounds();
         muted = !muted;
     }
 
 	public void playSound(String id) {
-        if (!muted)
-            getSound(id).play(volume);
-	}
-
-	public void loopMusic(String id) {
-        if (muted) return;
-		getMusic(id).setLooping(true);
-		getMusic(id).setVolume(volume);
-		getMusic(id).play();
+        if (!muted) getSound(id).play(volume);
 	}
 
 	public void setVolume(float volume) {
 		this.volume = volume;
-		stopSounds(); // Can't set volume.
-		for (Music music : musics.values())
-			music.setVolume(volume);
+		stopSounds();
 	}
 
 	public float getVolume() {
@@ -87,25 +64,8 @@ public class SoundSystem implements Disposable {
 		return sounds.get(id);
 	}
 
-	public Music getMusic(String id) {
-		return musics.get(id);
-	}
-
 	public void removeSound(String id) {
 		sounds.get(id).dispose();
 		sounds.remove(id);
-	}
-
-	public void removeMusic(String id) {
-		musics.get(id).dispose();
-		musics.remove(id);
-	}
-
-	@Override
-	public void dispose() {
-		for (Sound sound : sounds.values())
-			sound.dispose();
-		for (Music music : musics.values())
-			music.dispose();
 	}
 }
