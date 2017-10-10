@@ -4,14 +4,12 @@ package se.sciion.quake2d.level.components;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.Level;
 import se.sciion.quake2d.level.system.CollisionCallback;
-import se.sciion.quake2d.level.system.HealthListener;
 import se.sciion.quake2d.level.system.SoundSystem;
 
 /**
@@ -27,7 +25,6 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 	private int health;
 	private boolean hasBeenKilled;
 	
-	private Array<HealthListener> listeners;
 
     private TextureRegion amountTexture;
     private TextureRegion[][] amountBar;
@@ -38,7 +35,6 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 
 		super();
 		this.health = health;
-		this.listeners = new Array<HealthListener>();
 		this.amountTexture = amountTexture;
         this.amountBar = amountTexture.split(48, 10);
 		MAX_HEALTH = health;
@@ -81,8 +77,8 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 		return hasBeenKilled;
 	}
 	
-	public void remove(int amount, Entity responsible){
-		armor -= amount;
+	public void remove(float f, Entity responsible){
+		armor -= f;
 		if(armor < 0){
 			health = MathUtils.clamp(health + armor, 0, health);
 			armor = 0;
@@ -91,7 +87,7 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 		BotInputComponent input = parent.getComponent(ComponentTypes.BotInput);
 		BotInputComponent input2 = responsible.getComponent(ComponentTypes.BotInput);
 		if(input != null && input2 != null) {
-			level.getStats().recordDamageTaken(input2.getBehaviourTree(), input.getBehaviourTree(), amount);
+			level.getStats().recordDamageTaken(input2.getBehaviourTree(), input.getBehaviourTree(), f);
 			if(health <= 0) {
 				level.getStats().recordKill(input2.getBehaviourTree());
 			}
@@ -99,14 +95,6 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 		SoundSystem.getInstance() .playSound("hit");
 	}
 
-    public void addListener(HealthListener l){
-    	listeners.add(l);
-    }
-    
-    public void removeListener(HealthListener l){
-    	listeners.removeValue(l, true);
-    }
-	
 	public int getHealth() {
 		return health;
 	}
@@ -139,13 +127,7 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 	public void tick(float delta) {
 		if (health <= 0 && hasBeenKilled == false) {
 			hasBeenKilled = true;
-			notifyListeners();
-		}
-	}
-
-	private void notifyListeners() {
-		for (HealthListener hl : listeners) {
-			hl.onStatusChanged(this);
+			parent.setActive(false);
 		}
 	}
 

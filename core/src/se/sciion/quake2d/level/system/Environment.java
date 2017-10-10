@@ -55,10 +55,11 @@ import se.sciion.quake2d.level.items.DamageBoost;
 import se.sciion.quake2d.level.items.HealthRestore;
 import se.sciion.quake2d.level.items.Item;
 import se.sciion.quake2d.level.items.Weapon;
+import se.sciion.quake2d.sandbox.LevelSandbox;
 
-public class Environemnt implements Disposable{
+public class Environment implements Disposable{
 
-	private final float TIMEOUT = 60.0f;
+	private final float TIMEOUT = 300.0f;
 	private float ellapsed = 0.0f;
 	
 	private boolean running = false;
@@ -76,7 +77,7 @@ public class Environemnt implements Disposable{
 	
 	private AssetManager assets;
 	
-	public Environemnt(String mapPath, Level level, PhysicsSystem physicsSystem, Pathfinding pathfinding, OrthographicCamera camera, AssetManager assets) {
+	public Environment(String mapPath, Level level, PhysicsSystem physicsSystem, Pathfinding pathfinding, OrthographicCamera camera, AssetManager assets) {
 		this.level = level;
 		this.physicsSystem = physicsSystem;
 		this.pathfinding = pathfinding;
@@ -366,15 +367,12 @@ public class Environemnt implements Disposable{
 				PickupDamageBoost pickupBoost = new PickupDamageBoost(level, "damage");
 				
 				PickupWeapon pickupWeaponShotgun = new PickupWeapon("shotgun",level,pathfinding);
-				PickupWeapon pickupWeaponRifle = new PickupWeapon("rifle",level,pathfinding);
-
 				AttackNearest attackPlayer = new AttackNearest("player", level);
-				MoveToNearest moveToPlayer = new MoveToNearest("player",level ,pathfinding,physicsSystem, 10.0f);
+				MoveToNearest moveToPlayer = new MoveToNearest("player",level ,pathfinding,physicsSystem, 0.0f, 5.0f);
 				
-				CheckEntityDistance distanceCheck = new CheckEntityDistance("player", 15, level);
 				
 				SequenceNode s1 = new SequenceNode(new InverterNode(checkHealth), pickupHealth);
-				SequenceNode s2 = new SequenceNode(new ParallelNode(1,new SequenceNode(distanceCheck, pickupWeaponShotgun), new SequenceNode(new InverterNode(distanceCheck), pickupWeaponRifle)),  new SucceederNode(pickupArmor), new SucceederNode(pickupBoost), moveToPlayer, attackPlayer);
+				SequenceNode s2 = new SequenceNode(pickupWeaponShotgun,  new SucceederNode(pickupArmor), new SucceederNode(pickupBoost), moveToPlayer, attackPlayer);
 				SelectorNode s3 = new SelectorNode(s1,s2);
 				
 //				TreePool pool = new TreePool();
@@ -408,7 +406,7 @@ public class Environemnt implements Disposable{
 			running = false;
 		}
 		
-		if(level.getStats().getTotalKillcount() >= level.getEntities("player").size -1) {
+		if(level.getStats().getTotalKillcount() >= level.getEntities("player").size -1 && !LevelSandbox.DEBUG) {
 			running = false;
 		}
 	}
@@ -424,7 +422,6 @@ public class Environemnt implements Disposable{
 	@Override
 	public void dispose() {
 		map.dispose();
-		renderer.dispose();
 	}
 	
 }

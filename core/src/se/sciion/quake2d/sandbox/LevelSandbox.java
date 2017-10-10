@@ -22,9 +22,10 @@ import se.sciion.quake2d.ai.behaviour.visualizer.BTVisualizer;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Level;
 import se.sciion.quake2d.level.Statistics;
-import se.sciion.quake2d.level.system.Environemnt;
+import se.sciion.quake2d.level.system.Environment;
 import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
+import se.sciion.quake2d.level.system.SoundSystem;
 
 
 public class LevelSandbox extends ApplicationAdapter {
@@ -36,13 +37,14 @@ public class LevelSandbox extends ApplicationAdapter {
 	private Level level;
 	private RenderModel model;
 	
-    private boolean debugging = false;
-
+    public static boolean DEBUG = true;
+    private boolean paused = false;
+    
     private Pathfinding pathfinding;
 	private BTVisualizer visualizer;
 
 	private PhysicsSystem physicsSystem;
-	private Environemnt environment;
+	private Environment environment;
 	
 	private final Array<String> levels;
 	
@@ -50,6 +52,8 @@ public class LevelSandbox extends ApplicationAdapter {
 	private int height;
 	
 	public LevelSandbox(String ... levels) {
+		
+		SoundSystem.getInstance().toggleMute();
 		this.levels = new Array<String>(levels);
 	}
 	
@@ -57,18 +61,20 @@ public class LevelSandbox extends ApplicationAdapter {
 	public void create() {
 		width = (int)(2*600 * Gdx.graphics.getDensity());
 		height = (int)(2*600 * Gdx.graphics.getDensity());
-		
+
 		Gdx.graphics.setTitle("Quake 2D");
 		Gdx.graphics.setWindowedMode(width, height);
-
-		visualizer = new BTVisualizer(width, camera, physicsSystem);
+		
+		//visualizer = new BTVisualizer(width, camera, physicsSystem);
 		model = new RenderModel();
+		assets = new AssetManager();
+
+		System.out.println("Hello World");
 		loadAssets();
 		beginMatch(levels.random());
 	}
 
 	public void loadAssets() {
-		assets = new AssetManager();
 		assets.setLoader(Texture.class, new TextureLoader(new InternalFileHandleResolver()));
 		assets.setLoader(TextureAtlas.class, new TextureAtlasLoader(new InternalFileHandleResolver()));
 		assets.setLoader(Sound.class, new SoundLoader(new InternalFileHandleResolver()));
@@ -92,10 +98,7 @@ public class LevelSandbox extends ApplicationAdapter {
 		assets.load("audio/weapon.wav", Sound.class);
 		//assets.load("audio/music.ogg", Music.class);
 
-		while(!assets.update()) {
-			
-			System.out.println(assets.getProgress());
-		}
+		assets.finishLoading();
 		System.out.println("ASSETS LOADDED!");
 	}
 	
@@ -107,7 +110,7 @@ public class LevelSandbox extends ApplicationAdapter {
 		physicsSystem = new PhysicsSystem();
 		pathfinding = new Pathfinding(30, 30, level);
 		
-		environment = new Environemnt(levelPath, level, physicsSystem, pathfinding, camera, assets);
+		environment = new Environment(levelPath, level, physicsSystem, pathfinding, camera, assets);
 		environment.start();
 		
 		pathfinding.update(physicsSystem);
@@ -131,35 +134,39 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	@Override
 	public void render() {
-		final float frameDelta = Gdx.graphics.getDeltaTime();
+		final float frameDelta = Gdx.graphics.getDeltaTime() * 1.0f;
 		if (Gdx.input.isKeyJustPressed(Keys.O))
-			debugging = !debugging;
+			DEBUG = !DEBUG;
 		
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
-		if(environment != null && environment.isRunning()) {
+		
+		
+		if(environment.isRunning()) {
 			camera.update();
-	
-			if (!visualizer.pause()) {
+			if(!paused){
 				level.tick(frameDelta);
 				physicsSystem.update(frameDelta);
 				physicsSystem.cleanup();
 				pathfinding.update(physicsSystem);
 				environment.tick(frameDelta);
 			}
-	
 
 			model.setProjectionMatrix(camera.combined);
 			environment.render(model);
-			if (debugging) {
-				pathfinding.render(model);
-				physicsSystem.render(camera.combined);
-				level.debugRender(model);
-			}
 			
-			if(Gdx.input.isKeyJustPressed(Keys.Q))
-				endMatch();
+				physicsSystem.render(camera.combined);
+				if (DEBUG) {
+					level.debugRender(model);
+					pathfinding.render(model);
+				}
+			
 		}
+		if(Gdx.input.isKeyJustPressed(Keys.Q) || !environment.isRunning()){
+			endMatch();
+			beginMatch(levels.random());
+		}
+
 	}
 	
 

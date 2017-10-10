@@ -34,8 +34,9 @@ public class ProjectileComponent extends EntityComponent implements CollisionCal
 	public void process(Entity target) {
 		PhysicsComponent physics = getParent().getComponent(ComponentTypes.Physics);
 		if(physics != null){
-			physics.getBody().applyForceToCenter(direction.cpy(), true);
+			physics.getBody().setLinearVelocity(direction);
 		}
+		
 		// Make sure we don't remove when we collide with other projectiles
 		ProjectileComponent projectile = target.getComponent(ComponentTypes.Projectile);
 		if(projectile == null){
