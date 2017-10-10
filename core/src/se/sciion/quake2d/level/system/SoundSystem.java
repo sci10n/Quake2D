@@ -20,7 +20,7 @@ public class SoundSystem implements Disposable {
 	
 	public static SoundSystem getInstance() {
 		if (instance == null)
-			instance = new SoundSystem(0.2f);
+			instance = new SoundSystem(0.5f);
 		return instance;
 	}
 
