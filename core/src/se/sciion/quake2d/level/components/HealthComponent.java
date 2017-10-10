@@ -12,6 +12,7 @@ import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.system.CollisionCallback;
 import se.sciion.quake2d.level.system.HealthListener;
+import se.sciion.quake2d.level.system.SoundSystem;
 
 /**
  * Add to entities which should take damage.
@@ -84,6 +85,8 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 			armor = 0;
 		}
 		
+		// SoundSystem.getInstance()
+		//            .playSound("hit");
 	}
 
     public void addListener(HealthListener l){

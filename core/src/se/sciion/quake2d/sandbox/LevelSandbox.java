@@ -154,7 +154,7 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 		amountTexture = new TextureRegion(new Texture(Gdx.files.internal("images/amount.png")));
 		muzzleTexture = new TextureRegion(new Texture(Gdx.files.internal("images/muzzle.png")));
 
-		soundSystem = new SoundSystem(0.25f);
+		soundSystem = SoundSystem.getInstance();
 		soundSystem.addSound("armor", Gdx.audio.newSound(Gdx.files.internal("audio/armor.wav")));
 		soundSystem.addSound("damage", Gdx.audio.newSound(Gdx.files.internal("audio/damage.wav")));
 		soundSystem.addSound("fight", Gdx.audio.newSound(Gdx.files.internal("audio/fight.wav")));

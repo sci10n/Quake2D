@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.*;
 import com.badlogic.gdx.utils.Disposable;
 
 public class SoundSystem implements Disposable {
+	private static SoundSystem instance;
 	private HashMap<String, Sound> sounds;
 	private HashMap<String, Music> musics;
     private boolean muted;
@@ -15,6 +16,12 @@ public class SoundSystem implements Disposable {
 		this.volume = volume;
 		this.sounds = new HashMap<String, Sound>();
 		this.musics = new HashMap<String, Music>();
+	}
+	
+	public static SoundSystem getInstance() {
+		if (instance == null)
+			instance = new SoundSystem(0.2f);
+		return instance;
 	}
 
 	public boolean addSound(String id, Sound sound) {
