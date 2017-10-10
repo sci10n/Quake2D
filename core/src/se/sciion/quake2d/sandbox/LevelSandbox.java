@@ -25,7 +25,7 @@ import se.sciion.quake2d.level.Statistics;
 import se.sciion.quake2d.level.system.Environemnt;
 import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
-
+import se.sciion.quake2d.level.system.SoundSystem;
 
 public class LevelSandbox extends ApplicationAdapter {
 
@@ -69,34 +69,53 @@ public class LevelSandbox extends ApplicationAdapter {
 
 	public void loadAssets() {
 		assets = new AssetManager();
+
 		assets.setLoader(Texture.class, new TextureLoader(new InternalFileHandleResolver()));
 		assets.setLoader(TextureAtlas.class, new TextureAtlasLoader(new InternalFileHandleResolver()));
 		assets.setLoader(Sound.class, new SoundLoader(new InternalFileHandleResolver()));
 		assets.setLoader(Music.class, new MusicLoader(new InternalFileHandleResolver()));
-		
-		assets.load("images/spritesheet.atlas", TextureAtlas.class);
-		assets.load("images/bullet.png", Texture.class);
-		assets.load("images/amount.png", Texture.class);
-		assets.load("images/muzzle.png", Texture.class);
-		
-		assets.load("audio/armor.wav", Sound.class);
-		assets.load("audio/damage.wav", Sound.class);
-		assets.load("audio/fight.wav", Sound.class);
-		assets.load("audio/hit.wav", Sound.class);
-		assets.load("audio/impressive.wav", Sound.class);
-		assets.load("audio/move1.wav", Sound.class);
-		assets.load("audio/move2.wav", Sound.class);
-		assets.load("audio/rifle.wav", Sound.class);
-		assets.load("audio/shotgun.wav", Sound.class);
-		assets.load("audio/sniper.wav", Sound.class);
-		assets.load("audio/weapon.wav", Sound.class);
-		//assets.load("audio/music.ogg", Music.class);
 
-		while(!assets.update()) {
-			
-			System.out.println(assets.getProgress());
+		String[] spriteSheets = {
+			"images/spritesheet.atlas"
+		};
+
+		for (String spriteSheetPath : spriteSheets) {
+			assets.load(spriteSheetPath, TextureAtlas.class);
 		}
-		System.out.println("ASSETS LOADDED!");
+
+		String[] images = {
+			"images/bullet.png",
+			"images/amount.png",
+			"images/muzzle.png"
+		};
+
+		for (String imagePath : images) {
+			assets.load(imagePath, Texture.class);
+		}
+
+		String[] sounds = {
+			"audio/armor.wav",
+			"audio/damage.wav",
+			"audio/fight.wav",
+			"audio/health.wav",
+			"audio/hit.wav",
+			"audio/impressive.wav",
+			"audio/move1.wav",
+			"audio/move2.wav",
+			"audio/rifle.wav",
+			"audio/shotgun.wav",
+			"audio/sniper.wav",
+			"audio/weapon.wav",
+		};
+
+		for (String soundPath : sounds) {
+			assets.load(soundPath, Sound.class);
+		}
+
+		assets.finishLoading();
+		
+		// Map over the path file names to logical name.
+		SoundSystem.getInstance().setup(assets, sounds);
 	}
 	
 	
