@@ -101,7 +101,9 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 				level.getStats().recordKill(input2.getBehaviourTree());
 			}
 		}
-		SoundSystem.getInstance() .playSound("hit");
+
+		PhysicsComponent physics = parent.getComponent(ComponentTypes.Physics);
+		SoundSystem.getInstance().playSound("hit", physics.getBody().getPosition(), 1.0f);
 	}
 
     public void addListener(HealthListener l){

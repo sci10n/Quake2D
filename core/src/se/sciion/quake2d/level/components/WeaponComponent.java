@@ -99,8 +99,8 @@ public class WeaponComponent extends EntityComponent {
 			Array<Weapon> weapons = inventory.getItems(Weapon.class);
 			if (weapons.size >= 1) {
 				Weapon currentWeapon = weapons.first();
-				SoundSystem.getInstance()
-				           .playSound(currentWeapon.getTag());
+				SoundSystem.getInstance().playSound(currentWeapon.getTag(),
+				                                    origin, 1.0f);
 
 				// Create bullets
 				for (int i = 0; i < currentWeapon.bullets; i++) {

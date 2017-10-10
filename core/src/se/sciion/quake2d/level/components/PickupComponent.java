@@ -6,6 +6,7 @@ import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.items.Item;
+import com.badlogic.gdx.math.Vector2;
 import se.sciion.quake2d.level.system.CollisionCallback;
 import se.sciion.quake2d.level.system.SoundSystem;
 
@@ -40,8 +41,9 @@ public class PickupComponent extends EntityComponent implements CollisionCallbac
 		for(int i = 0; i < items.size; i++) {
 			Item item = items.get(i);
 			if(item.accepted(target)){
-				SoundSystem.getInstance()
-				           .playSound(item.getPickUpSound());
+				PhysicsComponent physics = target.getComponent(ComponentTypes.Physics);
+				SoundSystem.getInstance().playSound(item.getPickUpSound(),
+						physics.getBody().getPosition(), 1.0f);
 				removalList.add(item);
 			}
 		}

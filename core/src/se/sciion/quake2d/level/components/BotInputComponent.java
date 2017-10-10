@@ -26,6 +26,7 @@ public class BotInputComponent extends EntityComponent {
 	private boolean hasTargetLos = false;
 
 	private PhysicsSystem physicsSystem;
+	private boolean playLeftBoot = true;
 
 	private Vector2 previousPos;
 

@@ -2,6 +2,7 @@ package se.sciion.quake2d.level.system;
 
 import java.util.HashMap;
 import com.badlogic.gdx.audio.*;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.assets.AssetManager;
 
 public class SoundSystem {
@@ -49,6 +50,32 @@ public class SoundSystem {
 
 	public void playSound(String id) {
         if (!muted) getSound(id).play(volume);
+	}
+
+	public long loopSound(String id) {
+		if (!muted)
+			return getSound(id).loop(volume);
+		return 0;
+	}
+
+	public void playSound(String id, Vector2 position, float speed) {
+		if (!muted) {
+			float panning = ((position.x / 30.0f) - 0.5f)*2.0f;
+			long handle = getSound(id).play(volume);
+			getSound(id).setPitch(handle, speed);
+			getSound(id).setPan(handle, panning, volume);
+		}
+	}
+
+	public long loopSound(String id, Vector2 position, float speed) {
+		if (!muted) {
+			float panning = ((position.x / 30.0f) - 0.5f)*2.0f;
+			long handle = getSound(id).loop(volume);
+			getSound(id).setPitch(handle, speed);
+			getSound(id).setPan(handle, panning, volume);
+		}
+
+		return 0;
 	}
 
 	public void setVolume(float volume) {
