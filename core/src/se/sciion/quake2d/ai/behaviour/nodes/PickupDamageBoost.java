@@ -7,7 +7,7 @@ import se.sciion.quake2d.level.components.DamageBoostComponent;
 
 public class PickupDamageBoost extends PickupConsumable{
 
-	public PickupDamageBoost(BotInputComponent input, Level level, String tag) {
+	public PickupDamageBoost(Level level, String tag) {
 		super(level, tag);
 	}
 

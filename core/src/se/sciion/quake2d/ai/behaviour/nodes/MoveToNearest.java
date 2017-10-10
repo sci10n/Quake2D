@@ -68,7 +68,7 @@ public class MoveToNearest extends BehaviourNode {
             PhysicsComponent ePhysics = e.getComponent(ComponentTypes.Physics);
             if(ePhysics != null) {
                 Vector2 ePos = ePhysics.getBody().getPosition();
-                int pathLength = pathfinding.findPath(fromLoc,ePos).size;
+                int pathLength = pathfinding.findPath(fromLoc,ePos, parent).size;
                 if(pathLength < bestPath) {
                     bestPath = pathLength;
                     targetPos = ePos;

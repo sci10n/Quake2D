@@ -56,7 +56,10 @@ public class Level {
 	 * @return
 	 */
 	public Array<Entity> getEntities(String id) {
-		return complexEntities.get(id);
+		if(complexEntities.containsKey(id))
+			return complexEntities.get(id);
+		else 
+			return new Array<Entity>();
 	}
 	
 	public Entity createEntity() {

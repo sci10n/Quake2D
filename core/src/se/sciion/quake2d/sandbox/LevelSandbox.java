@@ -11,10 +11,10 @@ import se.sciion.quake2d.ai.behaviour.nodes.AttackNearest;
 import se.sciion.quake2d.ai.behaviour.nodes.CheckEntityDistance;
 import se.sciion.quake2d.ai.behaviour.nodes.CheckHealth;
 import se.sciion.quake2d.ai.behaviour.nodes.MoveToNearest;
-import se.sciion.quake2d.ai.behaviour.nodes.PickUpItem;
 import se.sciion.quake2d.ai.behaviour.nodes.PickupArmor;
 import se.sciion.quake2d.ai.behaviour.nodes.PickupDamageBoost;
 import se.sciion.quake2d.ai.behaviour.nodes.PickupHealth;
+import se.sciion.quake2d.ai.behaviour.nodes.PickupWeapon;
 import se.sciion.quake2d.ai.behaviour.visualizer.BTVisualizer;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.graphics.SheetRegion;
@@ -124,9 +124,9 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 
 		model = new RenderModel();
 		physicsSystem = new PhysicsSystem();
-		pathfinding = new Pathfinding(30, 30);
-		visualizer = new BTVisualizer(width, camera,
-				                      physicsSystem);
+		pathfinding = new Pathfinding(30, 30, level);
+
+		visualizer = new BTVisualizer(width, camera, physicsSystem);
 
 		// Reset the game.
 		gameEnded = false;
@@ -368,11 +368,10 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 				player.addComponent(new DamageBoostComponent());
 
 
-				pathfinding.setPlayerPosition(playerPhysics.getBody().getPosition());
 			}
 			else if(type.equals("BotSpawn")) {
 				playersAlive += 1;
-				Entity entity = level.createEntity("bot");
+				Entity entity = level.createEntity("player");
 
 				float bodySize = 0.25f;
 				CircleShape shape = new CircleShape();
@@ -433,17 +432,17 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 				entity.addComponent(new DamageBoostComponent());
 				
 				CheckHealth checkHealth = new CheckHealth(0.25f);
-				PickupHealth pickupHealth = new PickupHealth(botInput, level, "health");
-				PickupArmor pickupArmor = new PickupArmor(botInput, level, "armor");
-				PickupDamageBoost pickupBoost = new PickupDamageBoost(botInput, level, "damage");
+				PickupHealth pickupHealth = new PickupHealth(level, "health");
+				PickupArmor pickupArmor = new PickupArmor(level, "armor");
+				PickupDamageBoost pickupBoost = new PickupDamageBoost(level, "damage");
 				
-				PickUpItem pickupWeaponShotgun = new PickUpItem("shotgun",level,pathfinding);
-				PickUpItem pickupWeaponRifle = new PickUpItem("rifle",level,pathfinding);
+				PickupWeapon pickupWeaponShotgun = new PickupWeapon("shotgun",level,pathfinding);
+				PickupWeapon pickupWeaponRifle = new PickupWeapon("rifle",level,pathfinding);
 
-				AttackNearest attackPlayer = new AttackNearest("bot", level);
-				MoveToNearest moveToPlayer = new MoveToNearest("bot",level ,pathfinding,physicsSystem, 10.0f);
+				AttackNearest attackPlayer = new AttackNearest("player", level);
+				MoveToNearest moveToPlayer = new MoveToNearest("player",level ,pathfinding,physicsSystem, 10.0f);
 				
-				CheckEntityDistance distanceCheck = new CheckEntityDistance("bot", 15, level);
+				CheckEntityDistance distanceCheck = new CheckEntityDistance("player", 15, level);
 				
 				SequenceNode s1 = new SequenceNode(new InverterNode(checkHealth), pickupHealth);
 				SequenceNode s2 = new SequenceNode(new ParallelNode(1,new SequenceNode(distanceCheck, pickupWeaponShotgun), new SequenceNode(new InverterNode(distanceCheck), pickupWeaponRifle)),  new SucceederNode(pickupArmor), new SucceederNode(pickupBoost), moveToPlayer, attackPlayer);

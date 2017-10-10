@@ -9,7 +9,7 @@ public class PickupArmor extends PickupConsumable {
 
 	private int previousArmor;
 	
-	public PickupArmor(BotInputComponent input, Level level, String tag) {
+	public PickupArmor(Level level, String tag) {
 		super(level, tag);
 		previousArmor = 0;
 	}
