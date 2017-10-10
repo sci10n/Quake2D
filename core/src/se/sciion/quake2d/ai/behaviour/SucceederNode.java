@@ -5,8 +5,6 @@ import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.RankDir;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
-
-
 import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 
@@ -23,6 +21,7 @@ public class SucceederNode extends DecoratorNode {
 
     @Override
     protected BehaviourStatus onUpdate() {
+    	BehaviourNode child = children.first();
     	setStatus(child.tick());
         if(child.getStatus() == BehaviourStatus.SUCCESS) {
         	setStatus(BehaviourStatus.SUCCESS);
@@ -34,6 +33,7 @@ public class SucceederNode extends DecoratorNode {
 
     @Override
     public Node toDotNode() {
+    	BehaviourNode child = children.first();
         return node("succeeder" + getNext())
                    .with(Shape.RECTANGLE)
 					.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())

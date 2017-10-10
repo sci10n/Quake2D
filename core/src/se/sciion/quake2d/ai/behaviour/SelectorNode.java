@@ -36,10 +36,10 @@ public class SelectorNode extends CompositeNode {
 
     @Override
     protected BehaviourStatus onUpdate() {
-        if (currentChild < children.size() && !children.isEmpty()) {
+        if (currentChild < children.size && children.size != 0) {
         	setStatus(children.get(currentChild).tick());
             if (getStatus() == BehaviourStatus.FAILURE) {
-                if (currentChild < children.size()) {
+                if (currentChild < children.size) {
                     ++currentChild;
                     return onUpdate();
                 }

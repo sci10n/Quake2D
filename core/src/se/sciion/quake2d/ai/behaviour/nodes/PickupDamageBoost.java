@@ -13,7 +13,7 @@ public class PickupDamageBoost extends PickupConsumable{
 
 	@Override
 	protected boolean restored() {
-		DamageBoostComponent boost = parent.getComponent(ComponentTypes.Boost);
+		DamageBoostComponent boost = entityOwner.getComponent(ComponentTypes.Boost);
 		boolean restored = false;
 		if(boost != null){
 			restored = boost.boost > 1.0f;

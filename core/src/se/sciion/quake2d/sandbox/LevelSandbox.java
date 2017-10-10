@@ -469,6 +469,7 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 	
 	@Override
 	public void render() {
+		final float frameDelta = Gdx.graphics.getDeltaTime();
 		if (Gdx.input.isKeyJustPressed(Keys.O))
 			debugging = !debugging;
         if (Gdx.input.isKeyJustPressed(Keys.M))
@@ -477,8 +478,8 @@ public class LevelSandbox extends ApplicationAdapter implements HealthListener {
 		camera.update();
 
 		if (!visualizer.pause()) {
-			level.tick(Gdx.graphics.getDeltaTime());
-			physicsSystem.update(Gdx.graphics.getDeltaTime());
+			level.tick(frameDelta);
+			physicsSystem.update(frameDelta);
 			physicsSystem.cleanup();
 			pathfinding.update(physicsSystem);
 		}

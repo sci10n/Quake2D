@@ -16,7 +16,7 @@ public class PickupHealth extends PickupConsumable{
 
 	@Override
 	protected boolean restored() {
-		HealthComponent health = parent.getComponent(ComponentTypes.Health);
+		HealthComponent health = entityOwner.getComponent(ComponentTypes.Health);
 		boolean restored = false;
 		if(health != null){
 			restored = health.getHealth() > previousHealth;

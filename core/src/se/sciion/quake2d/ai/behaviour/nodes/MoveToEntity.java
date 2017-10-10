@@ -49,13 +49,13 @@ public class MoveToEntity extends BehaviourNode {
             return getStatus();
         }
 
-        PhysicsComponent physics = parent.getComponent(ComponentTypes.Physics);
+        PhysicsComponent physics = entityOwner.getComponent(ComponentTypes.Physics);
         if (physics == null) {
         	setStatus(BehaviourStatus.FAILURE);
             return getStatus();
         }
         
-		BotInputComponent input = parent.getComponent(ComponentTypes.BotInput);
+		BotInputComponent input = entityOwner.getComponent(ComponentTypes.BotInput);
 		if(input == null){
 			setStatus(BehaviourStatus.FAILURE);
 			return getStatus();

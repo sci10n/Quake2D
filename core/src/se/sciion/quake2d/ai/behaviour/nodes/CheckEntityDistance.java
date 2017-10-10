@@ -40,7 +40,7 @@ public class CheckEntityDistance extends BehaviourNode{
 	@Override
 	protected BehaviourStatus onUpdate() {
 		
-		PhysicsComponent physics = parent.getComponent(ComponentTypes.Physics);
+		PhysicsComponent physics = entityOwner.getComponent(ComponentTypes.Physics);
 		if(physics == null){
 			setStatus(BehaviourStatus.FAILURE);
 			return getStatus();
@@ -49,7 +49,7 @@ public class CheckEntityDistance extends BehaviourNode{
 		Vector2 fromPos = physics.getBody().getPosition();
 		float nearest = Float.MAX_VALUE;
 		for(Entity e: level.getEntities(targetId)){
-			if(e == parent){
+			if(e == entityOwner){
 				continue;
 			}
 			

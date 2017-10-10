@@ -38,7 +38,7 @@ public class CheckHealth extends BehaviourNode {
     @Override
     protected BehaviourStatus onUpdate() {
     	
-		HealthComponent health = parent.getComponent(ComponentTypes.Health);
+		HealthComponent health = entityOwner.getComponent(ComponentTypes.Health);
 		if(health != null && health.ratioHealth() > ratio) {
 			setStatus(BehaviourStatus.SUCCESS);
 		}

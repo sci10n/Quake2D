@@ -41,9 +41,9 @@ public class PickupWeapon extends BehaviourNode {
     @Override
     protected BehaviourStatus onUpdate() {
 
-        PhysicsComponent physics = parent.getComponent(ComponentTypes.Physics);
-        InventoryComponent inventory = parent.getComponent(ComponentTypes.Inventory);
-        BotInputComponent input = parent.getComponent(ComponentTypes.BotInput);
+        PhysicsComponent physics = entityOwner.getComponent(ComponentTypes.Physics);
+        InventoryComponent inventory = entityOwner.getComponent(ComponentTypes.Inventory);
+        BotInputComponent input = entityOwner.getComponent(ComponentTypes.BotInput);
         if(inventory == null || physics == null || input == null){
         	setStatus(BehaviourStatus.FAILURE);
             return getStatus();
@@ -64,7 +64,7 @@ public class PickupWeapon extends BehaviourNode {
         	PhysicsComponent p = e.getComponent(ComponentTypes.Physics);
             if(p != null){
                 Vector2 ePos = p.getBody().getPosition();
-                int pathLength = pathfinding.findPath(fromPos, ePos, parent).size;
+                int pathLength = pathfinding.findPath(fromPos, ePos, entityOwner).size;
 
                 if(pathLength < bestPath){
                     bestPath = pathLength;

@@ -29,7 +29,7 @@ public class CheckWeapon extends BehaviourNode {
     @Override
     protected BehaviourStatus onUpdate() {
 
-		InventoryComponent inventory = parent.getComponent(ComponentTypes.Inventory);
+		InventoryComponent inventory = entityOwner.getComponent(ComponentTypes.Inventory);
 
         if(inventory != null) {
         	for(Weapon w: inventory.getItems(Weapon.class)){

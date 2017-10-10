@@ -36,8 +36,8 @@ public class AttackNearest extends BehaviourNode{
     @Override
     protected BehaviourStatus onUpdate() {
 
-        BotInputComponent input = parent.getComponent(ComponentTypes.BotInput);
-        PhysicsComponent physics =parent.getComponent(ComponentTypes.Physics);
+        BotInputComponent input = entityOwner.getComponent(ComponentTypes.BotInput);
+        PhysicsComponent physics =entityOwner.getComponent(ComponentTypes.Physics);
         if (physics == null) {
         	setStatus(BehaviourStatus.FAILURE);
             return getStatus();

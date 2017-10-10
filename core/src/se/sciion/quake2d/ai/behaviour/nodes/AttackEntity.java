@@ -33,8 +33,8 @@ public class AttackEntity extends BehaviourNode{
     protected BehaviourStatus onUpdate() {
 
         PhysicsComponent targetPhysics = target.getComponent(ComponentTypes.Physics);
-        PhysicsComponent physics = parent.getComponent(ComponentTypes.Physics);
-        BotInputComponent input = parent.getComponent(ComponentTypes.BotInput);
+        PhysicsComponent physics = entityOwner.getComponent(ComponentTypes.Physics);
+        BotInputComponent input = entityOwner.getComponent(ComponentTypes.BotInput);
         if(targetPhysics == null || physics == null || input == null) {
         	setStatus(BehaviourStatus.FAILURE);
             return getStatus();

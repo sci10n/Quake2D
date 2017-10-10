@@ -31,6 +31,49 @@ public class BTVisualizer extends JFrame{
 	private boolean paused = false;
 	private boolean running = true;
 	
+	private BufferedImage offscreen;
+	
+	public BTVisualizer(int size) {
+		super("Quake 2D - Behaviour Tree");
+
+		running = true;
+		setFocusableWindowState(false);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+		// Don't destroy the window just yet baby. Allow users
+		// to close the window if they really want to mkay....
+		addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+				setVisible(false);
+				debugBot = null;
+			}
+		});
+		setResizable(false);
+		setVisible(true);
+		
+		createBufferStrategy(2);
+		setVisible(true);
+		new Thread(){
+			
+			public void run() {
+				while(running){
+					if (debugBot != null) {
+						visualize(debugBot.getBehaviourTree());
+					}
+					try {
+						Thread.sleep(1000/Math.max(Gdx.graphics.getFramesPerSecond(),1));
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				setVisible(false);
+				dispose();
+			};
+		}.start();
+	}
+	
 	public BTVisualizer(int size, OrthographicCamera camera, PhysicsSystem physicsSystem) {
 		super("Quake 2D - Behaviour Tree");
 		this.physicsSystem = physicsSystem;
@@ -61,8 +104,8 @@ public class BTVisualizer extends JFrame{
 				while(running){
 					if (debugBot == null) setVisible(false);
 					else if(debugBot.getBehaviourTree().isDirty()) {
-						setVisible(true);
 						visualize(debugBot.getBehaviourTree());
+						
 					}
 					try {
 						Thread.sleep(1000/Math.max(Gdx.graphics.getFramesPerSecond(),1));
@@ -79,26 +122,33 @@ public class BTVisualizer extends JFrame{
 		
 	}
 
-	private void visualize(BehaviourTree behaviourTree) {
+	private synchronized void visualize(BehaviourTree behaviourTree) {
 		Graph btGraph = behaviourTree.toDotGraph();
-		BufferedImage btImage = Graphviz.fromGraph(btGraph)
-			                            .width(windowSize)
-			                            .render(Format.PNG).toImage();
-
-		setSize(btImage.getWidth() + 10, btImage.getHeight() + getInsets().top + 5);
-		BufferStrategy bs = getBufferStrategy();
+		if(offscreen == null || behaviourTree.isDirty()){
+			offscreen = Graphviz.fromGraph(btGraph)
+				                            .width(windowSize)
+				                            .render(Format.PNG).toImage();
+	
+			setSize(offscreen.getWidth() + 10, offscreen.getHeight() + getInsets().top + 5);
+		}
 		
+		BufferStrategy bs = getBufferStrategy();
 		Graphics g = bs.getDrawGraphics();
 		g.setColor(Color.WHITE);
-		g.drawRect(0, getInsets().top, btImage.getWidth() + 10,
-				   btImage.getHeight() + 5);
-		g.drawImage(btImage, 5, getInsets().top, null);
+		g.drawRect(0, getInsets().top, offscreen.getWidth() + 10,
+				offscreen.getHeight() + 5);
+		g.drawImage(offscreen, 5, getInsets().top, null);
 		g.dispose();
 		bs.show();
+
 	}
 	
 	public void setRunning(boolean running){
 		this.running = running;
+	}
+	
+	public void setDebugBot(BotInputComponent component){
+		this.debugBot = component;
 	}
 	
 	public boolean pause() {

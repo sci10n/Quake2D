@@ -43,8 +43,8 @@ public abstract class PickupConsumable extends BehaviourNode {
 			return getStatus();
 		}
 		
-		PhysicsComponent physicsComponent = parent.getComponent(ComponentTypes.Physics);
-		BotInputComponent input = parent.getComponent(ComponentTypes.BotInput);
+		PhysicsComponent physicsComponent = entityOwner.getComponent(ComponentTypes.Physics);
+		BotInputComponent input = entityOwner.getComponent(ComponentTypes.BotInput);
 		if(physicsComponent == null || input == null){
 			setStatus(BehaviourStatus.FAILURE);
 			return getStatus();

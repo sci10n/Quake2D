@@ -20,8 +20,10 @@ public abstract class BehaviourNode{
     private BehaviourStatus status = BehaviourStatus.UNDEFINED;
     
     // Parent entity
-	protected Entity parent;
+	protected Entity entityOwner;
 
+	private BehaviourNode parent;
+	
     // When we traverse some behaviour in the tree, and it hasn't
     // been running yet, we enter this behaviour. If we have been
     // running, but just recently left it, the we left behaviour.
@@ -74,6 +76,10 @@ public abstract class BehaviourNode{
     	}
     }
     
+    public void flatten(Array<BehaviourNode> nodes){
+    	nodes.add(this);
+    }
+    
     public void addListener(BehaviorListener l){
     	listeners.add(l);
     }
@@ -82,8 +88,15 @@ public abstract class BehaviourNode{
     	listeners.removeValue(l, true);
     }
     
-    public void setParent(Entity parent) {
-		this.parent = parent;
+    public void setOwner(Entity parent) {
+		this.entityOwner = parent;
 	}
 
+	public BehaviourNode getParent() {
+		return parent;
+	}
+
+	public void setParent(BehaviourNode parent) {
+		this.parent = parent;
+	}
 }

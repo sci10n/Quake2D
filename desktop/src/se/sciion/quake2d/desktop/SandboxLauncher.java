@@ -4,6 +4,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import se.sciion.quake2d.sandbox.LevelSandbox;
+import se.sciion.quake2d.sandbox.MutationChamber;
 
 public class SandboxLauncher {
 
@@ -17,6 +18,8 @@ public class SandboxLauncher {
 		config.gles30ContextMajorVersion = 4;
 		config.gles30ContextMinorVersion = 5;
 		
-		new LwjglApplication(new LevelSandbox("levels/physics_test.tmx", "levels/level_3.tmx"), config);
+		//new LwjglApplication(new LevelSandbox("levels/physics_test.tmx", "levels/level_3.tmx"), config);
+		new LwjglApplication(new MutationChamber(), config);
+
 	}
 }

@@ -21,6 +21,7 @@ public class InverterNode extends DecoratorNode {
 
     @Override
     protected BehaviourStatus onUpdate() {
+    	BehaviourNode child = children.first();
         setStatus(child.tick());
         if(child.getStatus() == BehaviourStatus.SUCCESS) {
         	setStatus(BehaviourStatus.FAILURE);
@@ -33,6 +34,7 @@ public class InverterNode extends DecoratorNode {
 
     @Override
     public Node toDotNode() {
+    	BehaviourNode child = children.first();
         return node("inverter" + getNext())
                .with(Shape.DIAMOND)
 				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())

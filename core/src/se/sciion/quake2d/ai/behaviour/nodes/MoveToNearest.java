@@ -49,8 +49,8 @@ public class MoveToNearest extends BehaviourNode {
     @Override
     protected BehaviourStatus onUpdate() {
 
-    	BotInputComponent input = parent.getComponent(ComponentTypes.BotInput);
-        PhysicsComponent physics = parent.getComponent(ComponentTypes.Physics);
+    	BotInputComponent input = entityOwner.getComponent(ComponentTypes.BotInput);
+        PhysicsComponent physics = entityOwner.getComponent(ComponentTypes.Physics);
         if (physics == null) {
         	setStatus(BehaviourStatus.FAILURE);
             return getStatus();
@@ -68,7 +68,7 @@ public class MoveToNearest extends BehaviourNode {
             PhysicsComponent ePhysics = e.getComponent(ComponentTypes.Physics);
             if(ePhysics != null) {
                 Vector2 ePos = ePhysics.getBody().getPosition();
-                int pathLength = pathfinding.findPath(fromLoc,ePos, parent).size;
+                int pathLength = pathfinding.findPath(fromLoc,ePos, entityOwner).size;
                 if(pathLength < bestPath) {
                     bestPath = pathLength;
                     targetPos = ePos;

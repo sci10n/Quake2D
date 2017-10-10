@@ -1,42 +1,60 @@
 package se.sciion.quake2d.ai.behaviour;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.level.Entity;
 
 public abstract class CompositeNode extends BehaviourNode {
-    protected List<BehaviourNode> children; // Sibling children.
-    protected int currentChild;	// Current index
-    
-    public CompositeNode(BehaviourNode ... nodes){
-    	children = Arrays.asList(nodes);
-    	currentChild = 0;
-    }
+	protected Array<BehaviourNode> children; // Sibling children.
+	protected int currentChild; // Current index
 
-    
-    // Default constructor if we want to dynamically add behaviours.
-    public CompositeNode() {
-    	children = new ArrayList<BehaviourNode>();
-    	currentChild = 0;
-    }
-    
-    public void addChild(BehaviourNode node) {
-    	if(currentChild == 0)	// Prevent modifying during execution.
-    		children.add(node);
-    }
-    
-    public void removeChild(BehaviourNode node){
-    	if(currentChild == 0)	// Prevent modifying during execution.
-    		children.remove(node);
-    }
-    
-    @Override
-    public void setParent(Entity parent) {
-    	this.parent = parent;
-    	for(BehaviourNode n: children){
-    		n.setParent(parent);
-    	}
-    }
+	public CompositeNode(BehaviourNode... nodes) {
+		children = new Array<BehaviourNode>(nodes);
+		for (BehaviourNode n : children) {
+			n.setParent(this);
+		}
+		currentChild = 0;
+	}
+
+	// Default constructor if we want to dynamically add behaviours.
+	public CompositeNode() {
+		children = new Array<BehaviourNode>();
+		currentChild = 0;
+	}
+
+	public void addChild(BehaviourNode node) {
+		if (currentChild == 0) // Prevent modifying during execution.
+		{
+			children.add(node);
+			node.setParent(this);
+		}
+	}
+
+	public void removeChild(BehaviourNode node) {
+		if (currentChild == 0) // Prevent modifying during execution.
+			children.removeValue(node, true);
+	}
+	
+	public void replaceChild(BehaviourNode child, BehaviourNode replacement){
+		int indexOf = children.indexOf(child, true);
+		children.set(indexOf, replacement);
+		replacement.setParent(this);
+		replacement.setOwner(entityOwner);
+	}
+	
+	@Override
+	public void flatten(Array<BehaviourNode> nodes) {
+		nodes.add(this);
+		for (BehaviourNode n : children) {
+			n.flatten(nodes);
+		}
+	}
+	
+	@Override
+	public void setOwner(Entity parent) {
+		this.entityOwner = parent;
+		for (BehaviourNode n : children) {
+			n.setOwner(parent);
+		}
+	}
 }
