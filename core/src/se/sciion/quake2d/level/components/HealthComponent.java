@@ -101,6 +101,7 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 			}
 			if(health <= 0) {
 				level.getStats().recordKill(input2.getBehaviourTree());
+				level.getStats().recordSurvivior(input2.getBehaviourTree());
 			}
 		}
 

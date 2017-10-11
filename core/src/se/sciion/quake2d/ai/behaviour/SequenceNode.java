@@ -65,13 +65,13 @@ public class SequenceNode extends CompositeNode{
     }
     
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
-		int numChildren = MathUtils.random(1, 5);
-		Array<BehaviourNode> children = new Array<BehaviourNode>();
-		for(int i = 0; i <numChildren; i++){
-			children.add(prototypes.random().randomized(prototypes));
+	public BehaviourNode clone() {
+	
+		SequenceNode node = new SequenceNode();
+		for(int i = 0; i <children.size; i++){
+			node.addChild(children.get(i).clone());
 		}
-		return new SequenceNode(children);
+		return node;
 	}
 
 }

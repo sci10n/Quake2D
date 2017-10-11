@@ -96,17 +96,11 @@ public class BehaviourTree{
 		dirty = true;
 	}
 	
-	public void randomize(Array<BehaviourNode> prototypes){
-		BehaviourNode n = null;
-		while(n == null) {
-			n = prototypes.random();
-			if(!(n instanceof CompositeNode)) {
-				n = null;
-			}
-		}
-		
-		root = n.randomized(prototypes);
-		dirty = true;
+	public BehaviourTree clone(){
+		BehaviourTree tree = new BehaviourTree();
+		tree.root = root.clone();
+		tree.dirty = dirty;
+		return tree;
 	}
 	
 	

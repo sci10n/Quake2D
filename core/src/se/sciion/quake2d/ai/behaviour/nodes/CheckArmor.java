@@ -58,8 +58,8 @@ public class CheckArmor extends BehaviourNode {
 	}
 	
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
-		return new CheckArmor(MathUtils.random());
+	public BehaviourNode clone() {
+		return new CheckArmor(ratio);
 	}
 }
 

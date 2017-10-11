@@ -48,8 +48,8 @@ public class InverterNode extends DecoratorNode {
     }
     
     @Override
-    public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
-    	return new InverterNode(prototypes.random().randomized(prototypes));
+    public BehaviourNode clone() {
+    	return new InverterNode(children.first().clone());
     }
 
 }

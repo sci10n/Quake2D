@@ -66,8 +66,8 @@ public class CheckWeapon extends BehaviourNode {
 	}
 
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
-		return new CheckWeapon(Weapon.tags.random());
+	public BehaviourNode clone() {
+		return new CheckWeapon(weaponType);
 	}
 }
 

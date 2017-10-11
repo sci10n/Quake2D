@@ -25,7 +25,7 @@ public class PickupDamageBoost extends PickupConsumable{
 	}
 
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+	public BehaviourNode clone() {
 		return new PickupDamageBoost(level, tag);
 	}
 

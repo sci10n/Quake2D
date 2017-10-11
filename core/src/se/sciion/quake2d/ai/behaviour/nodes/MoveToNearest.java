@@ -119,8 +119,8 @@ public class MoveToNearest extends BehaviourNode {
 	}
 
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
-		return new MoveToNearest(level.getTags().random(), level, pathfinding, physics, MathUtils.random(3),MathUtils.random(3));
+	public BehaviourNode clone() {
+		return new MoveToNearest(tag, level, pathfinding, physics, minDistance, maxDistance);
 	}
 
 }

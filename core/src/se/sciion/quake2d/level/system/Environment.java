@@ -190,7 +190,7 @@ public class Environment implements Disposable{
 					entity.addComponent(damageSprite);
 				} 
 				
-				PickupComponent pickup = new PickupComponent(c);
+				PickupComponent pickup = new PickupComponent(level, c);
 				physicsSystem.registerCallback(pickup, entity);
 				entity.addComponent(pickup);
 			}
@@ -230,7 +230,7 @@ public class Environment implements Disposable{
 				}
 
 				Weapon wweapon = new Weapon(o.getName(),cooldown, bullets, capacity, knockback, spread, speed, baseDamage);
-				PickupComponent pickup = new PickupComponent(wweapon);
+				PickupComponent pickup = new PickupComponent(level, wweapon);
 				physicsSystem.registerCallback(pickup, entity);
 				entity.addComponent(pickup);
 			}

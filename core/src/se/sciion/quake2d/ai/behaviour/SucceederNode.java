@@ -49,8 +49,10 @@ public class SucceederNode extends DecoratorNode {
     }
 
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
-		return new SucceederNode(prototypes.random().randomized(prototypes));
+	public BehaviourNode clone() {
+
+		SucceederNode node = new SucceederNode(children.first().clone());
+		return node;
 	}
 
 }

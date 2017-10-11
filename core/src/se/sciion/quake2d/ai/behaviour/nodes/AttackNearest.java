@@ -104,8 +104,8 @@ public class AttackNearest extends BehaviourNode{
 	}
 
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
-		return new AttackNearest(level.getTags().random(), level);
+	public BehaviourNode clone() {
+		return new AttackNearest(tag, level);
 	}
 
 }

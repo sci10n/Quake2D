@@ -48,29 +48,17 @@ public class Trees {
 		}
 		
 		for(BehaviourTree tree: population){
-			float normalizedFitness = stats.getFitness(tree)/sumFitness;
+			float normalizedFitness = stats.getFitness(tree)/((float)sumFitness);
+			
+			System.out.println("Tree: " + tree + " with fitness " + normalizedFitness);
 			if(MathUtils.randomBoolean(normalizedFitness)){
 				Candidate c = new Candidate();
 				c.tree = tree;
 				c.fitness = normalizedFitness;
-				System.out.println("Tree: " + tree + " with fitness " + normalizedFitness + " selected");
 				candidates.add(c);
 			}
 		}
 		
-		for(Candidate c: candidates){
-			selectedTrees.add(c.tree);
-		}
-		
-		for(int i = 0; i < populationLimit - selectedTrees.size; i++){
-			selectedTrees.add(createRandomized());
-		}
-		
-		population = selectedTrees;
-	}
-	
-	public BehaviourTree createRandomized(){
-		return new BehaviourTree(prototypes.random().randomized(prototypes));
 	}
 	
 	public void mutate(){
@@ -88,14 +76,6 @@ public class Trees {
 		}
 	}
 	
-	public void initPopulation(int num){
-		this.populationLimit = num;
-		population = new Array<BehaviourTree>(populationLimit);
-		for(int i = 0; i < num; i++){
-			population.add(createRandomized());
-		}
-	}
-	
 	public Array<BehaviourTree> getPopulation() {
 		return population;
 	}
@@ -105,16 +85,16 @@ public class Trees {
 		prototypes = new Array<BehaviourNode>();
 		prototypes.add(new AttackNearest("", level));
 		prototypes.add(new CheckArmor(0.0f));
-		prototypes.add(new CheckEntityDistance("", 0.0f,level));
+		//prototypes.add(new CheckEntityDistance("", 0.0f,level));
 		prototypes.add(new CheckHealth(0.0f));
-		prototypes.add(new CheckWeapon(""));
+		//prototypes.add(new CheckWeapon(""));
 		prototypes.add(new MoveToNearest("", level, pathfinding,physics, 0.0f, 15.0f));
 		prototypes.add(new PickupArmor(level, "armor"));
-		prototypes.add(new PickupDamageBoost(level, "damage"));
+		//prototypes.add(new PickupDamageBoost(level, "damage"));
 		prototypes.add(new PickupHealth(level, "health"));
 		prototypes.add(new PickupWeapon("", level, pathfinding));
-		prototypes.add(new InverterNode());
-		prototypes.add(new ParallelNode());
+		//prototypes.add(new InverterNode());
+		//prototypes.add(new ParallelNode());
 		prototypes.add(new SelectorNode());
 		prototypes.add(new SequenceNode());
 		prototypes.add(new SucceederNode());

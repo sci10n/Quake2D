@@ -30,7 +30,7 @@ public class PickupHealth extends PickupConsumable{
 	}
 
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+	public BehaviourNode clone() {
 		return new PickupHealth(level, tag);
 	}
 

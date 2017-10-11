@@ -57,7 +57,7 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	private int width;
 	private int height;
-	private final int ROUND_PER_GENERATION = 5;
+	private int ROUND_PER_GENERATION = 5;
 	private int numRounds = 0;
 	
 	public LevelSandbox(String ... levels) {
@@ -139,26 +139,42 @@ public class LevelSandbox extends ApplicationAdapter {
 		SoundSystem.getInstance().setup(assets, sounds);
 	}
 	
+	private int counter1 = 0;
+	private int counter2 = 0;
 	public void beginMatch(String levelPath) {
 		environment = new Environment(levelPath, level, physicsSystem, pathfinding, camera, assets);
 		environment.start();
 
 		if(trees.getPopulation() == null){
 			trees.initPopulation(5);
+			ROUND_PER_GENERATION = (5 * (5 + 1)) / 2;
 		}
 		
 		SoundSystem.getInstance().playSound("fight");
 		
-		pathfinding.update(physicsSystem);
-		
-		for(Entity e: level.getEntities("player")){
-			BotInputComponent input = e.getComponent(ComponentTypes.BotInput);
-			if(input != null){
-				BehaviourTree tree = trees.getPopulation().random();
-				input.setBehaviourTree(tree);
-				level.getStats().recordParticipant(tree);
-			}
+		System.out.println("Trees: " + counter1 + " " + counter2 + " fight!");
+		if(counter1 >= trees.getPopulation().size){
+			counter1 = counter2;
+			counter2 = (counter2 + 1) % trees.getPopulation().size;
 		}
+		
+		pathfinding.update(physicsSystem);
+		Array<Entity> players = level.getEntities("player");
+
+		BotInputComponent input = players.get(0).getComponent(ComponentTypes.BotInput);
+		if(input != null){
+			BehaviourTree tree = trees.getPopulation().get(counter1);
+			input.setBehaviourTree(tree);
+			level.getStats().recordParticipant(tree);
+		}
+		
+		BotInputComponent input2 = players.get(1).getComponent(ComponentTypes.BotInput);
+		if(input2 != null){
+			BehaviourTree tree = trees.getPopulation().get(counter2);
+			input2.setBehaviourTree(tree);
+			level.getStats().recordParticipant(tree);
+		}
+		counter1++;
 	}
 	
 	@Override
@@ -168,7 +184,9 @@ public class LevelSandbox extends ApplicationAdapter {
 		environment.dispose();
 	}
 
+	private int genCounter = 0;
 	public void endGeneration(){
+		System.out.println("Gen: " + ++genCounter);
 		// Calculate fitness
 		Statistics stats = level.getStats();
 		// Select next gen of trees
@@ -177,8 +195,11 @@ public class LevelSandbox extends ApplicationAdapter {
 		trees.crossover();
 		// Mutate
 		trees.mutate();
-		
+		trees.addRandomized();
 		level.clearStats();
+		
+		counter1 = 0;
+		counter2 = 0;
 	}
 	
 	public void endMatch() {
@@ -199,15 +220,14 @@ public class LevelSandbox extends ApplicationAdapter {
 		environment.stop();
 		physicsSystem.cleanup();
 		physicsSystem.clear();
-		
-		Statistics stats = level.getStats();
-		
-		System.out.println(stats.toString());
+				
+		//System.out.println(stats.toString());
 		SoundSystem.getInstance().playSound("impressive");
 				
 		numRounds++;
 		if(numRounds >= ROUND_PER_GENERATION){
 			endGeneration();
+			numRounds = 0;
 		}
 		level.cleanup();
 	}
@@ -222,7 +242,7 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	@Override
 	public void render() {
-		final float frameDelta = Gdx.graphics.getDeltaTime() * 16.0f;
+		final float frameDelta = Gdx.graphics.getDeltaTime() * 64.0f;
 		if (Gdx.input.isKeyJustPressed(Keys.O))
 			toggleDebugDraw();
 

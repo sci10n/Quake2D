@@ -43,7 +43,7 @@ public class NOPNode extends BehaviourNode {
 	}
 
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+	public BehaviourNode clone() {
 		return new NOPNode();
 	}
 }

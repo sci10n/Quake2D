@@ -69,13 +69,12 @@ public class SelectorNode extends CompositeNode {
     }
     
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
-		int numChildren = MathUtils.random(1, 5);
-		Array<BehaviourNode> children = new Array<BehaviourNode>();
-		for(int i = 0; i <numChildren; i++){
-			children.add(prototypes.random().randomized(prototypes));
+	public BehaviourNode clone() {
+		SelectorNode node = new SelectorNode();
+		for(int i = 0; i< children.size; i++){
+			node.addChild(children.get(i).clone());
 		}
-		return new SelectorNode(children);
+		return node;
 	}
 	
 }

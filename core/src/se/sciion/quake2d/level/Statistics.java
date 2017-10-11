@@ -3,6 +3,7 @@ package se.sciion.quake2d.level;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import se.sciion.quake2d.ai.behaviour.BehaviourTree;
+import se.sciion.quake2d.level.items.Weapon;
 
 public class Statistics {
 
@@ -14,7 +15,7 @@ public class Statistics {
 	private ObjectMap<BehaviourTree,Boolean> survived;
 	private ObjectMap<BehaviourTree,Integer> killcount;
 	private ObjectMap<BehaviourTree,Integer> roundsPlayed;
-	
+	private ObjectMap<BehaviourTree,Boolean> pickedWeapon;
 	public Statistics() {
 		totalDamageGiven = new ObjectMap<BehaviourTree,Float>();
 		totalDamageTaken = new ObjectMap<BehaviourTree,Float>();
@@ -23,6 +24,7 @@ public class Statistics {
 		survived		 = new ObjectMap<BehaviourTree,Boolean>();
 		killcount		 = new ObjectMap<BehaviourTree,Integer>();
 		roundsPlayed	= new ObjectMap<BehaviourTree, Integer>();
+		pickedWeapon	= new ObjectMap<BehaviourTree, Boolean>();
 	}
 	
 	public void recordDamageTaken(BehaviourTree giver, BehaviourTree reciever, float amount) {
@@ -47,6 +49,10 @@ public class Statistics {
 		}
 		armorAtEnd.put(entity, armor);
 		healthAtEnd.put(entity, health);
+	}
+	
+	public void recordWeaponPickup(BehaviourTree tree){
+		pickedWeapon.put(tree, true);
 	}
 	
 	public void recordParticipant(BehaviourTree tree){
@@ -83,7 +89,8 @@ public class Statistics {
 		int killcount = this.killcount.get(tree, 0);
 		boolean survived = this.survived.get(tree, false);
 		int rounds = roundsPlayed.get(tree,1);
-		return (damageGiven + damageTaken + 2 * armor + health + 5 * killcount + (survived ? 100.0f : 0.0f))/((float)rounds);
+		boolean weapon = pickedWeapon.get(tree, false);
+		return (10 * damageGiven + damageTaken + 2 * armor + 5 * killcount + (survived ? 400.0f : 0.0f) + (weapon ? 50.0f : 0.0f));
 	}
 
 	public int getTotalKillcount() {
@@ -104,11 +111,20 @@ public class Statistics {
 		for(BehaviourTree tree: totalDamageTaken.keys()) {
 			output += "Tree: " + tree.toString() + " damage taken: " + totalDamageGiven.get(tree) + "\n";
 		}
+		for(BehaviourTree tree: healthAtEnd.keys()) {
+			output += "Tree: " + tree.toString() +  " " + healthAtEnd.get(tree,0.0f) + " health at end\n";
+		}
+		for(BehaviourTree tree: armorAtEnd.keys()) {
+			output += "Tree: " + tree.toString() +  " " + armorAtEnd.get(tree,0.0f) + " armor at end\n";
+		}
 		for(BehaviourTree tree: survived.keys()) {
 			output += "Tree: " + tree.toString() +  " survived\n";
 		}
 		for(BehaviourTree tree: roundsPlayed.keys()) {
 			output += "Tree: " + tree.toString() +  " played " + roundsPlayed.get(tree) + " rounds\n";
+		}
+		for(BehaviourTree tree: pickedWeapon.keys()) {
+			output += "Tree: " + tree.toString() +  " picked weapon\n";
 		}
 		return output;
 	}
@@ -120,5 +136,7 @@ public class Statistics {
 		survived.clear();
 		totalDamageGiven.clear();
 		totalDamageTaken.clear();
+		pickedWeapon.clear();
+		roundsPlayed.clear();
 	}
 }

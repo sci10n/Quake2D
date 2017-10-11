@@ -104,8 +104,8 @@ public class PickupWeapon extends BehaviourNode {
 	}
 
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
-		return new PickupWeapon(Weapon.tags.random(), level, pathfinding);
+	public BehaviourNode clone() {
+		return new PickupWeapon(id, level, pathfinding);
 	}
 
 }
