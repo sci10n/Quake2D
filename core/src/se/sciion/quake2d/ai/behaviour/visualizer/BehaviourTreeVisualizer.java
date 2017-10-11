@@ -126,8 +126,7 @@ public class BehaviourTreeVisualizer extends JFrame {
 
 	private void toggleVisibility() {
 		visible = !visible;
-		if (visible) setVisible(true);
-		else setVisible(false);
+		setVisible(visible);
 	}
 	
 	public boolean isPaused() {

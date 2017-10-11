@@ -192,11 +192,8 @@ public class LevelSandbox extends ApplicationAdapter {
 			if (isDebugging()) {
 				pathfinding.render(model);
 				level.debugRender(model);
-				pathfinding.render(model);
 			}
 			physicsSystem.render(camera.combined);
-
-			
 		}
 
 		if(Gdx.input.isKeyJustPressed(Keys.Q) || !environment.isRunning()){

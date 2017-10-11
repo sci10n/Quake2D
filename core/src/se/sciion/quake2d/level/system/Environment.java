@@ -436,7 +436,7 @@ public class Environment implements Disposable{
 			running = false;
 		}
 		
-		if(level.getStats().getTotalKillcount() >= level.getEntities("player").size -1 && !LevelSandbox.DEBUG) {
+		if(level.getStats().getTotalKillcount() >= level.getEntities("player").size - 1 && !LevelSandbox.DEBUG) {
 			running = false;
 		}
 	}
