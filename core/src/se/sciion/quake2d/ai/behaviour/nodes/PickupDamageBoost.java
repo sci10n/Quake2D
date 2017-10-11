@@ -29,4 +29,9 @@ public class PickupDamageBoost extends PickupConsumable{
 		return new PickupDamageBoost(level, tag);
 	}
 
+	@Override
+	public BehaviourNode randomized() {
+		// TODO Auto-generated method stub
+		return new PickupDamageBoost(level, tag);
+	}
 }

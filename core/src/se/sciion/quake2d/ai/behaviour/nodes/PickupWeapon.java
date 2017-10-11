@@ -107,5 +107,11 @@ public class PickupWeapon extends BehaviourNode {
 	public BehaviourNode clone() {
 		return new PickupWeapon(id, level, pathfinding);
 	}
+	
+	@Override
+	public BehaviourNode randomized() {
+		// TODO Auto-generated method stub
+		return new PickupWeapon(Weapon.tags.random(), level, pathfinding);
+	}
 
 }

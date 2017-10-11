@@ -34,4 +34,8 @@ public class PickupArmor extends PickupConsumable {
 		return new PickupArmor(level, tag);
 	}
 
+	@Override
+	public BehaviourNode randomized() {
+		return new PickupArmor(level, tag);
+	}
 }

@@ -57,6 +57,7 @@ public abstract class BehaviourNode{
     public abstract Node toDotNode();
     public abstract void mutate(float chance);
     public abstract BehaviourNode clone();
+    public abstract BehaviourNode randomized();
     
     public String getColor() {
     	switch (status) {

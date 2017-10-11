@@ -68,4 +68,9 @@ public class CheckHealth extends BehaviourNode {
 	public BehaviourNode clone() {
 		return new CheckHealth(ratio);
 	}
+	
+	@Override
+	public BehaviourNode randomized() {
+		return new CheckHealth(MathUtils.random());
+	}
 }

@@ -90,7 +90,7 @@ public class Statistics {
 		boolean survived = this.survived.get(tree, false);
 		int rounds = roundsPlayed.get(tree,1);
 		boolean weapon = pickedWeapon.get(tree, false);
-		return (10 * damageGiven + damageTaken + 2 * armor + 5 * killcount + (survived ? 400.0f : 0.0f) + (weapon ? 50.0f : 0.0f));
+		return (10 * damageGiven + damageTaken + 2 * armor + 5 * killcount + (survived ? 400.0f : 0.0f) + (weapon ? 50.0f : 0.0f)) / (float)(rounds);
 	}
 
 	public int getTotalKillcount() {

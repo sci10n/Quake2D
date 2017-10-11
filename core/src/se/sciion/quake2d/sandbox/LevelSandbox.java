@@ -3,6 +3,7 @@ package se.sciion.quake2d.sandbox;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import se.sciion.quake2d.ai.behaviour.BehaviourTree;
 import se.sciion.quake2d.ai.behaviour.Trees;
+import se.sciion.quake2d.ai.behaviour.nodes.AttackNearest;
 import se.sciion.quake2d.ai.behaviour.visualizer.BehaviourTreeVisualizer;
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
@@ -160,9 +161,11 @@ public class LevelSandbox extends ApplicationAdapter {
 		
 		pathfinding.update(physicsSystem);
 		Array<Entity> players = level.getEntities("player");
-
+		
+		
 		BotInputComponent input = players.get(0).getComponent(ComponentTypes.BotInput);
 		if(input != null){
+			BehaviourTree hardCoded = new BehaviourTree(new AttackNearest("player", level, physicsSystem));
 			BehaviourTree tree = trees.getPopulation().get(counter1);
 			input.setBehaviourTree(tree);
 			level.getStats().recordParticipant(tree);
@@ -170,6 +173,7 @@ public class LevelSandbox extends ApplicationAdapter {
 		
 		BotInputComponent input2 = players.get(1).getComponent(ComponentTypes.BotInput);
 		if(input2 != null){
+			BehaviourTree hardCoded = new BehaviourTree(new AttackNearest("player", level, physicsSystem));
 			BehaviourTree tree = trees.getPopulation().get(counter2);
 			input2.setBehaviourTree(tree);
 			level.getStats().recordParticipant(tree);
@@ -195,7 +199,7 @@ public class LevelSandbox extends ApplicationAdapter {
 		trees.crossover();
 		// Mutate
 		trees.mutate();
-		trees.addRandomized();
+
 		level.clearStats();
 		
 		counter1 = 0;
@@ -242,7 +246,10 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	@Override
 	public void render() {
-		final float frameDelta = Gdx.graphics.getDeltaTime() * 64.0f;
+		float frameDelta = Gdx.graphics.getDeltaTime() ;
+		if(Gdx.input.isKeyPressed(Keys.F)){
+			frameDelta *= 100.0f;
+		}
 		if (Gdx.input.isKeyJustPressed(Keys.O))
 			toggleDebugDraw();
 

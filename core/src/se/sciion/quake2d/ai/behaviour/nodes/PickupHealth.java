@@ -33,5 +33,9 @@ public class PickupHealth extends PickupConsumable{
 	public BehaviourNode clone() {
 		return new PickupHealth(level, tag);
 	}
-
+	
+  @Override
+	public BehaviourNode randomized() {
+		return new PickupHealth(level, tag);
+	}
 }

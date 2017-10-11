@@ -61,5 +61,10 @@ public class CheckArmor extends BehaviourNode {
 	public BehaviourNode clone() {
 		return new CheckArmor(ratio);
 	}
+	
+	@Override
+	public BehaviourNode randomized() {
+		return new CheckArmor(MathUtils.random());
+	}
 }
 

@@ -90,8 +90,9 @@ public class PhysicsSystem{
 		public Array<Body> bodies = new Array<Body>();
 		@Override
 		public boolean reportFixture(Fixture fixture) {
-			bodies.add(fixture.getBody());
-			return false;
+			if(!bodies.contains(fixture.getBody(), true))
+				bodies.add(fixture.getBody());
+			return true;
 		}
 	}
 
@@ -130,18 +131,22 @@ public class PhysicsSystem{
 			}
 			removalList.clear();
 		}
+		hitscans.clear();
+		components.clear();
 	}
 
-	public PhysicsComponent queryComponentAt(float x, float y) {
+	public Array<PhysicsComponent> queryComponentAt(float x, float y) {
+		Array<PhysicsComponent> components = new Array<PhysicsComponent>();
 		FindBodyCallback findBodies = new FindBodyCallback();
-		world.QueryAABB(findBodies, x-0.25f, y-0.25f, x+0.25f, y+0.25f);
+		world.QueryAABB(findBodies, x-0.5f, y-0.5f, x+0.5f, y+0.5f);
 		for (Body b : findBodies.bodies) {
-			for (PhysicsComponent c : components) {
-				if (c.getBody() == b) return c;
+			Entity e = (Entity) b.getUserData();
+			if(e != null){
+				components.add(e.getComponent(ComponentTypes.Physics));
 			}
 		}
 
-		return null;
+		return components;
 	}
 
 
@@ -259,18 +264,22 @@ public class PhysicsSystem{
 			p.ellapsed = MathUtils.clamp(p.ellapsed + p.alpha * delta,0.0f,1.0f);
 			p.interpolation = p.origin.cpy().lerp(p.target, p.ellapsed);
 			if(p.ellapsed >= 1.0f){
-				PhysicsComponent phys = queryComponentAt(p.interpolation.x, p.interpolation.y);
-				if(phys != null && phys.getParent() != null){
-					HealthComponent hlth = phys.getParent().getComponent(ComponentTypes.Health);
-					if(hlth != null){
-						float boostScl = 1.0f;
-						DamageBoostComponent boost = p.responsible.getComponent(ComponentTypes.Boost);
-						if(boost != null){
-							boostScl = boost.boost;
+				System.out.println("Hitscan " + p.interpolation);
+				for(PhysicsComponent phys :queryComponentAt(p.interpolation.x, p.interpolation.y)){
+					System.out.println(phys);
+					if(phys != null && phys.getParent() != null && phys.getParent() != p.responsible){
+						HealthComponent hlth = phys.getParent().getComponent(ComponentTypes.Health);
+						if(hlth != null){
+							float boostScl = 1.0f;
+							DamageBoostComponent boost = p.responsible.getComponent(ComponentTypes.Boost);
+							if(boost != null){
+								boostScl = boost.boost;
+							}
+							hlth.remove(1.0f * boostScl, p.responsible);
 						}
-						hlth.remove(1.0f * boostScl, p.responsible);
 					}
-				}
+				};
+				
 				hitscans.removeValue(p, true);
 			}
 		}

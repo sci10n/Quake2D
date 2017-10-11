@@ -99,5 +99,10 @@ public class CheckEntityDistance extends BehaviourNode{
 	public BehaviourNode clone() {
 		return new CheckEntityDistance(tag,threshold, level);
 	}
+	
+	@Override
+	public BehaviourNode randomized() {
+		return new CheckEntityDistance(level.getTags().random(), MathUtils.random(0, 5), level);
+	}
 
 }

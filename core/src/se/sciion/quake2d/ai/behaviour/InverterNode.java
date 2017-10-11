@@ -7,6 +7,7 @@ import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
 public class InverterNode extends DecoratorNode {
@@ -40,6 +41,13 @@ public class InverterNode extends DecoratorNode {
     @Override
     public Node toDotNode() {
     	BehaviourNode child = children.first();
+    	if(child == null){
+    		return node("inverter" + getNext())
+    	               .with(Shape.DIAMOND)
+    					.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
+    	               .with(Label.of("Invert"));
+    	}
+    	
         return node("inverter" + getNext())
                .with(Shape.DIAMOND)
 				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
@@ -48,8 +56,29 @@ public class InverterNode extends DecoratorNode {
     }
     
     @Override
-    public BehaviourNode clone() {
-    	return new InverterNode(children.first().clone());
+    public void mutate(float chance) {
+    	if(MathUtils.randomBoolean(chance)){
+    		if(children.size == 0){
+    			children.add(Trees.prototypes.random().clone());
+    		}
+    		children.first().mutate(chance);
+    	}
     }
+    @Override
+    public BehaviourNode clone() {
+		InverterNode node = null;
+		if(children.size > 0){
+			 node = new InverterNode(children.first().clone());
+		}
+		else{
+			node = new InverterNode();
+		}
+		return node;
+    }
+
+	@Override
+	public BehaviourNode randomized() {
+		return new InverterNode(Trees.prototypes.random().randomized());
+	}
 
 }

@@ -77,6 +77,32 @@ public class ParallelNode extends CompositeNode {
 	}
 
 	@Override
+	public void mutate(float chance) {
+		if(MathUtils.randomBoolean(chance) ){
+			int t = MathUtils.random(3);
+			// Remove random child
+			if(t == 0 && children.size > 0) {
+				children.removeIndex(MathUtils.random(0, children.size-1));
+			}
+			// Add new child
+			if(t == 1) {
+				children.add(Trees.prototypes.random().clone());
+			}
+			
+			// Shuffle
+			if(t == 2){
+				children.shuffle();
+			}
+			if(t == 3){
+				threshold = MathUtils.clamp(threshold + MathUtils.randomSign(), 0, children.size);
+			}
+			
+			for(int i = 0; i< children.size; i++){
+				children.get(i).mutate(chance);
+			}
+		}
+	}
+	@Override
 	public BehaviourNode clone() {
 		
 		ParallelNode node = new ParallelNode();
@@ -85,5 +111,10 @@ public class ParallelNode extends CompositeNode {
 			node.addChild(children.get(i).clone());
 		}
 		return node;
+	}
+	
+	@Override
+	public BehaviourNode randomized() {
+		return new ParallelNode(threshold,Trees.prototypes.random().randomized());
 	}
 }

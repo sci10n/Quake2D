@@ -2,6 +2,7 @@ package se.sciion.quake2d.ai.behaviour;
 
 import static guru.nidi.graphviz.model.Factory.node;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
 import guru.nidi.graphviz.attribute.Color;
@@ -40,7 +41,15 @@ public class SucceederNode extends DecoratorNode {
 
     @Override
     public Node toDotNode() {
+    	if(children.size == 0){
+    		return node("successor" + getNext())
+                    .with(Shape.DIAMOND)
+     				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
+                    .with(Label.of("Success"));	
+    	}
     	BehaviourNode child = children.first();
+    	
+    	
         return node("succeeder" + getNext())
                    .with(Shape.RECTANGLE)
 					.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
@@ -48,11 +57,30 @@ public class SucceederNode extends DecoratorNode {
                    .link(child.toDotNode());
     }
 
+    @Override
+    public void mutate(float chance) {
+    	if(MathUtils.randomBoolean(chance)){
+    		if(children.size == 0){
+    			children.add(Trees.prototypes.random().clone());
+    		}
+    		children.first().mutate(chance);
+    	}
+    }
+    
 	@Override
 	public BehaviourNode clone() {
-
-		SucceederNode node = new SucceederNode(children.first().clone());
+		SucceederNode node = null;
+		if(children.size > 0){
+			 node = new SucceederNode(children.first().clone());
+		}
+		else{
+			node = new SucceederNode();
+		}
 		return node;
 	}
 
+	@Override
+	public BehaviourNode randomized() {
+		return new SucceederNode(Trees.prototypes.random().randomized());
+	}
 }

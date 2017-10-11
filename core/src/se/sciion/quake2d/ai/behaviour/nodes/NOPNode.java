@@ -46,5 +46,11 @@ public class NOPNode extends BehaviourNode {
 	public BehaviourNode clone() {
 		return new NOPNode();
 	}
+	
+	@Override
+	public BehaviourNode randomized() {
+		// TODO Auto-generated method stub
+		return new NOPNode();
+	}
 }
 

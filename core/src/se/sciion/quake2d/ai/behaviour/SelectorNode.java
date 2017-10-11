@@ -68,6 +68,29 @@ public class SelectorNode extends CompositeNode {
         return selector;
     }
     
+    @Override
+    public void mutate(float chance) {
+		if(MathUtils.randomBoolean(chance)){
+			int t = MathUtils.random(2);
+			// Remove random child
+			if(t == 0 && children.size > 0) {
+				children.removeIndex(MathUtils.random(0, children.size-1));
+			}
+			// Add new child
+			if(t == 1) {
+				children.add(Trees.prototypes.random().clone());
+			}
+			
+			// Shuffle
+			if(t == 2){
+				children.shuffle();
+			}
+			
+			for(int i = 0; i< children.size; i++){
+				children.get(i).mutate(chance);
+			}
+		}
+    }
 	@Override
 	public BehaviourNode clone() {
 		SelectorNode node = new SelectorNode();
@@ -75,6 +98,16 @@ public class SelectorNode extends CompositeNode {
 			node.addChild(children.get(i).clone());
 		}
 		return node;
+	}
+	
+	@Override
+	public BehaviourNode randomized() {
+		int numChild = MathUtils.random(1,5);
+		Array<BehaviourNode> children = new Array<BehaviourNode>();
+		for(int i = 0; i < numChild ; i++)
+			children.add(Trees.prototypes.random().randomized());
+		
+		return new SelectorNode(children);
 	}
 	
 }
