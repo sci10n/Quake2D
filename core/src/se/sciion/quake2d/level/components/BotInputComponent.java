@@ -12,6 +12,7 @@ import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
+import se.sciion.quake2d.level.system.SoundSystem;
 
 public class BotInputComponent extends EntityComponent {
 
@@ -26,7 +27,6 @@ public class BotInputComponent extends EntityComponent {
 	private boolean hasTargetLos = false;
 
 	private PhysicsSystem physicsSystem;
-	private boolean playLeftBoot = true;
 
 	private Vector2 previousPos;
 
@@ -132,6 +132,7 @@ public class BotInputComponent extends EntityComponent {
 		body.setLinearVelocity(vel.add(direction));
 		body.setTransform(body.getPosition(), vel.angleRad());
 
+		float normalizedSpeed = (vel.len() / 5.0f) + 1.5f;
 	}
 
 	public boolean fire(Vector2 heading) {

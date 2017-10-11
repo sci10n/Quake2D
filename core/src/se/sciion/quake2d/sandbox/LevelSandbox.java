@@ -22,10 +22,11 @@ import se.sciion.quake2d.ai.behaviour.visualizer.BehaviourTreeVisualizer;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.level.Level;
 import se.sciion.quake2d.level.Statistics;
-import se.sciion.quake2d.level.system.Environemnt;
+import se.sciion.quake2d.level.system.Environment;
 import se.sciion.quake2d.level.system.Pathfinding;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 import se.sciion.quake2d.level.system.SoundSystem;
+
 
 public class LevelSandbox extends ApplicationAdapter {
 
@@ -36,13 +37,14 @@ public class LevelSandbox extends ApplicationAdapter {
 	private Level level;
 	private RenderModel model;
 	
-    private boolean debugging = false;
-
+    public static boolean DEBUG = true;
+    private boolean paused = false;
+    
     private Pathfinding pathfinding;
 	private BehaviourTreeVisualizer visualizer;
 
 	private PhysicsSystem physicsSystem;
-	private Environemnt environment;
+	private Environment environment;
 	
 	private final Array<String> levels;
 	
@@ -50,6 +52,7 @@ public class LevelSandbox extends ApplicationAdapter {
 	private int height;
 	
 	public LevelSandbox(String ... levels) {
+		SoundSystem.getInstance().toggleMute();
 		this.levels = new Array<String>(levels);
 	}
 	
@@ -63,14 +66,13 @@ public class LevelSandbox extends ApplicationAdapter {
 		// This is a bit weird, but still make sense I guess...
 		visualizer = BehaviourTreeVisualizer.getInstance(width);
 		model = new RenderModel();
+		assets = new AssetManager();
 
 		loadAssets();
 		beginMatch(levels.random());
 	}
 
 	public void loadAssets() {
-		assets = new AssetManager();
-
 		assets.setLoader(Texture.class, new TextureLoader(new InternalFileHandleResolver()));
 		assets.setLoader(TextureAtlas.class, new TextureAtlasLoader(new InternalFileHandleResolver()));
 		assets.setLoader(Sound.class, new SoundLoader(new InternalFileHandleResolver()));
@@ -127,7 +129,7 @@ public class LevelSandbox extends ApplicationAdapter {
 		physicsSystem = new PhysicsSystem();
 		pathfinding = new Pathfinding(30, 30, level);
 		
-		environment = new Environemnt(levelPath, level, physicsSystem, pathfinding, camera, assets);
+		environment = new Environment(levelPath, level, physicsSystem, pathfinding, camera, assets);
 		environment.start();
 
 		SoundSystem.getInstance().playSound("fight");
@@ -155,16 +157,16 @@ public class LevelSandbox extends ApplicationAdapter {
 	}
 
 	private void toggleDebugDraw() {
-		debugging = !debugging;
+		DEBUG = !DEBUG;
 	}
 
 	private boolean isDebugging() {
-		return debugging;
+		return DEBUG;
 	}
 	
 	@Override
 	public void render() {
-		final float frameDelta = Gdx.graphics.getDeltaTime();
+		final float frameDelta = Gdx.graphics.getDeltaTime() * 1.0f;
 		if (Gdx.input.isKeyJustPressed(Keys.O))
 			toggleDebugDraw();
 		
@@ -189,15 +191,18 @@ public class LevelSandbox extends ApplicationAdapter {
 
 			if (isDebugging()) {
 				pathfinding.render(model);
-				physicsSystem.render(camera.combined);
 				level.debugRender(model);
+				pathfinding.render(model);
 			}
-			
-			// Forcefully end the match right now.
-			if(Gdx.input.isKeyJustPressed(Keys.Q))
-				endMatch();
+			physicsSystem.render(camera.combined);
 
-		} else endMatch();
+			
+		}
+
+		if(Gdx.input.isKeyJustPressed(Keys.Q) || !environment.isRunning()){
+			endMatch();
+			beginMatch(levels.random());
+		}
 	}
 	
 }

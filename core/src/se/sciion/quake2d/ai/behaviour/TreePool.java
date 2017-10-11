@@ -52,7 +52,7 @@ public class TreePool {
 		prototypes.add(new CheckEntityDistance("", 0.0f,level));
 		prototypes.add(new CheckHealth(0.0f));
 		prototypes.add(new CheckWeapon(""));
-		prototypes.add(new MoveToNearest("", level, pathfinding,physics, 0.0f));
+		prototypes.add(new MoveToNearest("", level, pathfinding,physics, 0.0f, 15.0f));
 		prototypes.add(new PickupArmor(level, "armor"));
 		prototypes.add(new PickupDamageBoost(level, "damage"));
 		prototypes.add(new PickupHealth(level, "health"));

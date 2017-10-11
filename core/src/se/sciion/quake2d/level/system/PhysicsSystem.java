@@ -2,6 +2,7 @@ package se.sciion.quake2d.level.system;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -18,8 +19,14 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
+import net.dermetfan.utils.Pair;
+import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.level.Entity;
+import se.sciion.quake2d.level.components.DamageBoostComponent;
+import se.sciion.quake2d.level.components.HealthComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
+import se.sciion.quake2d.level.items.DamageBoost;
+import se.sciion.quake2d.sandbox.LevelSandbox;
 
 /**
  * Deals with keeping track of physics world and bodies, no body destruction or
@@ -30,9 +37,22 @@ import se.sciion.quake2d.level.components.PhysicsComponent;
  */
 public class PhysicsSystem implements Disposable {
 
+	
+	private class Hitscan {
+		public Vector2 origin;
+		public Vector2 target;
+		public Vector2 interpolation;
+		public float alpha;
+		public float ellapsed;
+		public Entity responsible;
+	}
+	
 	private Vector2 p1,p2;
 	private ShapeRenderer renderer;
 	
+	
+	public Array<Hitscan> hitscans;
+
 	private Array<PhysicsComponent> components;
 
 	private class LineOfSightCallback implements RayCastCallback {
@@ -91,10 +111,11 @@ public class PhysicsSystem implements Disposable {
 		removalList = new Array<Body>();
 		contactResolver = new EntityContactResolver();
 		world.setContactListener(contactResolver);
-		debugRenderer = new Box2DDebugRenderer();
+		debugRenderer = new Box2DDebugRenderer(true,true,true,true,true,true);
 		solidcallback = new OverlapCallback();
 		components = new Array<PhysicsComponent>();
 		renderer = new ShapeRenderer();
+		hitscans = new Array<Hitscan>();
 	}
 
 	public void cleanup() {
@@ -205,7 +226,7 @@ public class PhysicsSystem implements Disposable {
 			return false;
 		}
 		
-		return target.cpy().sub(callback.target).len2() < 1.0f;
+		return target.cpy().sub(callback.target).len2() <= 1.0f;
 	}
 
 	public Vector2 getLineOfSightHit() {
@@ -221,17 +242,66 @@ public class PhysicsSystem implements Disposable {
 	}
 	
 	public void render(Matrix4 combined) {
-		debugRenderer.render(world, combined);
+		if(LevelSandbox.DEBUG)
+			debugRenderer.render(world, combined);
+		
+		renderer.setProjectionMatrix(combined);
+		renderer.begin(ShapeType.Filled);
+		renderer.setColor(Color.GOLD);
+		for(Hitscan p: hitscans){			
+			renderer.rectLine(p.origin.cpy().lerp(p.target, p.ellapsed * 0.5f), p.interpolation, 0.08f);
+		}
+		renderer.end();
 	}
 
 	public void update(float delta) {
 		world.step(delta, 10, 10);
+		
+		for(Hitscan p: hitscans){
+			p.ellapsed = MathUtils.clamp(p.ellapsed + p.alpha * delta,0.0f,1.0f);
+			p.interpolation = p.origin.cpy().lerp(p.target, p.ellapsed);
+			if(p.ellapsed >= 1.0f){
+				PhysicsComponent phys = queryComponentAt(p.interpolation.x, p.interpolation.y);
+				if(phys != null && phys.getParent() != null){
+					HealthComponent hlth = phys.getParent().getComponent(ComponentTypes.Health);
+					if(hlth != null){
+						float boostScl = 1.0f;
+						DamageBoostComponent boost = p.responsible.getComponent(ComponentTypes.Boost);
+						if(boost != null){
+							boostScl = boost.boost;
+						}
+						hlth.remove(1.0f * boostScl, p.responsible);
+					}
+				}
+				hitscans.removeValue(p, true);
+			}
+		}
 	}
 
 	@Override
 	public void dispose() {
 		world.clearForces();
-		world.dispose();
+		world.getBodies(removalList);
+		cleanup();
+	}
+
+	public Vector2 hitScan(Vector2 origin, Vector2 heading,float speed, Entity responsible) {
+		LineOfSightCallback callback = new LineOfSightCallback();
+		callback.target = null;
+		world.rayCast(callback, origin, origin.cpy().add(heading.cpy().scl(30.0f)));
+		if(callback.target != null){
+			Hitscan h = new Hitscan();
+			h.origin = origin.cpy();
+			h.target = callback.target.cpy();
+			h.alpha = 1.0f / h.origin.dst(h.target) * speed;
+			h.interpolation = origin.cpy();
+			h.responsible = responsible;
+			h.ellapsed = 0.0f;
+			hitscans.add(h);
+			return callback.target.cpy();
+		}
+
+		return new Vector2(0.0f, 0.0f);
 	}
 
 }

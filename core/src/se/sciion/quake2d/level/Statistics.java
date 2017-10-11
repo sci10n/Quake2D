@@ -79,7 +79,7 @@ public class Statistics {
 	
 	@Override
 	public String toString() {
-		String output = "";
+		String output = "Match statistics:\n";
 		
 		for(BehaviourTree tree: totalDamageGiven.keys()) {
 			output += "Tree: " + tree.toString() + " damage given: " + totalDamageGiven.get(tree) + "\n";

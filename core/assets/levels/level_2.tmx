@@ -178,7 +178,7 @@
     <property name="bullets" type="int" value="6"/>
     <property name="capacity" type="int" value="18"/>
     <property name="cooldown" type="float" value="1"/>
-    <property name="damage" type="int" value="1"/>
+    <property name="damage" type="int" value="2"/>
     <property name="knockback" type="float" value="8"/>
     <property name="speed" type="float" value="30"/>
     <property name="spread" type="float" value="18"/>
@@ -189,7 +189,7 @@
     <property name="bullets" type="int" value="6"/>
     <property name="capacity" type="int" value="18"/>
     <property name="cooldown" type="float" value="1"/>
-    <property name="damage" type="int" value="1"/>
+    <property name="damage" type="int" value="2"/>
     <property name="knockback" type="float" value="8"/>
     <property name="speed" type="float" value="30"/>
     <property name="spread" type="float" value="18"/>
@@ -197,7 +197,7 @@
   </object>
   <object id="158" name="sniper" type="Weapon" x="201.673" y="715.404" width="45" height="45">
    <properties>
-    <property name="bullets" type="int" value="2"/>
+    <property name="bullets" type="int" value="1"/>
     <property name="capacity" type="int" value="4"/>
     <property name="cooldown" type="float" value="2"/>
     <property name="damage" type="int" value="30"/>
@@ -208,7 +208,7 @@
   </object>
   <object id="159" name="sniper" type="Weapon" x="1671.88" y="1350.56" width="45" height="45">
    <properties>
-    <property name="bullets" type="int" value="2"/>
+    <property name="bullets" type="int" value="1"/>
     <property name="capacity" type="int" value="4"/>
     <property name="cooldown" type="float" value="2"/>
     <property name="damage" type="int" value="30"/>
@@ -274,7 +274,7 @@
   </object>
   <object id="171" name="rifle" type="Weapon" x="203.541" y="199.805" width="45" height="45">
    <properties>
-    <property name="bullets" type="int" value="2"/>
+    <property name="bullets" type="int" value="1"/>
     <property name="capacity" type="int" value="30"/>
     <property name="cooldown" type="float" value="0.2"/>
     <property name="damage" type="int" value="4"/>

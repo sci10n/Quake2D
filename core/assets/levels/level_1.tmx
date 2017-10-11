@@ -172,7 +172,7 @@
   </object>
   <object id="23" name="shotgun" type="Weapon" x="137.273" y="1737.09" width="45" height="45">
    <properties>
-    <property name="bullets" type="int" value="6"/>
+    <property name="bullets" type="int" value="7"/>
     <property name="capacity" type="int" value="16"/>
     <property name="cooldown" type="float" value="1"/>
     <property name="damage" type="int" value="1"/>
@@ -203,7 +203,7 @@
   </object>
   <object id="119" name="rifle" type="Weapon" x="585.273" y="840.909" width="45" height="45">
    <properties>
-    <property name="bullets" type="int" value="2"/>
+    <property name="bullets" type="int" value="1"/>
     <property name="capacity" type="int" value="30"/>
     <property name="cooldown" type="float" value="0.1"/>
     <property name="damage" type="int" value="1"/>
@@ -214,10 +214,10 @@
   </object>
   <object id="120" name="sniper" type="Weapon" x="1353.64" y="1034" width="45" height="45">
    <properties>
-    <property name="bullets" type="int" value="2"/>
+    <property name="bullets" type="int" value="1"/>
     <property name="capacity" type="int" value="4"/>
     <property name="cooldown" type="float" value="2"/>
-    <property name="damage" type="int" value="3"/>
+    <property name="damage" type="int" value="30"/>
     <property name="knockback" type="float" value="12"/>
     <property name="speed" type="float" value="120"/>
     <property name="spread" type="float" value="1"/>
@@ -225,7 +225,7 @@
   </object>
   <object id="121" name="shotgun" type="Weapon" x="1737.5" y="137.5" width="45" height="45">
    <properties>
-    <property name="bullets" type="int" value="6"/>
+    <property name="bullets" type="int" value="7"/>
     <property name="capacity" type="int" value="16"/>
     <property name="cooldown" type="float" value="1"/>
     <property name="damage" type="int" value="1"/>
@@ -238,12 +238,12 @@
  <objectgroup name="Spawns">
   <object id="30" name="PlayerSpawn" type="PlayerSpawn" x="768" y="1792" width="64" height="64">
    <properties>
-    <property name="health" type="int" value="10"/>
+    <property name="health" type="int" value="20"/>
    </properties>
   </object>
   <object id="35" name="BotSpawn" type="BotSpawn" x="1088" y="64" width="64" height="64">
    <properties>
-    <property name="health" type="int" value="10"/>
+    <property name="health" type="int" value="20"/>
    </properties>
   </object>
  </objectgroup>

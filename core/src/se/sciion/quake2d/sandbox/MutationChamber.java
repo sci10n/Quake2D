@@ -83,7 +83,7 @@ public class MutationChamber extends ApplicationAdapter {
 		prototypes.add(new CheckEntityDistance("", 0.0f,level));
 		prototypes.add(new CheckHealth(0.0f));
 		prototypes.add(new CheckWeapon(""));
-		prototypes.add(new MoveToNearest("", level, null, null, 0.0f));
+		prototypes.add(new MoveToNearest("", level, null, null, 0.0f, 15.0f));
 		prototypes.add(new PickupArmor(level, "armor"));
 		prototypes.add(new PickupDamageBoost(level, "damage"));
 		prototypes.add(new PickupHealth(level, "health"));

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="64" tileheight="64" nextobjectid="256">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="64" tileheight="64" nextobjectid="260">
  <tileset firstgid="1" source="tilesheet.tsx"/>
  <layer name="Background" width="30" height="30">
   <data encoding="csv">
@@ -77,14 +77,14 @@
 147,0,0,0,0,0,0,125,203,126,0,0,0,125,126,0,0,125,126,0,152,153,0,0,0,0,0,0,0,147,
 147,0,0,0,0,0,0,176,178,177,0,0,0,152,153,0,0,152,153,0,0,0,0,0,0,0,0,0,0,147,
 147,0,0,0,0,0,0,152,204,153,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,
-147,0,0,0,0,0,0,0,0,0,125,203,126,0,0,125,126,0,0,0,125,126,0,0,0,0,0,0,0,147,
-147,0,0,0,0,125,203,126,0,0,176,178,177,0,0,152,153,0,0,0,152,153,0,0,0,0,0,0,0,147,
-147,0,0,0,0,176,178,177,0,0,152,204,153,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,
+147,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,125,126,0,0,0,0,0,0,0,147,
+147,0,0,0,0,125,203,126,0,0,0,0,0,0,0,0,0,0,0,0,152,153,0,0,0,0,0,0,0,147,
+147,0,0,0,0,176,178,177,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,
 147,0,0,0,0,152,204,153,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,
-147,0,0,0,0,0,0,0,0,0,0,0,0,0,125,126,0,0,125,126,0,0,0,0,0,0,0,0,0,147,
-147,0,0,0,0,0,0,0,0,125,203,126,0,0,152,153,0,0,152,153,0,0,0,0,0,0,0,0,0,147,
-147,0,125,203,126,0,0,0,0,176,178,177,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,
-147,0,176,178,177,0,0,0,0,152,204,153,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,
+147,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,
+147,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,
+147,0,125,203,126,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,
+147,0,176,178,177,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,
 147,0,152,204,153,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,
 147,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,
 147,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,0,0,147,
@@ -144,16 +144,11 @@
   <object id="186" type="Static" x="1856" y="64" width="62.6667" height="1856"/>
   <object id="229" type="Static" x="192" y="1472" width="1536" height="64"/>
   <object id="230" type="Static" x="64" y="1024" width="1664" height="64"/>
-  <object id="231" type="Static" x="896" y="640" width="128" height="128"/>
-  <object id="232" type="Static" x="640" y="384" width="192" height="192"/>
-  <object id="233" type="Static" x="1152" y="640" width="128" height="128"/>
   <object id="234" type="Static" x="832" y="192" width="128" height="128"/>
   <object id="235" type="Static" x="1280" y="384" width="128" height="128"/>
   <object id="236" type="Static" x="1280" y="128" width="128" height="128"/>
   <object id="237" type="Static" x="1088" y="192" width="128" height="128"/>
-  <object id="238" type="Static" x="960" y="384" width="128" height="128"/>
   <object id="239" type="Static" x="448" y="192" width="192" height="192"/>
-  <object id="240" type="Static" x="576" y="704" width="192" height="192"/>
   <object id="241" type="Static" x="320" y="448" width="192" height="192"/>
   <object id="242" type="Static" x="128" y="768" width="192" height="192"/>
   <object id="243" type="Static" x="640" y="1152" width="192" height="192"/>
@@ -195,16 +190,33 @@
     <property name="amount" type="int" value="10"/>
    </properties>
   </object>
- </objectgroup>
- <objectgroup name="Spawns">
-  <object id="254" name="BotSpawn" type="BotSpawn" x="1696" y="1690" width="64" height="64">
+  <object id="258" name="rifle" type="Weapon" x="1512.17" y="1688.17" width="45" height="45">
    <properties>
-    <property name="health" type="int" value="100"/>
+    <property name="bullets" type="int" value="2"/>
+    <property name="capacity" type="int" value="30"/>
+    <property name="cooldown" type="float" value="0.1"/>
+    <property name="damage" type="int" value="1"/>
+    <property name="knockback" type="float" value="4"/>
+    <property name="speed" type="float" value="60"/>
+    <property name="spread" type="float" value="8"/>
    </properties>
   </object>
-  <object id="255" name="BotSpawn" type="BotSpawn" x="174" y="1698" width="64" height="64">
+  <object id="259" name="shotgun" type="Weapon" x="128" y="1728" width="45" height="45">
    <properties>
-    <property name="health" type="int" value="100"/>
+    <property name="bullets" type="int" value="6"/>
+    <property name="capacity" type="int" value="16"/>
+    <property name="cooldown" type="float" value="1"/>
+    <property name="damage" type="int" value="1"/>
+    <property name="knockback" type="float" value="8"/>
+    <property name="speed" type="float" value="30"/>
+    <property name="spread" type="float" value="18"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="Spawns">
+  <object id="256" name="PlayerSpawn" type="PlayerSpawn" x="616" y="1698.67" width="64" height="64">
+   <properties>
+    <property name="health" type="int" value="10"/>
    </properties>
   </object>
  </objectgroup>

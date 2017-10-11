@@ -39,7 +39,6 @@ public class WeaponComponent extends EntityComponent {
 		// Load the bullet texture here. A bit ugly, maybe do this in the level instead?
 		bulletTexture = new TextureRegion(new Texture(Gdx.files.internal("images/bullet.png")));
 
-
 		this.bulletTexture = bulletTexture;
         this.muzzleTexture = muzzleTexture;
 		this.physicsSystem = physicsSystem;
@@ -99,57 +98,27 @@ public class WeaponComponent extends EntityComponent {
 			Array<Weapon> weapons = inventory.getItems(Weapon.class);
 			if (weapons.size >= 1) {
 				Weapon currentWeapon = weapons.first();
-				SoundSystem.getInstance().playSound(currentWeapon.getTag(),
-				                                    origin, 1.0f);
 
-				// Create bullets
-				for (int i = 0; i < currentWeapon.bullets; i++) {
-					Vector2 bulletHeading = heading.cpy();
-					float angle = bulletHeading.angle();
-					bulletHeading.setAngle(
-							angle + MathUtils.random(-currentWeapon.spread / 2.0f, currentWeapon.spread / 2.0f));
-					{
-						float x = origin.x + bulletHeading.x / 2.0f;
-						float y = origin.y + bulletHeading.y / 2.0f;
-						Entity e = level.createEntity();
-						CircleShape circle = new CircleShape();
-						circle.setRadius(0.13f);
-						PhysicsComponent bulletPhysics = physicsSystem.createComponent(x, y, BodyType.DynamicBody,
-								circle, true);
-						bulletPhysics.getBody().setLinearDamping(0.0f);
-						bulletPhysics.getBody().setAngularDamping(100.0f);
-
-						e.addComponent(bulletPhysics);
-
-						ProjectileComponent projectile = new ProjectileComponent(
-								bulletHeading.cpy().scl(currentWeapon.speed));
-						e.addComponent(projectile);
-
-
-						SpriteComponent bulletSprite = new SpriteComponent(bulletTexture, new Vector2(0.0f, 0.0f), new Vector2(-0.12f, -0.12f),
-						                                                   new Vector2(1.0f / 64.0f, 1.0f / 64.0f), 0.0f);
-						e.addComponent(bulletSprite);
-
-						DamageBoostComponent boost = parent.getComponent(ComponentTypes.Boost);
-						float boostScl = 1;
-						if(boost != null)
-							boostScl = boost.boost;
-						
-						DamageComponent damage = new DamageComponent((int) (currentWeapon.baseDamage * boostScl), parent);
-						e.addComponent(damage);
-
-						physicsSystem.registerCallback(projectile, e);
-
-					}
+				
+				for(int i = 0; i < currentWeapon.bullets; i++) {
+					float angle = heading.angle() + MathUtils.randomTriangular(-currentWeapon.spread/2.0f, currentWeapon.spread/2.0f);
+					physicsSystem.hitScan(origin,heading.cpy().setAngle(angle),100.0f,parent);
 				}
-
+				
 				// Push player backwards
 				PhysicsComponent physics = getParent().getComponent(ComponentTypes.Physics);
 				if (physics != null) {
+					Vector2 position = physics.getBody().getPosition();
 					Vector2 vel = physics.getBody().getLinearVelocity();
+
 					vel.add(heading.scl(-currentWeapon.knockback));
 					physics.getBody().setLinearVelocity(vel);
+
+					SoundSystem.getInstance().playSound(currentWeapon.getTag(),
+								                        position, 1.0f);
 				}
+
+
 				cooldown = currentWeapon.cooldown;
 				return true;
 			}

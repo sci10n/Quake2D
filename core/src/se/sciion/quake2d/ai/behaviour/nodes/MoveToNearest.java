@@ -25,15 +25,17 @@ public class MoveToNearest extends BehaviourNode {
 
     private String tag;
     private float minDistance;
+    private float maxDistance;
     private PhysicsSystem physics;
     private Level level;
     private Pathfinding pathfinding;
 
-    public MoveToNearest(String tag, Level level, Pathfinding pathfinding, PhysicsSystem physics, float minDistance) {
+    public MoveToNearest(String tag, Level level, Pathfinding pathfinding, PhysicsSystem physics, float minDistance, float maxDistance) {
         super();
         this.tag = tag;
         this.level = level;
         this.minDistance = minDistance;
+        this.maxDistance = maxDistance;
         this.physics = physics;
         this.pathfinding = pathfinding;
     }
@@ -81,18 +83,16 @@ public class MoveToNearest extends BehaviourNode {
             return getStatus();
         }
 
-        input.setTarget(targetPos);
 
         float distance = fromLoc.cpy().sub(targetPos).len();
-
-        if (distance > minDistance) {
-        	setStatus(BehaviourStatus.RUNNING);
-        } else if (distance <= minDistance && this.physics.lineOfSight(fromLoc, targetPos)) {
+        
+        if(distance <= maxDistance && distance >= minDistance && this.physics.lineOfSight(fromLoc, targetPos)){
         	setStatus(BehaviourStatus.SUCCESS);
-            input.setTarget(null);
-
+        	input.setTarget(null);
+        	return getStatus();
         }
 
+        input.setTarget(targetPos);
         return getStatus();
     }
 
@@ -117,7 +117,7 @@ public class MoveToNearest extends BehaviourNode {
 
 	@Override
 	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
-		return new MoveToNearest(level.getTags().random(), level, pathfinding, physics, MathUtils.random(3));
+		return new MoveToNearest(level.getTags().random(), level, pathfinding, physics, MathUtils.random(3),MathUtils.random(3));
 	}
 
 }
