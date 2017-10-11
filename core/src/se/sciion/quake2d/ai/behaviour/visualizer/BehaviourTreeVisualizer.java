@@ -41,7 +41,7 @@ public class BehaviourTreeVisualizer extends JFrame {
 
 		running = true;
 		setResizable(false);
-		this.windowSize = windowSize;
+		this.windowSize = size;
 		setFocusableWindowState(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -130,8 +130,6 @@ public class BehaviourTreeVisualizer extends JFrame {
 	}
 	
 	public boolean isPaused() {
-		if (Gdx.input.isKeyJustPressed(Keys.H))
-			toggleVisibility();
 		if(Gdx.input.isKeyPressed(Keys.P) && !paused)
 			paused = true;
 		else if(Gdx.input.isKeyPressed(Keys.P) && paused)

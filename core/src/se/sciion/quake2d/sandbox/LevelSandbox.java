@@ -19,6 +19,7 @@ import se.sciion.quake2d.level.system.SoundSystem;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.MusicLoader;
 import com.badlogic.gdx.assets.loaders.SoundLoader;
@@ -32,7 +33,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 
-
 public class LevelSandbox extends ApplicationAdapter {
 
 	private AssetManager assets;
@@ -42,9 +42,13 @@ public class LevelSandbox extends ApplicationAdapter {
 	private Level level;
 	private RenderModel model;
 	
-    public static boolean DEBUG = true;
-    private boolean paused = false;
-    
+	public static float WIN_TIME = 1000.0f;
+	public static String TITLE = "Quake 2D";
+	public static String PLAY_LEVEL = "";
+    public static boolean DEBUG  = false;
+	public static boolean EVOLVE = true;
+	public static float GP_DELTA = 50.0f;
+
     private Pathfinding pathfinding;
 	private BehaviourTreeVisualizer visualizer;
 
@@ -58,11 +62,13 @@ public class LevelSandbox extends ApplicationAdapter {
 	private int width;
 	private int height;
 	private final int ROUND_PER_GENERATION = 5;
+	private float winTimer = 0.0f;
 	private int numRounds = 0;
 	
 	public LevelSandbox(String ... levels) {
-		SoundSystem.getInstance().toggleMute();
 		this.levels = new Array<String>(levels);
+		int lastLevel = this.levels.size - 1;
+		PLAY_LEVEL = this.levels.get(lastLevel);
 	}
 	
 	@Override
@@ -87,7 +93,7 @@ public class LevelSandbox extends ApplicationAdapter {
 		trees = new Trees();
 		trees.createPrototypes(level, physicsSystem, pathfinding);
 
-		beginMatch(levels.random());
+		beginMatch(PLAY_LEVEL);
 	}
 
 	public void loadAssets() {
@@ -143,20 +149,21 @@ public class LevelSandbox extends ApplicationAdapter {
 		environment = new Environment(levelPath, level, physicsSystem, pathfinding, camera, assets);
 		environment.start();
 
-		if(trees.getPopulation() == null){
+		if(EVOLVE && trees.getPopulation() == null){
 			trees.initPopulation(5);
 		}
 		
 		SoundSystem.getInstance().playSound("fight");
-		
 		pathfinding.update(physicsSystem);
 		
-		for(Entity e: level.getEntities("player")){
-			BotInputComponent input = e.getComponent(ComponentTypes.BotInput);
-			if(input != null){
-				BehaviourTree tree = trees.getPopulation().random();
-				input.setBehaviourTree(tree);
-				level.getStats().recordParticipant(tree);
+		if (EVOLVE) {
+			for(Entity e: level.getEntities("player")){
+				BotInputComponent input = e.getComponent(ComponentTypes.BotInput);
+				if(input != null){
+					BehaviourTree tree = trees.getPopulation().random();
+					input.setBehaviourTree(tree);
+					level.getStats().recordParticipant(tree);
+				}
 			}
 		}
 	}
@@ -182,38 +189,63 @@ public class LevelSandbox extends ApplicationAdapter {
 	}
 	
 	public void endMatch() {
-		for(Entity e: level.getEntities("player")){
-			BotInputComponent input = e.getComponent(ComponentTypes.BotInput);
-			if(input != null){
-				float h = 0.0f;
-				float a = 0.0f;
-				HealthComponent health = e.getComponent(ComponentTypes.Health);
-				if(health != null){
-					h = health.getHealth();
-					a = health.getArmor();
+		if (EVOLVE) {
+			for(Entity e: level.getEntities("player")) {
+				BotInputComponent input = e.getComponent(ComponentTypes.BotInput);
+				if(input != null){
+					float h = 0.0f;
+					float a = 0.0f;
+					HealthComponent health = e.getComponent(ComponentTypes.Health);
+					if(health != null){
+						h = health.getHealth();
+						a = health.getArmor();
+					}
+					level.getStats().recordHealth(h, a, input.getBehaviourTree());
 				}
-				level.getStats().recordHealth(h, a, input.getBehaviourTree());
 			}
 		}
 		
 		environment.stop();
 		physicsSystem.cleanup();
 		physicsSystem.clear();
-		
-		Statistics stats = level.getStats();
-		
-		System.out.println(stats.toString());
-		SoundSystem.getInstance().playSound("impressive");
-				
-		numRounds++;
-		if(numRounds >= ROUND_PER_GENERATION){
-			endGeneration();
-		}
+
+		if (EVOLVE) {
+			Statistics stats = level.getStats();
+			System.out.println(stats.toString());
+					
+			numRounds++;
+			if(numRounds >= ROUND_PER_GENERATION){
+				endGeneration();
+			}
+		} else level.clearStats();
+
 		level.cleanup();
 	}
 
 	private void toggleDebugDraw() {
 		DEBUG = !DEBUG;
+	}
+
+	private void toggleEvolution() {
+		EVOLVE = !EVOLVE;
+		endMatch();
+		beginMatch(PLAY_LEVEL);
+	}
+
+	private void findNextLevel() {
+		int levelNumber = -1;
+		for (int keyCode = Keys.NUM_1; keyCode <= Keys.NUM_9; ++keyCode) {
+			if (Gdx.input.isKeyJustPressed(keyCode)) {
+				levelNumber = keyCode - Keys.NUM_1;
+				break;
+			}
+		}
+
+		if (levelNumber != -1 && levelNumber < levels.size) {
+			PLAY_LEVEL = levels.get(levelNumber);
+			endMatch();
+			beginMatch(PLAY_LEVEL);
+		}
 	}
 
 	private boolean isDebugging() {
@@ -222,9 +254,26 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	@Override
 	public void render() {
-		final float frameDelta = Gdx.graphics.getDeltaTime() * 16.0f;
+		findNextLevel(); // Do we switch to new levels?
+		float frameDelta = Gdx.graphics.getDeltaTime();
+
+		if (Gdx.input.isKeyPressed(Keys.LEFT) && EVOLVE)
+			GP_DELTA = MathUtils.clamp(GP_DELTA - 32.0f * frameDelta, 1.0f, 512.0f);
+		else if (Gdx.input.isKeyPressed(Keys.RIGHT) && EVOLVE)
+			GP_DELTA = MathUtils.clamp(GP_DELTA + 32.0f * frameDelta, 1.0f, 512.0f);
+		if (Gdx.input.isKeyPressed(Keys.F) && EVOLVE) {
+			Gdx.graphics.setTitle(TITLE + " @ " + (int)GP_DELTA + "x");
+			frameDelta *= GP_DELTA;
+		} else Gdx.graphics.setTitle(TITLE);
+
 		if (Gdx.input.isKeyJustPressed(Keys.O))
 			toggleDebugDraw();
+		if (Gdx.input.isKeyJustPressed(Keys.E))
+			toggleEvolution();
+
+		if (EVOLVE) SoundSystem.getInstance().setMute(true);
+		else if (Gdx.input.isKeyJustPressed(Keys.M))
+			SoundSystem.getInstance().toggleMute();
 
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
@@ -249,12 +298,13 @@ public class LevelSandbox extends ApplicationAdapter {
 				pathfinding.render(model);
 				level.debugRender(model);
 			}
+
 			physicsSystem.render(camera.combined);
 		}
 
 		if(Gdx.input.isKeyJustPressed(Keys.Q) || !environment.isRunning()){
 			endMatch();
-			beginMatch(levels.random());
+			beginMatch(PLAY_LEVEL);
 		}
 	}
 	

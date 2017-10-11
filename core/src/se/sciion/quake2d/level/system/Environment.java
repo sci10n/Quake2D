@@ -2,6 +2,7 @@ package se.sciion.quake2d.level.system;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -401,7 +402,9 @@ public class Environment implements Disposable{
 	}
 
 	private void inspectBehaviourTree() {
-		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
+		boolean isPaused = BehaviourTreeVisualizer.getInstance().isPaused();
+		// Choose a bot's behaviour tree to inspect.
+		if (Gdx.input.isButtonPressed(Buttons.LEFT) && isPaused) {
 			Vector3 screenMousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0.0f);
 			Vector3 mousePosition = camera.unproject(screenMousePosition);
 			PhysicsComponent component = physicsSystem.queryComponentAt(mousePosition.x, mousePosition.y);
@@ -410,6 +413,15 @@ public class Environment implements Disposable{
 				if(component.getParent() != null){
 					BotInputComponent newDebugBot = component.getParent().getComponent(ComponentTypes.BotInput);
 					if(newDebugBot != null) BehaviourTreeVisualizer.getInstance().setDebugBot(newDebugBot);
+				}
+			}
+		// Here we instead just swap between the trees.
+		} else if (Gdx.input.isKeyJustPressed(Keys.TAB)) {
+			BotInputComponent currentBot = BehaviourTreeVisualizer.getInstance().getDebugBot();
+			for (Entity e : level.getEntities("player")) {
+				BotInputComponent bot = e.getComponent(ComponentTypes.BotInput);
+				if (bot != null && bot != currentBot) {
+					BehaviourTreeVisualizer.getInstance().setDebugBot(bot);
 				}
 			}
 		}

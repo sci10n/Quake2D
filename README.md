@@ -24,6 +24,21 @@ If you've ever built anything using Gradle. It's obvious:
 4. Hopefully everything worked nicely.
 5. Finally: `gradlew desktop:run`
 
+### Playing the Game
+
+- Walk around with W, A, S, D.
+- Aim with the mouse if you are playing.
+- Shoot with SPACE or with left mouse button.
+- The keys 1, 2, 3 load the built-in levels.
+- Switch a bot's BT visualizer with TAB.
+- Pause the game for inspection with P.
+- Step forward game by holding in P.
+- Resume the game by pressing R.
+- Use E to toggle evolution.
+- In evolution, use F to fast-forward.
+- Use the left and right to FF slower/faster.
+- Press Q to restart the level.
+
 ## Library Dependencies
 
 Most of this will be fetched automatically by `gradlew`, but in case you want to do things the old fashioned-way, here is a list of the libraries, Java versions and tooling used. It might still work with older libraries of versions of Java, but you will be treading in unknown territory. You will need to fix any issues that may arise yourself. You've been warned.

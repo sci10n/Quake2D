@@ -247,7 +247,7 @@ public class PhysicsSystem{
 		renderer.begin(ShapeType.Filled);
 		renderer.setColor(Color.GOLD);
 		for(Hitscan p: hitscans){			
-			renderer.rectLine(p.origin.cpy().lerp(p.target, p.ellapsed * 0.5f), p.interpolation, 0.08f);
+			renderer.rectLine(p.origin.cpy().lerp(p.target, p.ellapsed * 0.5f), p.interpolation, 0.1f);
 		}
 		renderer.end();
 	}
