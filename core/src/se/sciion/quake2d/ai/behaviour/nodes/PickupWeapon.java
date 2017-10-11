@@ -87,6 +87,9 @@ public class PickupWeapon extends BehaviourNode {
 
     @Override
     public Node toDotNode() {
+    	if(id == null){
+    		System.out.println("Null Weapon Tag");
+    	}
         return node("pickUpItem" + getNext())
                .with(Shape.RECTANGLE)
 			   .with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())

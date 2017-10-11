@@ -91,8 +91,14 @@ public class HealthComponent extends EntityComponent implements CollisionCallbac
 		
 		BotInputComponent input = parent.getComponent(ComponentTypes.BotInput);
 		BotInputComponent input2 = responsible.getComponent(ComponentTypes.BotInput);
-		if(input != null && input2 != null) {
-			level.getStats().recordDamageTaken(input2.getBehaviourTree(), input.getBehaviourTree(), f);
+		if(input2 != null) {
+			if(input == null) {
+				level.getStats().recordDamageTaken(input2.getBehaviourTree(), null, f);
+
+			}
+			else{
+				level.getStats().recordDamageTaken(input2.getBehaviourTree(), input.getBehaviourTree(), f);
+			}
 			if(health <= 0) {
 				level.getStats().recordKill(input2.getBehaviourTree());
 			}

@@ -67,7 +67,7 @@ import se.sciion.quake2d.sandbox.LevelSandbox;
 
 public class Environment implements Disposable{
 
-	private final float TIMEOUT = 300.0f;
+	private final float TIMEOUT = 60.0f;
 	private float ellapsed = 0.0f;
 	
 	private boolean running = false;
@@ -101,6 +101,7 @@ public class Environment implements Disposable{
 	}
 	
 	private void loadMap() {
+		Weapon.tags.clear();
 		TmxMapLoader loader = new TmxMapLoader(new InternalFileHandleResolver());
 		// TmxMapLoader.Parameters
 		Parameters params = new Parameters();		
@@ -400,7 +401,7 @@ public class Environment implements Disposable{
 	}
 
 	private void inspectBehaviourTree() {
-		if (BehaviourTreeVisualizer.getInstance().isPaused() && Gdx.input.isButtonPressed(Buttons.LEFT)) {
+		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			Vector3 screenMousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0.0f);
 			Vector3 mousePosition = camera.unproject(screenMousePosition);
 			PhysicsComponent component = physicsSystem.queryComponentAt(mousePosition.x, mousePosition.y);

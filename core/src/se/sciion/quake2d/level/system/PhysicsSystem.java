@@ -35,7 +35,7 @@ import se.sciion.quake2d.sandbox.LevelSandbox;
  * @author sciion
  *
  */
-public class PhysicsSystem implements Disposable {
+public class PhysicsSystem{
 
 	
 	private class Hitscan {
@@ -50,7 +50,6 @@ public class PhysicsSystem implements Disposable {
 	private Vector2 p1,p2;
 	private ShapeRenderer renderer;
 	
-	
 	public Array<Hitscan> hitscans;
 
 	private Array<PhysicsComponent> components;
@@ -59,11 +58,10 @@ public class PhysicsSystem implements Disposable {
 
 		public Vector2 target;
 		private float minFraction = Float.MAX_VALUE;
-		public boolean foundSomehting = false;
+
 		@Override
 		public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
 			if(fraction < minFraction){
-				foundSomehting = true;
 				minFraction = fraction;
 				target = point.cpy();
 			}
@@ -111,7 +109,7 @@ public class PhysicsSystem implements Disposable {
 		removalList = new Array<Body>();
 		contactResolver = new EntityContactResolver();
 		world.setContactListener(contactResolver);
-		debugRenderer = new Box2DDebugRenderer(true,true,true,true,true,true);
+		debugRenderer = new Box2DDebugRenderer();
 		solidcallback = new OverlapCallback();
 		components = new Array<PhysicsComponent>();
 		renderer = new ShapeRenderer();
@@ -278,8 +276,7 @@ public class PhysicsSystem implements Disposable {
 		}
 	}
 
-	@Override
-	public void dispose() {
+	public void clear(){
 		world.clearForces();
 		world.getBodies(removalList);
 		cleanup();

@@ -1,6 +1,20 @@
 package se.sciion.quake2d.sandbox;
 
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import se.sciion.quake2d.ai.behaviour.BehaviourTree;
+import se.sciion.quake2d.ai.behaviour.Trees;
+import se.sciion.quake2d.ai.behaviour.visualizer.BehaviourTreeVisualizer;
+import se.sciion.quake2d.enums.ComponentTypes;
+import se.sciion.quake2d.graphics.RenderModel;
+import se.sciion.quake2d.level.Entity;
+import se.sciion.quake2d.level.Level;
+import se.sciion.quake2d.level.Statistics;
+import se.sciion.quake2d.level.components.BotInputComponent;
+import se.sciion.quake2d.level.components.HealthComponent;
+import se.sciion.quake2d.level.system.Environment;
+import se.sciion.quake2d.level.system.Pathfinding;
+import se.sciion.quake2d.level.system.PhysicsSystem;
+import se.sciion.quake2d.level.system.SoundSystem;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -17,15 +31,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
-
-import se.sciion.quake2d.ai.behaviour.visualizer.BehaviourTreeVisualizer;
-import se.sciion.quake2d.graphics.RenderModel;
-import se.sciion.quake2d.level.Level;
-import se.sciion.quake2d.level.Statistics;
-import se.sciion.quake2d.level.system.Environment;
-import se.sciion.quake2d.level.system.Pathfinding;
-import se.sciion.quake2d.level.system.PhysicsSystem;
-import se.sciion.quake2d.level.system.SoundSystem;
 
 
 public class LevelSandbox extends ApplicationAdapter {
@@ -48,8 +53,12 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	private final Array<String> levels;
 	
+	private Trees trees;
+	
 	private int width;
 	private int height;
+	private final int ROUND_PER_GENERATION = 5;
+	private int numRounds = 0;
 	
 	public LevelSandbox(String ... levels) {
 		SoundSystem.getInstance().toggleMute();
@@ -58,8 +67,8 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	@Override
 	public void create() {
-		width = (int)(3*600 * Gdx.graphics.getDensity());
-		height = (int)(3*600 * Gdx.graphics.getDensity());
+		width = (int)(2*600 * Gdx.graphics.getDensity());
+		height = (int)(2*600 * Gdx.graphics.getDensity());
 		Gdx.graphics.setWindowedMode(width, height);
 		Gdx.graphics.setTitle("Quake 2D");
 
@@ -69,6 +78,15 @@ public class LevelSandbox extends ApplicationAdapter {
 		assets = new AssetManager();
 
 		loadAssets();
+		
+		level = new Level();
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, 30, 30);
+		physicsSystem = new PhysicsSystem();
+		pathfinding = new Pathfinding(30, 30, level);
+		trees = new Trees();
+		trees.createPrototypes(level, physicsSystem, pathfinding);
+
 		beginMatch(levels.random());
 	}
 
@@ -121,39 +139,77 @@ public class LevelSandbox extends ApplicationAdapter {
 		SoundSystem.getInstance().setup(assets, sounds);
 	}
 	
-	
 	public void beginMatch(String levelPath) {
-		level = new Level();
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 30, 30);
-		physicsSystem = new PhysicsSystem();
-		pathfinding = new Pathfinding(30, 30, level);
-		
 		environment = new Environment(levelPath, level, physicsSystem, pathfinding, camera, assets);
 		environment.start();
 
+		if(trees.getPopulation() == null){
+			trees.initPopulation(5);
+		}
+		
 		SoundSystem.getInstance().playSound("fight");
 		
 		pathfinding.update(physicsSystem);
+		
+		for(Entity e: level.getEntities("player")){
+			BotInputComponent input = e.getComponent(ComponentTypes.BotInput);
+			if(input != null){
+				BehaviourTree tree = trees.getPopulation().random();
+				input.setBehaviourTree(tree);
+				level.getStats().recordParticipant(tree);
+			}
+		}
 	}
 	
 	@Override
 	public void dispose() {
 		assets.dispose();
 		model.spriteRenderer.dispose();
+		environment.dispose();
 	}
 
+	public void endGeneration(){
+		// Calculate fitness
+		Statistics stats = level.getStats();
+		// Select next gen of trees
+		trees.select(stats);
+		// Crosover
+		trees.crossover();
+		// Mutate
+		trees.mutate();
+		
+		level.clearStats();
+	}
+	
 	public void endMatch() {
+		for(Entity e: level.getEntities("player")){
+			BotInputComponent input = e.getComponent(ComponentTypes.BotInput);
+			if(input != null){
+				float h = 0.0f;
+				float a = 0.0f;
+				HealthComponent health = e.getComponent(ComponentTypes.Health);
+				if(health != null){
+					h = health.getHealth();
+					a = health.getArmor();
+				}
+				level.getStats().recordHealth(h, a, input.getBehaviourTree());
+			}
+		}
+		
 		environment.stop();
 		physicsSystem.cleanup();
-		physicsSystem.dispose();
-		environment.dispose();
+		physicsSystem.clear();
 		
 		Statistics stats = level.getStats();
-
+		
+		System.out.println(stats.toString());
 		SoundSystem.getInstance().playSound("impressive");
-
-		beginMatch(levels.random());
+				
+		numRounds++;
+		if(numRounds >= ROUND_PER_GENERATION){
+			endGeneration();
+		}
+		level.cleanup();
 	}
 
 	private void toggleDebugDraw() {
@@ -166,10 +222,10 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	@Override
 	public void render() {
-		final float frameDelta = Gdx.graphics.getDeltaTime() * 1.0f;
+		final float frameDelta = Gdx.graphics.getDeltaTime() * 16.0f;
 		if (Gdx.input.isKeyJustPressed(Keys.O))
 			toggleDebugDraw();
-		
+
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 

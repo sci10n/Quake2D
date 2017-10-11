@@ -98,6 +98,9 @@ public class MoveToNearest extends BehaviourNode {
 
     @Override
     public Node toDotNode() {
+    	if(tag == null){
+    		System.out.println("Null tag!");
+    	}
         Node node = node("moveToNearest" + getNext())
                     .with(Shape.RECTANGLE)
 					.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
