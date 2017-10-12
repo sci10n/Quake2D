@@ -364,7 +364,7 @@ public class Environment implements Disposable{
 				entity.addComponent(health);
 				entity.addComponent(physics);
 				entity.addComponent(weapon);
-				entity.addComponent(new InventoryComponent(wweapon));
+				entity.addComponent(new InventoryComponent());
 				entity.addComponent(botInput);
 				entity.addComponent(robotSpriteSheet);
 				entity.addComponent(new DamageBoostComponent());

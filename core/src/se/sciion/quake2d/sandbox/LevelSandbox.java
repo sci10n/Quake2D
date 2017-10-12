@@ -158,7 +158,7 @@ public class LevelSandbox extends ApplicationAdapter {
 		Array<Entity> players = level.getEntities("player");
 		
 		
-		BotInputComponent input = players.get(0).getComponent(ComponentTypes.BotInput);
+		BotInputComponent input = players.get(1).getComponent(ComponentTypes.BotInput);
 		if(input != null){
 			BehaviourTree hardCoded = new BehaviourTree(new AttackNearest("player", level, physicsSystem));
 			BehaviourTree tree = trees.getPopulation().get(counter1);
@@ -166,12 +166,9 @@ public class LevelSandbox extends ApplicationAdapter {
 			level.getStats().recordParticipant(tree);
 		}
 		
-		BotInputComponent input2 = players.get(1).getComponent(ComponentTypes.BotInput);
+		BotInputComponent input2 = players.get(0).getComponent(ComponentTypes.BotInput);
 		if(input2 != null){
-			BehaviourTree hardCoded = new BehaviourTree(new AttackNearest("player", level, physicsSystem));
-			BehaviourTree tree = trees.getPopulation().random();
-			input2.setBehaviourTree(tree);
-			level.getStats().recordParticipant(tree);
+			input2.setBehaviourTree(trees.getEnemy(level, physicsSystem, pathfinding));
 		}
 		counter1 = (counter1 + 1) % trees.populationLimit;
 	}
