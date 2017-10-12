@@ -42,7 +42,6 @@ public class LevelSandbox extends ApplicationAdapter {
 	private Level level;
 	private RenderModel model;
 	
-	public static float WIN_TIME = 1000.0f;
 	public static String TITLE = "Quake 2D";
 	public static String PLAY_LEVEL = "";
     public static boolean DEBUG  = false;
@@ -62,7 +61,6 @@ public class LevelSandbox extends ApplicationAdapter {
 	private int width;
 	private int height;
 	private final int ROUND_PER_GENERATION = 5;
-	private float winTimer = 0.0f;
 	private int numRounds = 0;
 	
 	public LevelSandbox(String ... levels) {
@@ -307,5 +305,4 @@ public class LevelSandbox extends ApplicationAdapter {
 			beginMatch(PLAY_LEVEL);
 		}
 	}
-	
 }

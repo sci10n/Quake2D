@@ -108,6 +108,14 @@ public class BehaviourTree{
 		root = n.randomized(prototypes);
 		dirty = true;
 	}
+
+	public static BehaviourTree fromJson(String behaviourTreeJson) {
+		return null;
+	}
+
+	public String toJson() {
+		return null;
+	}
 	
 	
 }
