@@ -1,6 +1,10 @@
 # Quake 2-D
 
-A fast-paced top-down shooter written for the course TNM095 "AI for Interactive Media" at LiTH. It features a full *behaviour tree* implementation for the bot's decision making process, a homebrew *pathfinding system* using *a-star* and a method for evolving the behaviour tree and its nodes/actions/condition by using *genetric programming*. We have written a paper on this as well called *Behaviour Tree Evolution by Genetic Programming* which you should find on the internet and can be compiled here as well (see below)...
+<p align="center">
+  <img src="/documents/slides/share/header.png" alt="header"/>
+</p>
+
+A fast-paced top-down shooter written for the course TNM095 "AI for Interactive Media" at LiTH. It features a full *behaviour tree* implementation for the bot's decision making process, a homebrew *pathfinding system* using *a-star* and a method for evolving the behaviour tree and its nodes/actions/condition by using *genetric programming*. We have written a paper on this called *Behaviour Tree Evolution by Genetic Programming* which you should find on the internet or here.
 
 ## Report and Documents
 
@@ -38,6 +42,7 @@ If you've ever built anything using Gradle. It's obvious:
 - In evolution, use F to fast-forward.
 - Use the left and right to FF slower/faster.
 - Press Q to restart the level.
+- Use H to hide the visualizer.
 
 ## Library Dependencies
 
@@ -53,5 +58,4 @@ Most of this will be fetched automatically by `gradlew`, but in case you want to
 All our assets are taken from elsewhere, since we are programmers, we suck at making art and audio. Luckily some people have released some good quality assets for free and under a permissive license (creative commons). This enables us to still keep our MIT license for the game.
 
 - Kenney's Game Assets (CC 3.0)
-- Sounds by the SFXR Tool (MIT License)
-- A Drop A Day - As Far as it Gets (CC 3.0)
+- Sound Assets in Quake 3 Arena
