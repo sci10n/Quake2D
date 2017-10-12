@@ -78,7 +78,7 @@ public class MutationChamber extends ApplicationAdapter {
 	
 	private Array<BehaviourNode> createPrototypes(){
 		Array<BehaviourNode> prototypes = new Array<BehaviourNode>();
-		prototypes.add(new AttackNearest("", level));
+		prototypes.add(new AttackNearest("", level, null));
 		prototypes.add(new CheckArmor(0.0f));
 		prototypes.add(new CheckEntityDistance("", 0.0f,level));
 		prototypes.add(new CheckHealth(0.0f));
@@ -105,7 +105,6 @@ public class MutationChamber extends ApplicationAdapter {
 		}
 		
 		if(Gdx.input.isKeyJustPressed(Keys.R)){
-			tree1.randomize(prototypes);
 		}
 	}
 	

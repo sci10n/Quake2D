@@ -30,8 +30,12 @@ public class PickupArmor extends PickupConsumable {
 	}
 
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+	public BehaviourNode clone() {
 		return new PickupArmor(level, tag);
 	}
 
+	@Override
+	public BehaviourNode randomized() {
+		return new PickupArmor(level, tag);
+	}
 }

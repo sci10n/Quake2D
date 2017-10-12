@@ -64,13 +64,41 @@ public class SequenceNode extends CompositeNode{
         return sequence;
     }
     
+    @Override
+    public void mutate() {
+    	int t = MathUtils.random(2);
+			// Remove random child
+			if(t == 0 && children.size > 0) {
+				children.removeIndex(MathUtils.random(0, children.size-1));
+			}
+			// Add new child
+			if(t == 1) {
+				children.add(Trees.prototypes.random().clone());
+			}
+			
+			// Shuffle
+			if(t == 2){
+				children.shuffle();
+			}
+    }
+    
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
-		int numChildren = MathUtils.random(1, 5);
-		Array<BehaviourNode> children = new Array<BehaviourNode>();
-		for(int i = 0; i <numChildren; i++){
-			children.add(prototypes.random().randomized(prototypes));
+	public BehaviourNode clone() {
+	
+		SequenceNode node = new SequenceNode();
+		for(int i = 0; i <children.size; i++){
+			node.addChild(children.get(i).clone());
 		}
+		return node;
+	}
+	
+	@Override
+	public BehaviourNode randomized() {
+		int numChild = MathUtils.random(1,5);
+		Array<BehaviourNode> children = new Array<BehaviourNode>();
+		for(int i = 0; i < numChild ; i++)
+			children.add(Trees.prototypes.random().randomized());
+		
 		return new SequenceNode(children);
 	}
 

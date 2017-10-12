@@ -3,6 +3,7 @@ package se.sciion.quake2d.sandbox;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import se.sciion.quake2d.ai.behaviour.BehaviourTree;
 import se.sciion.quake2d.ai.behaviour.Trees;
+import se.sciion.quake2d.ai.behaviour.nodes.AttackNearest;
 import se.sciion.quake2d.ai.behaviour.visualizer.BehaviourTreeVisualizer;
 import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
@@ -42,11 +43,13 @@ public class LevelSandbox extends ApplicationAdapter {
 	private Level level;
 	private RenderModel model;
 	
+	public static String MODE = "";
 	public static String TITLE = "Quake 2D";
 	public static String PLAY_LEVEL = "";
     public static boolean DEBUG  = false;
 	public static boolean EVOLVE = true;
-	public static float GP_DELTA = 50.0f;
+	public static float GP_DELTA = 16.0f;
+	public static boolean FAST_FORWARD = true;
 
     private Pathfinding pathfinding;
 	private BehaviourTreeVisualizer visualizer;
@@ -60,13 +63,14 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	private int width;
 	private int height;
-	private final int ROUND_PER_GENERATION = 5;
+	private int ROUND_PER_GENERATION;
 	private int numRounds = 0;
 	
 	public LevelSandbox(String ... levels) {
 		this.levels = new Array<String>(levels);
 		int lastLevel = this.levels.size - 1;
 		PLAY_LEVEL = this.levels.get(lastLevel);
+		if (EVOLVE) MODE = " Evolution";
 	}
 	
 	@Override
@@ -143,26 +147,45 @@ public class LevelSandbox extends ApplicationAdapter {
 		SoundSystem.getInstance().setup(assets, sounds);
 	}
 	
+	private int counter1 = 0;
+	private int counter2 = 0;
+
 	public void beginMatch(String levelPath) {
 		environment = new Environment(levelPath, level, physicsSystem, pathfinding, camera, assets);
 		environment.start();
 
-		if(EVOLVE && trees.getPopulation() == null){
-			trees.initPopulation(5);
+		if(trees.getPopulation() == null){
+			trees.initPopulation();
+			ROUND_PER_GENERATION = trees.populationLimit;
 		}
 		
 		SoundSystem.getInstance().playSound("fight");
-		pathfinding.update(physicsSystem);
 		
 		if (EVOLVE) {
-			for(Entity e: level.getEntities("player")){
-				BotInputComponent input = e.getComponent(ComponentTypes.BotInput);
-				if(input != null){
-					BehaviourTree tree = trees.getPopulation().random();
-					input.setBehaviourTree(tree);
-					level.getStats().recordParticipant(tree);
-				}
+			System.out.println("Trees: " + counter1 + " " + counter2 + " fight!");
+		} else System.out.println("Fighting against hand-made trees.");
+
+		pathfinding.update(physicsSystem);
+		Array<Entity> players = level.getEntities("player");
+		
+		if (EVOLVE) {
+			BotInputComponent input = players.get(0).getComponent(ComponentTypes.BotInput);
+			if(input != null){
+				BehaviourTree hardCoded = new BehaviourTree(new AttackNearest("player", level, physicsSystem));
+				BehaviourTree tree = trees.getPopulation().get(counter1);
+				input.setBehaviourTree(tree);
+				level.getStats().recordParticipant(tree);
 			}
+			
+			BotInputComponent input2 = players.get(1).getComponent(ComponentTypes.BotInput);
+			if(input2 != null){
+				BehaviourTree hardCoded = new BehaviourTree(new AttackNearest("player", level, physicsSystem));
+				BehaviourTree tree = trees.getPopulation().random();
+				input2.setBehaviourTree(tree);
+				level.getStats().recordParticipant(tree);
+			}
+
+			counter1 = (counter1 + 1) % trees.populationLimit;
 		}
 	}
 	
@@ -173,7 +196,9 @@ public class LevelSandbox extends ApplicationAdapter {
 		environment.dispose();
 	}
 
+	private int genCounter = 0;
 	public void endGeneration(){
+		System.out.println("Gen: " + ++genCounter);
 		// Calculate fitness
 		Statistics stats = level.getStats();
 		// Select next gen of trees
@@ -182,8 +207,11 @@ public class LevelSandbox extends ApplicationAdapter {
 		trees.crossover();
 		// Mutate
 		trees.mutate();
-		
+
 		level.clearStats();
+		
+		counter1 = 0;
+		counter2 = 0;
 	}
 	
 	public void endMatch() {
@@ -208,24 +236,32 @@ public class LevelSandbox extends ApplicationAdapter {
 		physicsSystem.clear();
 
 		if (EVOLVE) {
-			Statistics stats = level.getStats();
-			System.out.println(stats.toString());
-					
 			numRounds++;
-			if(numRounds >= ROUND_PER_GENERATION){
+			if(numRounds > ROUND_PER_GENERATION){
 				endGeneration();
+				numRounds = 0;
 			}
-		} else level.clearStats();
-
+		} else {
+			genCounter = 0;
+			endGeneration();
+			numRounds = 0;
+		}
+		
 		level.cleanup();
 	}
 
 	private void toggleDebugDraw() {
 		DEBUG = !DEBUG;
 	}
+	
+	private void toggleFastForward() {
+		FAST_FORWARD = !FAST_FORWARD;
+	}
 
 	private void toggleEvolution() {
 		EVOLVE = !EVOLVE;
+		if (EVOLVE) MODE = " Evolution";
+		else MODE = "";
 		endMatch();
 		beginMatch(PLAY_LEVEL);
 	}
@@ -256,13 +292,16 @@ public class LevelSandbox extends ApplicationAdapter {
 		float frameDelta = Gdx.graphics.getDeltaTime();
 
 		if (Gdx.input.isKeyPressed(Keys.LEFT) && EVOLVE)
-			GP_DELTA = MathUtils.clamp(GP_DELTA - 32.0f * frameDelta, 1.0f, 512.0f);
+			GP_DELTA = MathUtils.clamp(GP_DELTA - 32.0f * frameDelta, 0.0f, 100.0f);
 		else if (Gdx.input.isKeyPressed(Keys.RIGHT) && EVOLVE)
-			GP_DELTA = MathUtils.clamp(GP_DELTA + 32.0f * frameDelta, 1.0f, 512.0f);
-		if (Gdx.input.isKeyPressed(Keys.F) && EVOLVE) {
-			Gdx.graphics.setTitle(TITLE + " @ " + (int)GP_DELTA + "x");
+			GP_DELTA = MathUtils.clamp(GP_DELTA + 32.0f * frameDelta, 0.0f, 100.0f);
+		if (Gdx.input.isKeyJustPressed(Keys.F))
+			toggleFastForward();
+
+		if (FAST_FORWARD && EVOLVE) {
+			Gdx.graphics.setTitle(TITLE + MODE + " @ " + (int)GP_DELTA + "x");
 			frameDelta *= GP_DELTA;
-		} else Gdx.graphics.setTitle(TITLE);
+		} else Gdx.graphics.setTitle(TITLE + MODE);
 
 		if (Gdx.input.isKeyJustPressed(Keys.O))
 			toggleDebugDraw();

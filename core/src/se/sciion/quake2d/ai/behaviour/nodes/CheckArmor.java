@@ -50,15 +50,18 @@ public class CheckArmor extends BehaviourNode {
     }
 
 	@Override
-	public void mutate(float chance) {
-		if(MathUtils.randomBoolean(chance)){
+	public void mutate() {
 			ratio += MathUtils.random(0.2f) - 0.1f;
 			ratio = MathUtils.clamp(ratio, 0.0f, 1.0f);
-		}
 	}
 	
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+	public BehaviourNode clone() {
+		return new CheckArmor(ratio);
+	}
+	
+	@Override
+	public BehaviourNode randomized() {
 		return new CheckArmor(MathUtils.random());
 	}
 }

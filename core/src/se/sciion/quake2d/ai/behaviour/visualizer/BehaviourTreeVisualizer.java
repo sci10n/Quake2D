@@ -22,8 +22,6 @@ import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.system.PhysicsSystem;
 
 public class BehaviourTreeVisualizer extends JFrame {
-	private OrthographicCamera camera;
-	private PhysicsSystem physicsSystem;
 	private static final long serialVersionUID = 1L;
 
 	private BotInputComponent debugBot = null;
@@ -122,11 +120,6 @@ public class BehaviourTreeVisualizer extends JFrame {
 
 	public BotInputComponent getDebugBot() {
 		return debugBot;
-	}
-
-	private void toggleVisibility() {
-		visible = !visible;
-		setVisible(visible);
 	}
 	
 	public boolean isPaused() {

@@ -24,31 +24,30 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
 import se.sciion.quake2d.ai.behaviour.BehaviourTree;
 import se.sciion.quake2d.ai.behaviour.InverterNode;
-import se.sciion.quake2d.ai.behaviour.ParallelNode;
 import se.sciion.quake2d.ai.behaviour.SelectorNode;
 import se.sciion.quake2d.ai.behaviour.SequenceNode;
 import se.sciion.quake2d.ai.behaviour.SucceederNode;
-import se.sciion.quake2d.ai.behaviour.nodes.NOPNode;
 import se.sciion.quake2d.ai.behaviour.nodes.AttackNearest;
-import se.sciion.quake2d.ai.behaviour.nodes.CheckWeapon;
+import se.sciion.quake2d.ai.behaviour.nodes.CheckArmor;
 import se.sciion.quake2d.ai.behaviour.nodes.CheckEntityDistance;
 import se.sciion.quake2d.ai.behaviour.nodes.CheckHealth;
-import se.sciion.quake2d.ai.behaviour.nodes.CheckArmor;
+import se.sciion.quake2d.ai.behaviour.nodes.CheckWeapon;
 import se.sciion.quake2d.ai.behaviour.nodes.MoveToNearest;
 import se.sciion.quake2d.ai.behaviour.nodes.PickupArmor;
 import se.sciion.quake2d.ai.behaviour.nodes.PickupDamageBoost;
 import se.sciion.quake2d.ai.behaviour.nodes.PickupHealth;
 import se.sciion.quake2d.ai.behaviour.nodes.PickupWeapon;
 import se.sciion.quake2d.ai.behaviour.visualizer.BehaviourTreeVisualizer;
+import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.graphics.RenderModel;
 import se.sciion.quake2d.graphics.SheetRegion;
 import se.sciion.quake2d.level.Entity;
 import se.sciion.quake2d.level.Level;
-import se.sciion.quake2d.enums.ComponentTypes;
 import se.sciion.quake2d.level.components.BotInputComponent;
 import se.sciion.quake2d.level.components.DamageBoostComponent;
 import se.sciion.quake2d.level.components.HealthComponent;
@@ -68,7 +67,7 @@ import se.sciion.quake2d.sandbox.LevelSandbox;
 
 public class Environment implements Disposable{
 
-	private final float TIMEOUT = 60.0f;
+	private final float TIMEOUT = 120.0f;
 	private float ellapsed = 0.0f;
 	
 	private boolean running = false;
@@ -137,6 +136,8 @@ public class Environment implements Disposable{
 			
 		}
 		
+		Weapon wweapon = null;
+		
 		MapLayer pickupLayer = map.getLayers().get("Pickups");
 		for(MapObject o: pickupLayer.getObjects()) {
 			RectangleMapObject r = (RectangleMapObject) o;
@@ -191,7 +192,7 @@ public class Environment implements Disposable{
 					entity.addComponent(damageSprite);
 				} 
 				
-				PickupComponent pickup = new PickupComponent(c);
+				PickupComponent pickup = new PickupComponent(level, c);
 				physicsSystem.registerCallback(pickup, entity);
 				entity.addComponent(pickup);
 			}
@@ -230,8 +231,8 @@ public class Environment implements Disposable{
 					entity.addComponent(sniperSprite);
 				}
 
-				Weapon wweapon = new Weapon(o.getName(),cooldown, bullets, capacity, knockback, spread, speed, baseDamage);
-				PickupComponent pickup = new PickupComponent(wweapon);
+				wweapon = new Weapon(o.getName(),cooldown, bullets, capacity, knockback, spread, speed, baseDamage);
+				PickupComponent pickup = new PickupComponent(level, wweapon);
 				physicsSystem.registerCallback(pickup, entity);
 				entity.addComponent(pickup);
 			}
@@ -364,7 +365,7 @@ public class Environment implements Disposable{
 				entity.addComponent(health);
 				entity.addComponent(physics);
 				entity.addComponent(weapon);
-				entity.addComponent(new InventoryComponent());
+				entity.addComponent(new InventoryComponent(wweapon));
 				entity.addComponent(botInput);
 				entity.addComponent(robotSpriteSheet);
 				entity.addComponent(new DamageBoostComponent());
@@ -378,7 +379,7 @@ public class Environment implements Disposable{
 				PickupWeapon pickupWeaponShotgun = new PickupWeapon("shotgun",level,pathfinding);
 				PickupWeapon pickupWeaponRifle = new PickupWeapon("rifle",level,pathfinding);
 
-				AttackNearest attackPlayer = new AttackNearest("player", level);
+				AttackNearest attackPlayer = new AttackNearest("player", level, physicsSystem);
 				MoveToNearest moveToPlayer = new MoveToNearest("player",level ,pathfinding,physicsSystem, 0.0f, 5.0f);
 				
 				CheckEntityDistance distanceCheck = new CheckEntityDistance("player", 15, level);
@@ -404,15 +405,18 @@ public class Environment implements Disposable{
 	private void inspectBehaviourTree() {
 		boolean isPaused = BehaviourTreeVisualizer.getInstance().isPaused();
 		// Choose a bot's behaviour tree to inspect.
-		if (Gdx.input.isButtonPressed(Buttons.LEFT) && isPaused) {
+		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			Vector3 screenMousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0.0f);
 			Vector3 mousePosition = camera.unproject(screenMousePosition);
-			PhysicsComponent component = physicsSystem.queryComponentAt(mousePosition.x, mousePosition.y);
+			Array<PhysicsComponent> components = physicsSystem.queryComponentAt(mousePosition.x, mousePosition.y);
 
-			if (component != null) {
-				if(component.getParent() != null){
-					BotInputComponent newDebugBot = component.getParent().getComponent(ComponentTypes.BotInput);
-					if(newDebugBot != null) BehaviourTreeVisualizer.getInstance().setDebugBot(newDebugBot);
+			if(components.size > 0){
+				PhysicsComponent component = components.first();
+				if (component != null) {
+					if(component.getParent() != null){
+						BotInputComponent newDebugBot = component.getParent().getComponent(ComponentTypes.BotInput);
+						if(newDebugBot != null) BehaviourTreeVisualizer.getInstance().setDebugBot(newDebugBot);
+					}
 				}
 			}
 		// Here we instead just swap between the trees.
@@ -449,7 +453,14 @@ public class Environment implements Disposable{
 			running = false;
 		}
 		
-		if(level.getStats().getTotalKillcount() >= level.getEntities("player").size - 1 && !LevelSandbox.DEBUG) {
+		int alivePlayers = 0;
+		for(Entity e: level.getEntities("player")){
+			HealthComponent c = e.getComponent(ComponentTypes.Health);
+			if(c != null && !c.isDead()){
+				alivePlayers++;
+			}
+		}
+		if(alivePlayers <= 1 && !LevelSandbox.DEBUG) {
 			running = false;
 		}
 	}

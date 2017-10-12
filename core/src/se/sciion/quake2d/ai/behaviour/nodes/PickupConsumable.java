@@ -82,7 +82,7 @@ public abstract class PickupConsumable extends BehaviourNode {
 	protected abstract boolean restored();
 	
 	@Override
-	public void mutate(float chance) {
+	public void mutate() {
 		
 	}
 	

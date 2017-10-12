@@ -7,49 +7,75 @@ import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
 public class InverterNode extends DecoratorNode {
 
-	public InverterNode(){
+	public InverterNode() {
 		super();
 	}
-	
-    public InverterNode(BehaviourNode behaviour) {
-        super(behaviour);
-    }
 
-    @Override
-    protected void onEnter() {
-    	setStatus(BehaviourStatus.RUNNING);
-    }
+	public InverterNode(BehaviourNode behaviour) {
+		super(behaviour);
+	}
 
-    @Override
-    protected BehaviourStatus onUpdate() {
-    	BehaviourNode child = children.first();
-        setStatus(child.tick());
-        if(child.getStatus() == BehaviourStatus.SUCCESS) {
-        	setStatus(BehaviourStatus.FAILURE);
-        } else if(child.getStatus() == BehaviourStatus.FAILURE) {
-        	setStatus(BehaviourStatus.SUCCESS);
-        }
+	@Override
+	protected void onEnter() {
+		setStatus(BehaviourStatus.RUNNING);
+	}
 
-        return getStatus();
-    }
+	@Override
+	protected BehaviourStatus onUpdate() {
+		BehaviourNode child = children.first();
+		setStatus(child.tick());
+		if (child.getStatus() == BehaviourStatus.SUCCESS) {
+			setStatus(BehaviourStatus.FAILURE);
+		} else if (child.getStatus() == BehaviourStatus.FAILURE) {
+			setStatus(BehaviourStatus.SUCCESS);
+		}
 
-    @Override
-    public Node toDotNode() {
-    	BehaviourNode child = children.first();
-        return node("inverter" + getNext())
-               .with(Shape.DIAMOND)
-				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
-               .with(Label.of("Invert"))
-               .link(child.toDotNode());
-    }
-    
-    @Override
-    public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
-    	return new InverterNode(prototypes.random().randomized(prototypes));
-    }
+		return getStatus();
+	}
+
+	@Override
+	public Node toDotNode() {
+		BehaviourNode child = children.first();
+		if (child == null) {
+			return node("inverter" + getNext())
+					.with(Shape.DIAMOND)
+					.with(Style.FILLED, Color.rgb(getColor()).fill(),
+							Color.BLACK.radial()).with(Label.of("Invert"));
+		}
+
+		return node("inverter" + getNext())
+				.with(Shape.DIAMOND)
+				.with(Style.FILLED, Color.rgb(getColor()).fill(),
+						Color.BLACK.radial()).with(Label.of("Invert"))
+				.link(child.toDotNode());
+	}
+
+	@Override
+	public void mutate() {
+		if (children.size == 0) {
+			children.add(Trees.prototypes.random().clone());
+		}
+	}
+
+	@Override
+	public BehaviourNode clone() {
+		InverterNode node = null;
+		if (children.size > 0) {
+			node = new InverterNode(children.first().clone());
+		} else {
+			node = new InverterNode();
+		}
+		return node;
+	}
+
+	@Override
+	public BehaviourNode randomized() {
+		return new InverterNode(Trees.prototypes.random().randomized());
+	}
 
 }

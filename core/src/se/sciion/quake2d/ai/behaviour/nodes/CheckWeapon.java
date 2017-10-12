@@ -59,14 +59,17 @@ public class CheckWeapon extends BehaviourNode {
     }
     
 	@Override
-	public void mutate(float chance) {
-		if(MathUtils.randomBoolean(chance)){
+	public void mutate() {
 			weaponType = Weapon.tags.random();
-		}
 	}
 
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+	public BehaviourNode clone() {
+		return new CheckWeapon(weaponType);
+	}
+	
+	@Override
+	public BehaviourNode randomized() {
 		return new CheckWeapon(Weapon.tags.random());
 	}
 }

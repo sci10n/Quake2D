@@ -77,12 +77,38 @@ public class ParallelNode extends CompositeNode {
 	}
 
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
-		int numChildren = MathUtils.random(1, 5);
-		Array<BehaviourNode> children = new Array<BehaviourNode>();
-		for(int i = 0; i <numChildren; i++){
-			children.add(prototypes.random().randomized(prototypes));
+	public void mutate() {
+			int t = MathUtils.random(3);
+			// Remove random child
+			if(t == 0 && children.size > 0) {
+				children.removeIndex(MathUtils.random(0, children.size-1));
+			}
+			// Add new child
+			if(t == 1) {
+				children.add(Trees.prototypes.random().clone());
+			}
+			
+			// Shuffle
+			if(t == 2){
+				children.shuffle();
+			}
+			if(t == 3){
+				threshold = MathUtils.clamp(threshold + MathUtils.randomSign(), 0, children.size);
+			}
+	}
+	@Override
+	public BehaviourNode clone() {
+		
+		ParallelNode node = new ParallelNode();
+		node.threshold = threshold;
+		for(int i = 0; i <children.size; i++){
+			node.addChild(children.get(i).clone());
 		}
-		return new ParallelNode(MathUtils.random(1, numChildren), children);
+		return node;
+	}
+	
+	@Override
+	public BehaviourNode randomized() {
+		return new ParallelNode(threshold,Trees.prototypes.random().randomized());
 	}
 }

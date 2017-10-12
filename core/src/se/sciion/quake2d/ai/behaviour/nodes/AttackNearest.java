@@ -18,15 +18,18 @@ import se.sciion.quake2d.level.Level;
 import se.sciion.quake2d.level.components.BotInputComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.system.Pathfinding;
+import se.sciion.quake2d.level.system.PhysicsSystem;
 
 public class AttackNearest extends BehaviourNode{
 
     private String tag;
     private Level level;
+	private PhysicsSystem physics;
 
-    public AttackNearest(String tag, Level level) {
+    public AttackNearest(String tag, Level level, PhysicsSystem physics) {
         this.tag = tag;
         this.level = level;
+        this.physics = physics;
     }
 
     @Override
@@ -75,9 +78,11 @@ public class AttackNearest extends BehaviourNode{
         	setStatus(BehaviourStatus.FAILURE);
             return getStatus();
         }
-
+        
+        input.setTarget(targetPhysics.getBody().getPosition());
+        
         Vector2 direction = targetPhysics.getBody().getPosition().cpy().sub(physics.getBody().getPosition());
-        if(input.fire(direction.nor())) {
+        if(this.physics.lineOfSight(position, targetPhysics.getBody().getPosition()) &&  input.fire(direction.nor())) {
         	setStatus(BehaviourStatus.SUCCESS);
         }
         else {
@@ -96,16 +101,19 @@ public class AttackNearest extends BehaviourNode{
     }
 
 	@Override
-	public void mutate(float chance) {
-		if(MathUtils.randomBoolean(chance)){
+	public void mutate() {
 			String tag = level.getTags().random();
 			this.tag = tag;
-		}
 	}
 
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
-		return new AttackNearest(level.getTags().random(), level);
+	public BehaviourNode clone() {
+		return new AttackNearest(tag, level,physics);
+	}
+	
+	@Override
+	public BehaviourNode randomized() {
+		return new AttackNearest(level.getTags().random(), level,physics);
 	}
 
 }

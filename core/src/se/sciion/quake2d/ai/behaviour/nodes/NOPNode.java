@@ -39,11 +39,17 @@ public class NOPNode extends BehaviourNode {
 	}
 
 	@Override
-	public void mutate(float chance) {
+	public void mutate() {
 	}
 
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+	public BehaviourNode clone() {
+		return new NOPNode();
+	}
+	
+	@Override
+	public BehaviourNode randomized() {
+		// TODO Auto-generated method stub
 		return new NOPNode();
 	}
 }

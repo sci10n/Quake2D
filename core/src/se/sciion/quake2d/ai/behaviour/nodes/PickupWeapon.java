@@ -97,14 +97,18 @@ public class PickupWeapon extends BehaviourNode {
     }
 
 	@Override
-	public void mutate(float chance) {
-		if(MathUtils.randomBoolean(chance)){
+	public void mutate() {
 			id = Weapon.tags.random();
-		}
 	}
 
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
+	public BehaviourNode clone() {
+		return new PickupWeapon(id, level, pathfinding);
+	}
+	
+	@Override
+	public BehaviourNode randomized() {
+		// TODO Auto-generated method stub
 		return new PickupWeapon(Weapon.tags.random(), level, pathfinding);
 	}
 

@@ -82,7 +82,6 @@ public class BehaviourTree{
 		}
 		
 		dirty = true;
-		tree.dirty = true;
 	}
 	
 	public float getFitness(){
@@ -90,23 +89,29 @@ public class BehaviourTree{
 	}
 
 	public void mutate(float mutationChance) {
-		Array<BehaviourNode> nodes = new Array<BehaviourNode>();
-		root.flatten(nodes);
-		nodes.random().mutate(mutationChance);
-		dirty = true;
+		if(MathUtils.randomBoolean(mutationChance)){
+			Array<BehaviourNode> nodes = new Array<BehaviourNode>();
+			root.flatten(nodes);
+			
+			if(MathUtils.randomBoolean(0.8f)){
+				nodes.random().mutate();
+			}
+			else{
+				BehaviourNode newNode = Trees.prototypes.random().randomized();
+				BehaviourNode oldNode = nodes.random();
+				CompositeNode parent = (CompositeNode)(oldNode.getParent());
+				if(parent != null)
+					parent.replaceChild(oldNode, newNode);
+			}
+			
+			dirty = true;
+		}
 	}
 	
-	public void randomize(Array<BehaviourNode> prototypes){
-		BehaviourNode n = null;
-		while(n == null) {
-			n = prototypes.random();
-			if(!(n instanceof CompositeNode)) {
-				n = null;
-			}
-		}
-		
-		root = n.randomized(prototypes);
-		dirty = true;
+	public BehaviourTree clone(){
+		BehaviourTree tree = new BehaviourTree();
+		tree.root = root.clone();
+		return tree;
 	}
 
 	public static BehaviourTree fromJson(String behaviourTreeJson) {

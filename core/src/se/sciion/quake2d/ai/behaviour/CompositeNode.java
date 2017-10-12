@@ -30,13 +30,6 @@ public abstract class CompositeNode extends BehaviourNode {
 		currentChild = 0;
 	}
 
-	@Override
-	public void mutate(float chance) {
-		for (BehaviourNode n : children) {
-			n.mutate(chance);
-		}
-	}
-
 	public void addChild(BehaviourNode node) {
 		if (currentChild == 0) // Prevent modifying during execution.
 		{

@@ -87,17 +87,20 @@ public class CheckEntityDistance extends BehaviourNode{
 	}
 
 	@Override
-	public void mutate(float chance) {
-		if(MathUtils.randomBoolean(chance)){
+	public void mutate() {
 			threshold += MathUtils.random(-2, 2);
 			threshold = MathUtils.clamp(threshold, 0, 40);
 			tag = level.getTags().random();
-		}
 	}
 
 	@Override
-	public BehaviourNode randomized(Array<BehaviourNode> prototypes) {
-		return new CheckEntityDistance(level.getTags().random(), MathUtils.random(0, 40), level);
+	public BehaviourNode clone() {
+		return new CheckEntityDistance(tag,threshold, level);
+	}
+	
+	@Override
+	public BehaviourNode randomized() {
+		return new CheckEntityDistance(level.getTags().random(), MathUtils.random(0, 5), level);
 	}
 
 }

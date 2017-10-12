@@ -41,7 +41,7 @@ public class LoaderSandbox extends ApplicationAdapter {
 
 	private Array<BehaviourNode> createPrototypes(){
 		Array<BehaviourNode> prototypes = new Array<BehaviourNode>();
-		prototypes.add(new AttackNearest("", dummyLevel));
+		// prototypes.add(new AttackNearest("", dummyLevel));
 		prototypes.add(new CheckArmor(0.0f));
 		prototypes.add(new CheckEntityDistance("", 0.0f, dummyLevel));
 		prototypes.add(new CheckHealth(0.0f));
@@ -73,7 +73,7 @@ public class LoaderSandbox extends ApplicationAdapter {
 		dummyBot = new BotInputComponent(dummyPathfinder, dummyPhysics);
 		dummyEntity.addComponent(dummyBot);
 		behaviourTree = new BehaviourTree();
-		behaviourTree.randomize(createPrototypes());
+		// behaviourTree.randomize(createPrototypes());
 		dummyBot.setBehaviourTree(behaviourTree);
 		BehaviourTreeVisualizer.getInstance().setDebugBot(dummyBot);
 	}
@@ -81,7 +81,7 @@ public class LoaderSandbox extends ApplicationAdapter {
 	@Override
 	public void render() {
 		if (Gdx.input.isKeyJustPressed(Keys.R)) {
-			behaviourTree.randomize(createPrototypes());
+			// behaviourTree.randomize(createPrototypes());
 		} else if (Gdx.input.isKeyJustPressed(Keys.S)) {
 			saveBehaviourTree(behaviourTree, "behaviours/tree.json");
 		} else if (Gdx.input.isKeyJustPressed(Keys.L)) {
