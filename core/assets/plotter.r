@@ -1,5 +1,5 @@
 
-data = read.csv("statistics_Thu Oct 12 10:44:36 CEST 2017",sep = ',', dec = '.',  header = TRUE, stringsAsFactors = FALSE)
+data = read.csv("statistics_Thu Oct 12 11:21:10 CEST 2017",sep = ',', dec = '.',  header = TRUE, stringsAsFactors = FALSE)
 
 frame = data.frame(data)
 frame$Fitness <- as.numeric(frame$Fitness)

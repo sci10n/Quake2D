@@ -247,9 +247,7 @@ public class LevelSandbox extends ApplicationAdapter {
 				numRounds = 0;
 			}
 		} else {
-			genCounter = 0;
 			endGeneration();
-			numRounds = 0;
 		}
 		
 		level.cleanup();

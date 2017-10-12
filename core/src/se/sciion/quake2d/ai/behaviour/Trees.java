@@ -40,7 +40,8 @@ public class Trees {
 	public static Array<BehaviourNode> prototypes;
 	
 	private float crossoverChance = 0.3f;
-	private float mutationChance = 1.0f;
+	private float mutationChance = 0.2f;
+
 	
 	public Trees(){
 		outputFile = new FileHandle(new File("statistics_" + new Date().toString()));
@@ -61,8 +62,8 @@ public class Trees {
 		}
 		
 		candidates.sort((Candidate c1, Candidate c2) -> (int)Math.signum(c2.fitness - c1.fitness));
-		if(candidates.size > 2)
-			candidates.removeRange(2, candidates.size - 1);
+		if(candidates.size > 3)
+			candidates.removeRange(3, candidates.size - 1);
 		
 		for(Candidate c: candidates){
 			System.out.println("Tree with fitness: " + c.fitness + " selected");
@@ -85,7 +86,6 @@ public class Trees {
 	}
 	
 	public void mutate(){
-		mutationChance = 0.1f;
 		for(BehaviourTree tree: population){
 			tree.mutate(mutationChance);
 		}
@@ -108,13 +108,13 @@ public class Trees {
 	public void createPrototypes(Level level, PhysicsSystem physics, Pathfinding pathfinding){
 		prototypes = new Array<BehaviourNode>();
 		prototypes.add(new AttackNearest("", level, physics));
-		//prototypes.add(new CheckArmor(0.0f));
+		prototypes.add(new CheckArmor(0.0f));
 		//prototypes.add(new CheckEntityDistance("", 0.0f,level));
-		//prototypes.add(new CheckHealth(0.0f));
+		prototypes.add(new CheckHealth(0.0f));
 		prototypes.add(new CheckWeapon(""));
 		prototypes.add(new MoveToNearest("", level, pathfinding,physics, 0.0f, 15.0f));
 		prototypes.add(new PickupArmor(level, "armor"));
-		//prototypes.add(new PickupDamageBoost(level, "damage"));
+		prototypes.add(new PickupDamageBoost(level, "damage"));
 		prototypes.add(new PickupHealth(level, "health"));
 		prototypes.add(new PickupWeapon("", level, pathfinding));
 		//prototypes.add(new InverterNode());
