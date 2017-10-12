@@ -14,7 +14,7 @@
 \usefonttheme[onlymath]{serif}
 \beamertemplatenavigationsymbolsempty
 \title{\LARGE{Evolving Behaviour Trees}\\
-       \small{\emph{Learning Behaviour in Top-Down Shooter}}}
+       \small{\emph{Learning Top--Down Shooter Behaviours}}}
 \author{\vspace{2ex}\\\textbf{Martin Estgren} \;\,\;\;\,\,
         \texttt{<mares480@student.liu.se>} \\
         \textbf{Erik S. V. Jansson}\;
@@ -39,11 +39,11 @@
     numbersep = 3pt
 }
 
-\setbeamerfont{bibliography item}{size=\tiny}
-\setbeamerfont{bibliography entry author}{size=\tiny}
-\setbeamerfont{bibliography entry title}{size=\tiny}
-\setbeamerfont{bibliography entry location}{size=\tiny}
-\setbeamerfont{bibliography entry note}{size=\tiny}
+\setbeamerfont{bibliography item}{size=\small}
+\setbeamerfont{bibliography entry author}{size=\small}
+\setbeamerfont{bibliography entry title}{size=\small}
+\setbeamerfont{bibliography entry location}{size=\small}
+\setbeamerfont{bibliography entry note}{size=\small}
 \setbeamertemplate{footline}[frame number]
 \begin{document}
     \frame{\titlepage}
@@ -54,18 +54,17 @@
             \item{Techniques}
 
                 \begin{itemize}
-                    \item{Behaviour Trees}
-                    \item{Path Finding w/ A*}
+                    \item{Behaviour Trees (BT)}
                     \item{Genetic Programming}
                 \end{itemize}
 
             \item{Implementation}
 
-            \item{Demonstration}
+            \item{Demo}
 
                 \begin{itemize}
                     \item{Pre-Defined\, Behaviour Trees}
-                    \item{Behaviour Tree GP Evolution}
+                    \item{GP Behaviour Tree Evolution}
                 \end{itemize}
 
             \item{Results}
@@ -75,63 +74,58 @@
     }
 
     \frame{\frametitle{Motivation}
-        Goal: create a fun an challenging adversarial bot to play against.\\
+        \textbf{Goal:} create a fun and challenging adversarial bot to play against.\\
+        For this we will need a couple of artificial intelligence ingredients:
+
+        \vspace{1.25em}
+
         \begin{itemize}
-            \item{Some game with a sufficiently complex environment: Quake}
-            \item{Represent knowledge and decision making:\, Behaviour Trees}
-            \item{Interesting and dynamic behaviours: Genetic Programing}
+            \item{Build game with a sufficiently complex environment: \emph{\underline{QUAKE}}}
+            \item{A way to represent knowledge and decisions: \emph{\underline{Behaviour Trees}}}
+            \item{Create interesting and novel behaviour:\ \emph{\underline{Genetic Programming}}}
         \end{itemize}
     }
 
     \frame{\frametitle{Techniques} \framesubtitle{Behaviour Trees}
-        Models the decision-making process by using trees composed of \emph{control-flow nodes} and \emph{execution nodes}.
-        \begin{figure}
-            \centering
-            \includegraphics[width=0.8\textwidth]{share/bt.png}
-        \end{figure}
-    }
+        Models the decision-making process by using trees composed of \emph{control-flow nodes} and \emph{action/condition nodes}. States are either \emph{RUNNING}, \emph{FAILED}, \emph{SUCCEEDED} are updated every logic tick.
 
-    \frame{\frametitle{Techniques} \framesubtitle{A* Path Finding}
-        Heuristic-based graph-traversal search algorithm.
-
-        \begin{itemize}
-            \item{\textbf{Path cost:} cost \(g(n)\) of reaching the current node \(n\).}
-            \item{\textbf{Heuristic:} estimated cost \(h(n)\) to reach goal.}
-            \item{Expand the nodes with the lowest \(f(n) = g(n) + h(n)\)}
-        \end{itemize}
+        \vspace{1em}
 
         \begin{figure}
             \centering
-            \includegraphics[width=0.6\textwidth]{share/path_finding.jpg}
+            \includegraphics[width=0.6\textwidth]{share/bt.png}
         \end{figure}
     }
 
     \frame{\frametitle{Techniques} \framesubtitle{Genetic Programming}
         \begin{enumerate}
-            \item{\textbf{Selection:} technique for determining future \emph{populations} by picking individuals by using a \emph{fitness function}.}
-            \item{\textbf{Crossover:} pick \emph{individuals} in the population and produce \emph{offspring} by mixing a subset of their features.}
-            \item{\textbf{Mutation:} alter individuals' properties randomly to diversify the population to potentially get better behaviours.}
+            \item{\textbf{Selection:} technique for determining future \emph{populations} by picking \emph{naturally selected} individuals by an \emph{fitness function}.}
+            \item{\textbf{Crossover:} pick \emph{individuals} in the population and produce their \emph{offspring} by mixing promising subset of their features.}
+            \item{\textbf{Mutation:} \emph{alter} a individual's \emph{properties randomly} in order \\ to diversify the population: potentially get \emph{new behaviours}.}
         \end{enumerate}
         \begin{itemize}
-            \item{\(\rightarrow\) very similar to the \emph{natural selection} process of evolution.}
+            \item{\(\rightarrow\) very similar to the \emph{natural selection} process of \emph{evolution}.}
         \end{itemize}
     }
 
     \frame{\frametitle{Implementation}
         \begin{itemize}
             \item{\textbf{Behaviour trees:} we've implemented high-level actions e.g. attack ``player'' to limit the structural complexity of the tree.}
-            \item{\textbf{Path finding:} \emph{waypoint-based} navigation with \emph{Euclidean distance} as heuristic. Other player's field of view affects path cost (also called an \emph{influence map}): avoid player line of sight.}
-            \item{\textbf{Genetic programming:} selection of individuals proportional to fitness, we mutate the structure and parameters of the tree and then cross them over by swapping pairs of sub-trees.}
+            \item{\textbf{A* path finding:} \emph{waypoint-based} navigation with \emph{Euclidean distance} as heuristic. Other player's field of view affects path cost (also called an \emph{influence map}): avoid player line of sight.}
+            \item{\textbf{Genetic programming:} \emph{selection} of individuals proportional to \emph{fitness}. We \emph{mutate} the tree structure and node parameter randomly. We \emph{crossover} pairs of trees by swapping sub-trees.}
         \end{itemize}
     }
 
-    \frame{\frametitle{Demonstration}
+    \frame{\frametitle{Demo}
         \begin{itemize}
-            \item{Base game}
-            \item{Behaviour tree}
-            \item{Bot vs bot}
-            \item{Tree evolution}
-            \item{Natural selection}
+            \item{Pre-Defined\, Behaviour Trees}
+                \begin{itemize}
+                    \item{Demo Game}
+                    \item{Demo Path Finding}
+                    \item{Demo Behaviour Tree}
+                    \item{Demo a Bot Match}
+                \end{itemize}
+            \item{GP Behaviour Tree Evolution}
         \end{itemize}
     }
 
@@ -143,9 +137,9 @@
 
         \begin{itemize}
             \item{\textbf{Our goals:} create a fun an challenging bot to play against.}
-            \item{\textbf{What went right:} game is fun to play, behaviour trees allows to easily make complex behaviours, genetic programming creates interesting and new behaviours and robust path finding, the component-entity-system.}
-            \item{\textbf{What went wrong:} genetic programming didn't work at first, many bugs related to physics and the crunch-time week.}
-            \item{\textbf{Improvements:} better selection heuristic, more interesting actions, adversarial resource competition.}
+            \item{\textbf{What went right:} game is polished, behaviour trees allows to easily make complex behaviours, by genetic programming we create interesting new behaviours. C-E-S \& path finding.}
+            \item{\textbf{What went wrong:} genetic programming didn't at first (we followed the paper, no metaheuristic). Many bugs related to physics.\; Maybe time-planned a bit wrong\, \(\rightarrow\)\, \textbf{crunch-time}.}
+            \item{\textbf{Improvements:} analyze other selection heuristics, add more interesting actions, fix some adversarial resource competition.}
         \end{itemize}
     }
 
