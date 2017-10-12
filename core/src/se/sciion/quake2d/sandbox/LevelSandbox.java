@@ -58,7 +58,7 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	private int width;
 	private int height;
-	private int ROUND_PER_GENERATION = 5;
+	private int ROUND_PER_GENERATION;
 	private int numRounds = 0;
 	
 	public LevelSandbox(String ... levels) {
@@ -147,18 +147,13 @@ public class LevelSandbox extends ApplicationAdapter {
 		environment.start();
 
 		if(trees.getPopulation() == null){
-			trees.initPopulation(5);
-			ROUND_PER_GENERATION = (5 * (5 + 1)) / 2;
+			trees.initPopulation();
+			ROUND_PER_GENERATION = trees.populationLimit;
 		}
 		
 		SoundSystem.getInstance().playSound("fight");
 		
 		System.out.println("Trees: " + counter1 + " " + counter2 + " fight!");
-		if(counter1 >= trees.getPopulation().size){
-			counter1 = counter2;
-			counter2 = (counter2 + 1) % trees.getPopulation().size;
-		}
-		
 		pathfinding.update(physicsSystem);
 		Array<Entity> players = level.getEntities("player");
 		
@@ -174,11 +169,11 @@ public class LevelSandbox extends ApplicationAdapter {
 		BotInputComponent input2 = players.get(1).getComponent(ComponentTypes.BotInput);
 		if(input2 != null){
 			BehaviourTree hardCoded = new BehaviourTree(new AttackNearest("player", level, physicsSystem));
-			BehaviourTree tree = trees.getPopulation().get(counter2);
+			BehaviourTree tree = trees.getPopulation().random();
 			input2.setBehaviourTree(tree);
 			level.getStats().recordParticipant(tree);
 		}
-		counter1++;
+		counter1 = (counter1 + 1) % trees.populationLimit;
 	}
 	
 	@Override
@@ -229,7 +224,7 @@ public class LevelSandbox extends ApplicationAdapter {
 		SoundSystem.getInstance().playSound("impressive");
 				
 		numRounds++;
-		if(numRounds >= ROUND_PER_GENERATION){
+		if(numRounds > ROUND_PER_GENERATION){
 			endGeneration();
 			numRounds = 0;
 		}
@@ -244,12 +239,25 @@ public class LevelSandbox extends ApplicationAdapter {
 		return DEBUG;
 	}
 	
+	private float timescale = 1.0f;
 	@Override
 	public void render() {
-		float frameDelta = Gdx.graphics.getDeltaTime() ;
-		if(Gdx.input.isKeyPressed(Keys.F)){
-			frameDelta *= 100.0f;
+		if(Gdx.input.isKeyJustPressed(Keys.NUM_1)){
+			timescale = 1.0f;
 		}
+		if(Gdx.input.isKeyJustPressed(Keys.NUM_2)){
+			timescale = 2.0f;
+		}
+		if(Gdx.input.isKeyJustPressed(Keys.NUM_3)){
+			timescale = 8.0f;
+		}
+		if(Gdx.input.isKeyJustPressed(Keys.NUM_4)){
+			timescale = 32.0f;
+		}
+		
+		float frameDelta = Gdx.graphics.getDeltaTime() * timescale;
+
+		
 		if (Gdx.input.isKeyJustPressed(Keys.O))
 			toggleDebugDraw();
 

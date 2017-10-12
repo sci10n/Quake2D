@@ -264,9 +264,7 @@ public class PhysicsSystem{
 			p.ellapsed = MathUtils.clamp(p.ellapsed + p.alpha * delta,0.0f,1.0f);
 			p.interpolation = p.origin.cpy().lerp(p.target, p.ellapsed);
 			if(p.ellapsed >= 1.0f){
-				System.out.println("Hitscan " + p.interpolation);
 				for(PhysicsComponent phys :queryComponentAt(p.interpolation.x, p.interpolation.y)){
-					System.out.println(phys);
 					if(phys != null && phys.getParent() != null && phys.getParent() != p.responsible){
 						HealthComponent hlth = phys.getParent().getComponent(ComponentTypes.Health);
 						if(hlth != null){

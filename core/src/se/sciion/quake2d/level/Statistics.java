@@ -1,5 +1,8 @@
 package se.sciion.quake2d.level;
 
+import java.io.File;
+
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import se.sciion.quake2d.ai.behaviour.BehaviourTree;
@@ -15,7 +18,8 @@ public class Statistics {
 	private ObjectMap<BehaviourTree,Boolean> survived;
 	private ObjectMap<BehaviourTree,Integer> killcount;
 	private ObjectMap<BehaviourTree,Integer> roundsPlayed;
-	private ObjectMap<BehaviourTree,Boolean> pickedWeapon;
+	private ObjectMap<BehaviourTree,Integer> pickedWeapon;
+	
 	public Statistics() {
 		totalDamageGiven = new ObjectMap<BehaviourTree,Float>();
 		totalDamageTaken = new ObjectMap<BehaviourTree,Float>();
@@ -24,7 +28,7 @@ public class Statistics {
 		survived		 = new ObjectMap<BehaviourTree,Boolean>();
 		killcount		 = new ObjectMap<BehaviourTree,Integer>();
 		roundsPlayed	= new ObjectMap<BehaviourTree, Integer>();
-		pickedWeapon	= new ObjectMap<BehaviourTree, Boolean>();
+		pickedWeapon	= new ObjectMap<BehaviourTree, Integer>();		
 	}
 	
 	public void recordDamageTaken(BehaviourTree giver, BehaviourTree reciever, float amount) {
@@ -52,7 +56,11 @@ public class Statistics {
 	}
 	
 	public void recordWeaponPickup(BehaviourTree tree){
-		pickedWeapon.put(tree, true);
+		if(!pickedWeapon.containsKey(tree)){
+			pickedWeapon.put(tree, 0);
+		}
+		pickedWeapon.put(tree, pickedWeapon.get(tree) + 1);
+
 	}
 	
 	public void recordParticipant(BehaviourTree tree){
@@ -85,12 +93,12 @@ public class Statistics {
 		float damageGiven = totalDamageGiven.get(tree, 0.0f);
 		float damageTaken = totalDamageTaken.get(tree, 0.0f);
 		float armor	= armorAtEnd.get(tree, 0.0f);
-		float health = healthAtEnd.get(tree,0.0f);
+		//float health = healthAtEnd.get(tree,0.0f);
 		int killcount = this.killcount.get(tree, 0);
 		boolean survived = this.survived.get(tree, false);
 		int rounds = roundsPlayed.get(tree,1);
-		boolean weapon = pickedWeapon.get(tree, false);
-		return (10 * damageGiven + damageTaken + 2 * armor + 5 * killcount + (survived ? 400.0f : 0.0f) + (weapon ? 50.0f : 0.0f)) / (float)(rounds);
+		int weapon = pickedWeapon.get(tree, 0);
+		return (5.0f * damageGiven + 2.0f * armor + (survived ? 500.0f : 0.0f) + 50.0f * weapon + 1000.0f * killcount) / (float)(rounds);
 	}
 
 	public int getTotalKillcount() {
