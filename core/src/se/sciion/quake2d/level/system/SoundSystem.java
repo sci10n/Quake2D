@@ -48,6 +48,11 @@ public class SoundSystem {
         muted = !muted;
     }
 
+	public void setMute(boolean muted) {
+		if (muted) stopSounds();
+		this.muted = muted;
+	}
+
 	public void playSound(String id) {
         if (!muted) getSound(id).play(volume);
 	}

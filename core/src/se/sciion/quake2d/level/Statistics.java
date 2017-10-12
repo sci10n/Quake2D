@@ -13,7 +13,8 @@ public class Statistics {
 	private ObjectMap<BehaviourTree,Float> healthAtEnd;
 	private ObjectMap<BehaviourTree,Boolean> survived;
 	private ObjectMap<BehaviourTree,Integer> killcount;
-
+	private ObjectMap<BehaviourTree,Integer> roundsPlayed;
+	
 	public Statistics() {
 		totalDamageGiven = new ObjectMap<BehaviourTree,Float>();
 		totalDamageTaken = new ObjectMap<BehaviourTree,Float>();
@@ -21,6 +22,7 @@ public class Statistics {
 		healthAtEnd		 = new ObjectMap<BehaviourTree,Float>();
 		survived		 = new ObjectMap<BehaviourTree,Boolean>();
 		killcount		 = new ObjectMap<BehaviourTree,Integer>();
+		roundsPlayed	= new ObjectMap<BehaviourTree, Integer>();
 	}
 	
 	public void recordDamageTaken(BehaviourTree giver, BehaviourTree reciever, float amount) {
@@ -47,6 +49,13 @@ public class Statistics {
 		healthAtEnd.put(entity, health);
 	}
 	
+	public void recordParticipant(BehaviourTree tree){
+		if(!roundsPlayed.containsKey(tree)){
+			roundsPlayed.put(tree, 0);
+		}
+		roundsPlayed.put(tree, roundsPlayed.get(tree) + 1);
+	}
+	
 	public void recordSurvivior(BehaviourTree entity) {
 		if(entity == null) {
 			return;
@@ -66,7 +75,15 @@ public class Statistics {
 	}
 	
 	public float getFitness(BehaviourTree tree) {
-		return 0.0f;
+		
+		float damageGiven = totalDamageGiven.get(tree, 0.0f);
+		float damageTaken = totalDamageTaken.get(tree, 0.0f);
+		float armor	= armorAtEnd.get(tree, 0.0f);
+		float health = healthAtEnd.get(tree,0.0f);
+		int killcount = this.killcount.get(tree, 0);
+		boolean survived = this.survived.get(tree, false);
+		int rounds = roundsPlayed.get(tree,1);
+		return (damageGiven + damageTaken + 2 * armor + health + 5 * killcount + (survived ? 100.0f : 0.0f))/((float)rounds);
 	}
 
 	public int getTotalKillcount() {
@@ -90,6 +107,18 @@ public class Statistics {
 		for(BehaviourTree tree: survived.keys()) {
 			output += "Tree: " + tree.toString() +  " survived\n";
 		}
+		for(BehaviourTree tree: roundsPlayed.keys()) {
+			output += "Tree: " + tree.toString() +  " played " + roundsPlayed.get(tree) + " rounds\n";
+		}
 		return output;
+	}
+
+	public void clear() {
+		armorAtEnd.clear();
+		healthAtEnd.clear();
+		killcount.clear();
+		survived.clear();
+		totalDamageGiven.clear();
+		totalDamageTaken.clear();
 	}
 }

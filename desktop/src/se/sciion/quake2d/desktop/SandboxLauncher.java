@@ -16,7 +16,6 @@ public class SandboxLauncher {
 		config.resizable = false;
 		
 		new LwjglApplication(new LevelSandbox("levels/level_1.tmx", "levels/level_2.tmx", "levels/level_3.tmx"), config);
-		//new LwjglApplication(new MutationChamber(), config);
 
 	}
 }

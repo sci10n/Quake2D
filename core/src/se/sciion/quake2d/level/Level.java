@@ -25,6 +25,17 @@ public class Level {
 		stats = new Statistics();
 	}
 		
+	public void cleanup(){
+		entities.clear();
+		complexEntities.clear();
+		tags.clear();
+		removalList.clear();
+	}
+	
+	public void clearStats(){
+		stats.clear();
+	}
+	
 	public void tick(float delta){
 		for(int i = 0; i < entities.size; i++){
 			entities.get(i).tick(delta);
@@ -74,6 +85,9 @@ public class Level {
 	}
 	
 	public Entity createEntity(String id){
+		if(id == null){
+			System.out.println("Added null id to level!");
+		}
 		Entity e = new Entity();
 		addComplexEntity(e, id);
 		tags.add(id);
