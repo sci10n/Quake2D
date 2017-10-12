@@ -1,9 +1,8 @@
 package se.sciion.quake2d.ai.behaviour;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import javax.print.attribute.standard.DateTimeAtCompleted;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
@@ -44,8 +43,8 @@ public class Trees {
 
 	
 	public Trees(){
-		outputFile = new FileHandle(new File("statistics_" + new Date().toString()));
-		outputFile.writeString("Generation,Fitness\n", true);
+		outputFile = new FileHandle(new File("statistics_" + new SimpleDateFormat("HH:mm:ss").format(new Date())));
+		outputFile.writeString("Generation,Fitness,Victory\n", true);
 	}
 	
 	// Get a number of pooled trees based on their fitness
@@ -63,7 +62,11 @@ public class Trees {
 				c.tree = tree;
 				c.fitness = stats.getFitness(tree)/normalizedFitness;
 				candidates.add(c);
-				outputFile.writeString("" + generation + "," +  stats.getFitness(tree) + "\n", true);
+				if(stats.hasSurvived(tree)){
+					//System.out.println("Tree: " + tree + " survivied");
+				}
+				
+				outputFile.writeString("" + generation + "," +  stats.getFitness(tree) + "," + (stats.hasSurvived(tree) ? 1 : 0 ) +  "\n", true);
 		}
 		
 		candidates.sort((Candidate c1, Candidate c2) -> (int)Math.signum(c2.fitness - c1.fitness));
