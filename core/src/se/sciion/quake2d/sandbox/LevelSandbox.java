@@ -150,6 +150,7 @@ public class LevelSandbox extends ApplicationAdapter {
 	private int counter1 = 0;
 	private int counter2 = 0;
 
+	private int botBeaten = 0;
 	public void beginMatch(String levelPath) {
 		environment = new Environment(levelPath, level, physicsSystem, pathfinding, camera, assets);
 		environment.start();
@@ -169,20 +170,24 @@ public class LevelSandbox extends ApplicationAdapter {
 		Array<Entity> players = level.getEntities("player");
 		
 		if (EVOLVE) {
-			BotInputComponent input = players.get(0).getComponent(ComponentTypes.BotInput);
+			BotInputComponent input = players.get(1).getComponent(ComponentTypes.BotInput);
 			if(input != null){
-				BehaviourTree hardCoded = new BehaviourTree(new AttackNearest("player", level, physicsSystem));
 				BehaviourTree tree = trees.getPopulation().get(counter1);
 				input.setBehaviourTree(tree);
 				level.getStats().recordParticipant(tree);
 			}
 			
-			BotInputComponent input2 = players.get(1).getComponent(ComponentTypes.BotInput);
+			BotInputComponent input2 = players.get(0).getComponent(ComponentTypes.BotInput);
 			if(input2 != null){
-				BehaviourTree hardCoded = new BehaviourTree(new AttackNearest("player", level, physicsSystem));
-				BehaviourTree tree = trees.getPopulation().random();
-				input2.setBehaviourTree(tree);
-				level.getStats().recordParticipant(tree);
+
+				if(botBeaten > trees.populationLimit/2){
+					BehaviourTree tree = trees.getPopulation().random();
+					input2.setBehaviourTree(tree);
+				}
+				else{
+					input2.setBehaviourTree(trees.getEnemy(level, physicsSystem, pathfinding));
+				}
+				//level.getStats().recordParticipant(tree);
 			}
 
 			counter1 = (counter1 + 1) % trees.populationLimit;

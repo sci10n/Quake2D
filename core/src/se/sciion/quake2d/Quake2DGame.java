@@ -1,8 +1,6 @@
 package se.sciion.quake2d;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 
 // Real game.
 public class Quake2DGame extends Game {

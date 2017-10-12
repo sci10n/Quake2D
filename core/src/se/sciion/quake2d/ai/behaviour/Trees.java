@@ -10,9 +10,13 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.ai.behaviour.nodes.AttackNearest;
+import se.sciion.quake2d.ai.behaviour.nodes.CheckArmor;
+import se.sciion.quake2d.ai.behaviour.nodes.CheckEntityDistance;
+import se.sciion.quake2d.ai.behaviour.nodes.CheckHealth;
 import se.sciion.quake2d.ai.behaviour.nodes.CheckWeapon;
 import se.sciion.quake2d.ai.behaviour.nodes.MoveToNearest;
 import se.sciion.quake2d.ai.behaviour.nodes.PickupArmor;
+import se.sciion.quake2d.ai.behaviour.nodes.PickupDamageBoost;
 import se.sciion.quake2d.ai.behaviour.nodes.PickupHealth;
 import se.sciion.quake2d.ai.behaviour.nodes.PickupWeapon;
 import se.sciion.quake2d.level.Level;
@@ -81,7 +85,7 @@ public class Trees {
 	}
 	
 	public void mutate(){
-		mutationChance =1.0f/(generation * 2.0f);
+		mutationChance = 0.1f;
 		for(BehaviourTree tree: population){
 			tree.mutate(mutationChance);
 		}
@@ -135,4 +139,31 @@ public class Trees {
 		}
 	}
 	
+	public BehaviourTree getEnemy(Level level, PhysicsSystem system, Pathfinding pathfinding){
+		CheckArmor checkArmor = new CheckArmor(0.25f);
+		CheckHealth checkHealth = new CheckHealth(0.50f);
+		PickupHealth pickupHealth = new PickupHealth(level, "health");
+		PickupArmor pickupArmor = new PickupArmor(level, "armor");
+		PickupDamageBoost pickupBoost = new PickupDamageBoost(level, "damage");
+		
+		PickupWeapon pickupWeaponShotgun = new PickupWeapon("shotgun",level,pathfinding);
+		PickupWeapon pickupWeaponRifle = new PickupWeapon("rifle",level,pathfinding);
+
+		AttackNearest attackPlayer = new AttackNearest("player", level, system);
+		MoveToNearest moveToPlayer = new MoveToNearest("player",level ,pathfinding,system, 0.0f, 5.0f);
+		
+		CheckEntityDistance distanceCheck = new CheckEntityDistance("player", 15, level);
+		CheckEntityDistance otherDistanceCheck = new CheckEntityDistance("player", 5, level);
+		CheckWeapon rifleCheck = new CheckWeapon("rifle");
+		CheckWeapon shotgunCheck = new CheckWeapon("shotgun");
+		
+		SequenceNode s1 = new SequenceNode(new InverterNode(checkHealth), pickupHealth);
+		SequenceNode s4 = new SequenceNode(new InverterNode(checkArmor), pickupArmor);
+		SequenceNode s2 = new SequenceNode(new SucceederNode(new SelectorNode(new SequenceNode(otherDistanceCheck, new InverterNode(shotgunCheck), pickupWeaponShotgun), new SequenceNode(distanceCheck, new InverterNode(rifleCheck), pickupWeaponRifle))),  new SucceederNode(pickupBoost), moveToPlayer, attackPlayer);
+		SelectorNode s3 = new SelectorNode(s1, s4, s2);
+		
+//		TreePool pool = new TreePool();
+		BehaviourTree tree = new BehaviourTree(s3);
+		return tree;
+	}
 }

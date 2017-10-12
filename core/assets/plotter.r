@@ -1,7 +1,8 @@
-data = read.csv2("statistics_1692238764",header = TRUE, sep = ',', stringsAsFactors = FALSE)
+
+data = read.csv("statistics_Thu Oct 12 10:44:36 CEST 2017",sep = ',', dec = '.',  header = TRUE, stringsAsFactors = FALSE)
 
 frame = data.frame(data)
-plot(data)
+frame$Fitness <- as.numeric(frame$Fitness)
+frame$Generation <- as.numeric(frame$Generation)
 
-
-abline(lm(Fitness ~ Generation, frame))
+boxplot(Fitness ~ Generation, frame)
