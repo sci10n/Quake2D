@@ -69,7 +69,7 @@ public class LevelSandbox extends ApplicationAdapter {
 	public LevelSandbox(String ... levels) {
 		this.levels = new Array<String>(levels);
 		int lastLevel = this.levels.size - 1;
-		PLAY_LEVEL = this.levels.get(lastLevel);
+		PLAY_LEVEL = this.levels.first();
 		if (EVOLVE) MODE = " Evolution";
 	}
 	
@@ -261,7 +261,7 @@ public class LevelSandbox extends ApplicationAdapter {
 
 	private void toggleEvolution() {
 		EVOLVE = !EVOLVE;
-		if (EVOLVE) MODE = " Evolution";
+		if (EVOLVE) MODE = " - Evolution";
 		else MODE = "";
 		endMatch();
 		beginMatch(PLAY_LEVEL);
@@ -300,7 +300,7 @@ public class LevelSandbox extends ApplicationAdapter {
 			toggleFastForward();
 
 		if (FAST_FORWARD && EVOLVE) {
-			Gdx.graphics.setTitle(TITLE + MODE + " @ " + (int)GP_DELTA + "x" + " - " + Gdx.graphics.getFramesPerSecond());
+			Gdx.graphics.setTitle(TITLE + MODE + " @ " + (int)GP_DELTA + "x");
 			frameDelta *= GP_DELTA;
 		} else Gdx.graphics.setTitle(TITLE + MODE);
 
