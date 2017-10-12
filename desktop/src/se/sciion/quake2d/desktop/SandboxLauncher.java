@@ -17,6 +17,7 @@ public class SandboxLauncher {
 		
 		new LwjglApplication(new LevelSandbox("levels/level_1.tmx",
 				                              "levels/level_2.tmx",
-				                              "levels/level_3.tmx"), config);
+				                              "levels/level_3.tmx",
+                                              "levels/level_4.tmx"), config);
 	}
 }
