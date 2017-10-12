@@ -69,9 +69,8 @@ public class SelectorNode extends CompositeNode {
     }
     
     @Override
-    public void mutate(float chance) {
-		if(MathUtils.randomBoolean(chance)){
-			int t = MathUtils.random(2);
+    public void mutate() {
+    	int t = MathUtils.random(2);
 			// Remove random child
 			if(t == 0 && children.size > 0) {
 				children.removeIndex(MathUtils.random(0, children.size-1));
@@ -85,11 +84,6 @@ public class SelectorNode extends CompositeNode {
 			if(t == 2){
 				children.shuffle();
 			}
-			
-			for(int i = 0; i< children.size; i++){
-				children.get(i).mutate(chance);
-			}
-		}
     }
 	@Override
 	public BehaviourNode clone() {

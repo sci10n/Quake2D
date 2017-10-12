@@ -101,11 +101,9 @@ public class AttackNearest extends BehaviourNode{
     }
 
 	@Override
-	public void mutate(float chance) {
-		if(MathUtils.randomBoolean(chance)){
+	public void mutate() {
 			String tag = level.getTags().random();
 			this.tag = tag;
-		}
 	}
 
 	@Override

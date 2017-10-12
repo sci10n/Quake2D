@@ -12,69 +12,66 @@ import com.badlogic.gdx.utils.Array;
 
 public class InverterNode extends DecoratorNode {
 
-	public InverterNode(){
+	public InverterNode() {
 		super();
 	}
-	
-    public InverterNode(BehaviourNode behaviour) {
-        super(behaviour);
-    }
 
-    @Override
-    protected void onEnter() {
-    	setStatus(BehaviourStatus.RUNNING);
-    }
+	public InverterNode(BehaviourNode behaviour) {
+		super(behaviour);
+	}
 
-    @Override
-    protected BehaviourStatus onUpdate() {
-    	BehaviourNode child = children.first();
-        setStatus(child.tick());
-        if(child.getStatus() == BehaviourStatus.SUCCESS) {
-        	setStatus(BehaviourStatus.FAILURE);
-        } else if(child.getStatus() == BehaviourStatus.FAILURE) {
-        	setStatus(BehaviourStatus.SUCCESS);
-        }
+	@Override
+	protected void onEnter() {
+		setStatus(BehaviourStatus.RUNNING);
+	}
 
-        return getStatus();
-    }
-
-    @Override
-    public Node toDotNode() {
-    	BehaviourNode child = children.first();
-    	if(child == null){
-    		return node("inverter" + getNext())
-    	               .with(Shape.DIAMOND)
-    					.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
-    	               .with(Label.of("Invert"));
-    	}
-    	
-        return node("inverter" + getNext())
-               .with(Shape.DIAMOND)
-				.with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
-               .with(Label.of("Invert"))
-               .link(child.toDotNode());
-    }
-    
-    @Override
-    public void mutate(float chance) {
-    	if(MathUtils.randomBoolean(chance)){
-    		if(children.size == 0){
-    			children.add(Trees.prototypes.random().clone());
-    		}
-    		children.first().mutate(chance);
-    	}
-    }
-    @Override
-    public BehaviourNode clone() {
-		InverterNode node = null;
-		if(children.size > 0){
-			 node = new InverterNode(children.first().clone());
+	@Override
+	protected BehaviourStatus onUpdate() {
+		BehaviourNode child = children.first();
+		setStatus(child.tick());
+		if (child.getStatus() == BehaviourStatus.SUCCESS) {
+			setStatus(BehaviourStatus.FAILURE);
+		} else if (child.getStatus() == BehaviourStatus.FAILURE) {
+			setStatus(BehaviourStatus.SUCCESS);
 		}
-		else{
+
+		return getStatus();
+	}
+
+	@Override
+	public Node toDotNode() {
+		BehaviourNode child = children.first();
+		if (child == null) {
+			return node("inverter" + getNext())
+					.with(Shape.DIAMOND)
+					.with(Style.FILLED, Color.rgb(getColor()).fill(),
+							Color.BLACK.radial()).with(Label.of("Invert"));
+		}
+
+		return node("inverter" + getNext())
+				.with(Shape.DIAMOND)
+				.with(Style.FILLED, Color.rgb(getColor()).fill(),
+						Color.BLACK.radial()).with(Label.of("Invert"))
+				.link(child.toDotNode());
+	}
+
+	@Override
+	public void mutate() {
+		if (children.size == 0) {
+			children.add(Trees.prototypes.random().clone());
+		}
+	}
+
+	@Override
+	public BehaviourNode clone() {
+		InverterNode node = null;
+		if (children.size > 0) {
+			node = new InverterNode(children.first().clone());
+		} else {
 			node = new InverterNode();
 		}
 		return node;
-    }
+	}
 
 	@Override
 	public BehaviourNode randomized() {

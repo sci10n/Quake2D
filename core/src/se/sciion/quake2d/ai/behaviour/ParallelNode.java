@@ -77,8 +77,7 @@ public class ParallelNode extends CompositeNode {
 	}
 
 	@Override
-	public void mutate(float chance) {
-		if(MathUtils.randomBoolean(chance) ){
+	public void mutate() {
 			int t = MathUtils.random(3);
 			// Remove random child
 			if(t == 0 && children.size > 0) {
@@ -96,11 +95,6 @@ public class ParallelNode extends CompositeNode {
 			if(t == 3){
 				threshold = MathUtils.clamp(threshold + MathUtils.randomSign(), 0, children.size);
 			}
-			
-			for(int i = 0; i< children.size; i++){
-				children.get(i).mutate(chance);
-			}
-		}
 	}
 	@Override
 	public BehaviourNode clone() {

@@ -58,13 +58,10 @@ public class SucceederNode extends DecoratorNode {
     }
 
     @Override
-    public void mutate(float chance) {
-    	if(MathUtils.randomBoolean(chance)){
+    public void mutate() {
     		if(children.size == 0){
     			children.add(Trees.prototypes.random().clone());
     		}
-    		children.first().mutate(chance);
-    	}
     }
     
 	@Override

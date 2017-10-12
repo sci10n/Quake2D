@@ -110,12 +110,10 @@ public class MoveToNearest extends BehaviourNode {
     }
 
 	@Override
-	public void mutate(float chance) {
-		if(MathUtils.randomBoolean(chance)){
+	public void mutate() {
 			tag = level.getTags().random();
 			//minDistance += MathUtils.random(0.2f) - 0.1f;
 			minDistance = 0;
-		}
 	}
 
 	@Override

@@ -39,7 +39,7 @@ public class NOPNode extends BehaviourNode {
 	}
 
 	@Override
-	public void mutate(float chance) {
+	public void mutate() {
 	}
 
 	@Override

@@ -59,10 +59,8 @@ public class CheckWeapon extends BehaviourNode {
     }
     
 	@Override
-	public void mutate(float chance) {
-		if(MathUtils.randomBoolean(chance)){
+	public void mutate() {
 			weaponType = Weapon.tags.random();
-		}
 	}
 
 	@Override

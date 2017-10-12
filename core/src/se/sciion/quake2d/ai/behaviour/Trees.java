@@ -1,6 +1,9 @@
 package se.sciion.quake2d.ai.behaviour;
 
 import java.io.File;
+import java.util.Date;
+
+import javax.print.attribute.standard.DateTimeAtCompleted;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
@@ -36,7 +39,7 @@ public class Trees {
 	private float mutationChance = 1.0f;
 	
 	public Trees(){
-		outputFile = new FileHandle(new File("statistics_" + hashCode()));
+		outputFile = new FileHandle(new File("statistics_" + new Date().toString()));
 		outputFile.writeString("Generation,Fitness\n", true);
 	}
 	
