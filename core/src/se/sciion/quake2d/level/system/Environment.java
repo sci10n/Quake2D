@@ -67,7 +67,7 @@ import se.sciion.quake2d.sandbox.LevelSandbox;
 
 public class Environment implements Disposable{
 
-	private final float TIMEOUT = 120.0f;
+	private final float TIMEOUT = 180.0f;
 	private float ellapsed = 0.0f;
 	
 	private boolean running = false;

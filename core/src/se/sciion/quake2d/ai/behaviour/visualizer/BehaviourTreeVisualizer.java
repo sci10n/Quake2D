@@ -50,7 +50,7 @@ public class BehaviourTreeVisualizer extends JFrame {
 			
 			public void run() {
 				while(running){
-					if (debugBot != null) {
+					if (debugBot != null && isVisible()) {
 						visualize(debugBot.getBehaviourTree());
 					}
 
