@@ -70,8 +70,9 @@ public class Trees {
 		
 		while(offsprings.size < populationLimit) {
 			float accumulatedProb = 0.0f;
+			float randomValue = MathUtils.random();
 			for(Candidate c: candidates) {
-				if(MathUtils.randomBoolean(c.fitness + accumulatedProb)) {
+				if((c.fitness + accumulatedProb) < randomValue) {
 					offsprings.add(c.tree.clone());
 				}
 				accumulatedProb += c.fitness;

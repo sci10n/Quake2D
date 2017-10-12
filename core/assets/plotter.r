@@ -1,8 +1,12 @@
+#!/usr/bin/Rscript
 
-data = read.csv("statistics_Thu Oct 12 14:39:46 CEST 2017",sep = ',', dec = '.',  header = TRUE, stringsAsFactors = FALSE)
+args = commandArgs(TRUE)
+data = read.csv(args[1],sep = ',', dec = '.',  header = TRUE, stringsAsFactors = FALSE)
 
 frame = data.frame(data)
 frame$Fitness <- as.numeric(frame$Fitness)
 frame$Generation <- as.numeric(frame$Generation)
 
+png('result.png', width = 1024)
 boxplot(Fitness ~ Generation, frame)
+dev.off()

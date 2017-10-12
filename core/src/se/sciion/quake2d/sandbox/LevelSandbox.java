@@ -47,7 +47,7 @@ public class LevelSandbox extends ApplicationAdapter {
 	public static String TITLE = "Quake 2D";
 	public static String PLAY_LEVEL = "";
     public static boolean DEBUG  = false;
-	public static boolean EVOLVE = true;
+	public static boolean EVOLVE = false;
 	public static float GP_DELTA = 16.0f;
 	public static boolean FAST_FORWARD = true;
 
@@ -246,8 +246,6 @@ public class LevelSandbox extends ApplicationAdapter {
 				endGeneration();
 				numRounds = 0;
 			}
-		} else {
-			endGeneration();
 		}
 		
 		level.cleanup();
