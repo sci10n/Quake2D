@@ -101,6 +101,9 @@ public class Statistics {
 		return (5.0f * damageGiven + 2.0f * armor + (survived ? 500.0f : 0.0f) + 50.0f * weapon + 1000.0f * killcount) / (float)(rounds);
 	}
 
+	public boolean hasSurvived(BehaviourTree tree) {
+		return survived.get(tree, false);
+	}
 	public int getTotalKillcount() {
 		int total = 0;
 		for(Integer i: killcount.values()) {
