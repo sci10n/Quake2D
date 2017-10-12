@@ -1,11 +1,10 @@
-# Quake 2-D
-
-A fast-paced top-down shooter written for the course TNM095 "AI for Interactive Media" at LiTH. It features a full *behaviour tree* implementation for the bot's decision making process, a homebrew *pathfinding system* using *a-star* and a method for evolving the behaviour tree and its nodes/actions/condition by using *genetric programming*. We have written a paper on this called *Behaviour Tree Evolution by Genetic Programming* which you should find on the internet or here.
-
 <p align="center">
   <img src="/documents/slides/share/header.png" alt="header"/>
 </p>
 
+# Quake 2-D
+
+A fast-paced top-down shooter written for the course TNM095 "AI for Interactive Media" at LiTH. It features a full *behaviour tree* implementation for the bot's decision making process, a homebrew *pathfinding system* using *a-star* and a method for evolving the behaviour tree and its nodes/actions/condition by using *genetric programming*. We have written a paper on this called *Behaviour Tree Evolution by Genetic Programming* which you should find on the internet or here.
 
 ## Report and Documents
 
