@@ -295,14 +295,14 @@ public class LevelSandbox extends ApplicationAdapter {
 		float frameDelta = Gdx.graphics.getDeltaTime();
 
 		if (Gdx.input.isKeyPressed(Keys.LEFT) && EVOLVE)
-			GP_DELTA = MathUtils.clamp(GP_DELTA - 32.0f * frameDelta, 0.0f, 100.0f);
+			GP_DELTA = MathUtils.clamp(GP_DELTA - 32.0f * frameDelta, 0.0f, 200.0f);
 		else if (Gdx.input.isKeyPressed(Keys.RIGHT) && EVOLVE)
-			GP_DELTA = MathUtils.clamp(GP_DELTA + 32.0f * frameDelta, 0.0f, 100.0f);
+			GP_DELTA = MathUtils.clamp(GP_DELTA + 32.0f * frameDelta, 0.0f, 200.0f);
 		if (Gdx.input.isKeyJustPressed(Keys.F))
 			toggleFastForward();
 
 		if (FAST_FORWARD && EVOLVE) {
-			Gdx.graphics.setTitle(TITLE + MODE + " @ " + (int)GP_DELTA + "x");
+			Gdx.graphics.setTitle(TITLE + MODE + " @ " + (int)GP_DELTA + "x" + " - " + Gdx.graphics.getFramesPerSecond());
 			frameDelta *= GP_DELTA;
 		} else Gdx.graphics.setTitle(TITLE + MODE);
 
@@ -345,6 +345,9 @@ public class LevelSandbox extends ApplicationAdapter {
 		if(Gdx.input.isKeyJustPressed(Keys.Q) || !environment.isRunning()){
 			endMatch();
 			beginMatch(PLAY_LEVEL);
+		}
+		if(Gdx.input.isKeyJustPressed(Keys.H)) {
+			visualizer.setVisible(!visualizer.isVisible());
 		}
 	}
 }

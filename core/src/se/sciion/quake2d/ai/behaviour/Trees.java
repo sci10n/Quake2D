@@ -53,33 +53,31 @@ public class Trees {
 		Array<BehaviourTree> offsprings = new Array<BehaviourTree>();
 		Array<Candidate> candidates = new Array<Trees.Candidate>();
 		
+		float normalizedFitness = 0.0f;
+		for(BehaviourTree tree: population){
+			normalizedFitness += stats.getFitness(tree);
+		}
+		
 		for(BehaviourTree tree: population){
 				Candidate c = new Candidate();
 				c.tree = tree;
-				c.fitness = stats.getFitness(tree);
+				c.fitness = stats.getFitness(tree)/normalizedFitness;
 				candidates.add(c);
-				outputFile.writeString("" + generation + "," + c.fitness + "\n", true);
+				outputFile.writeString("" + generation + "," +  stats.getFitness(tree) + "\n", true);
 		}
 		
 		candidates.sort((Candidate c1, Candidate c2) -> (int)Math.signum(c2.fitness - c1.fitness));
-		if(candidates.size > 3)
-			candidates.removeRange(3, candidates.size - 1);
 		
-		for(Candidate c: candidates){
-			System.out.println("Tree with fitness: " + c.fitness + " selected");
-		}
-		// Bad place to be
-		if(candidates.size == 0 || candidates.first().fitness < 0.1f){
-			System.out.println("No Offspring Generated");
-			initPopulation();
-			return;
+		while(offsprings.size < populationLimit) {
+			float accumulatedProb = 0.0f;
+			for(Candidate c: candidates) {
+				if(MathUtils.randomBoolean(c.fitness + accumulatedProb)) {
+					offsprings.add(c.tree.clone());
+				}
+				accumulatedProb += c.fitness;
+			}
 		}
 		
-		// Fill offsprings with clones of best candidates
-		for(int i = offsprings.size; i <= populationLimit;i++){
-			BehaviourTree tree = candidates.random().tree.clone();
-			offsprings.add(tree);
-		}
 		population = offsprings;
 		generation++;
 		
