@@ -1,6 +1,10 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
 import static guru.nidi.graphviz.model.Factory.node;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
@@ -92,6 +96,19 @@ public abstract class PickupConsumable extends BehaviourNode {
 	               .with(Shape.RECTANGLE)
 				   .with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
 	               .with(Label.of("Pick up " + tag));
+	}
+	
+	@Override
+	public Element toXML(Document doc) {
+		Element e = doc.createElement(getClass().getSimpleName());
+		e.setAttribute("tag", tag);
+		return e;
+	}
+	
+	@Override
+	public BehaviourNode fromXML(Element element) {
+		tag = element.getAttribute("tag");
+		return this;
 	}
 
 }

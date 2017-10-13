@@ -1,6 +1,10 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
 import static guru.nidi.graphviz.model.Factory.node;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
@@ -125,5 +129,21 @@ public class MoveToNearest extends BehaviourNode {
 	public BehaviourNode randomized() {
 		return new MoveToNearest(level.getTags().random(), level, pathfinding, physics, 0, maxDistance);
 	}
+	
+	@Override
+	public Element toXML(Document doc) {
+		Element e = doc.createElement(getClass().getSimpleName());
+		e.setAttribute("tag", tag);
+		e.setAttribute("min-distance", Float.toString(minDistance));
+		e.setAttribute("max-distance", Float.toString(maxDistance));
+		return e;
+	}
 
+	@Override
+	public BehaviourNode fromXML(Element element) {
+		tag = element.getAttribute("tag");
+		minDistance = Float.parseFloat(element.getAttribute("min-distance"));
+		maxDistance = Float.parseFloat(element.getAttribute("max-distance"));
+		return this;
+	}
 }

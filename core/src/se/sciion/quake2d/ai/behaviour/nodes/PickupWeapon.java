@@ -1,14 +1,16 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
 import static guru.nidi.graphviz.model.Factory.node;
-import guru.nidi.graphviz.attribute.Color;
-import guru.nidi.graphviz.attribute.Shape;
-import guru.nidi.graphviz.attribute.Style;
 
-import com.badlogic.gdx.math.MathUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+import guru.nidi.graphviz.attribute.Color;
+import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 import se.sciion.quake2d.ai.behaviour.BehaviourNode;
@@ -21,16 +23,15 @@ import se.sciion.quake2d.level.components.InventoryComponent;
 import se.sciion.quake2d.level.components.PhysicsComponent;
 import se.sciion.quake2d.level.items.Weapon;
 import se.sciion.quake2d.level.system.Pathfinding;
-import se.sciion.quake2d.level.system.PhysicsSystem;
 
 public class PickupWeapon extends BehaviourNode {
 
-    private String id;
+    private String tag;
     private Level level;
     private Pathfinding pathfinding;
 
-    public PickupWeapon(String id, Level level, Pathfinding pathfinding) {
-        this.id = id;
+    public PickupWeapon(String tag, Level level, Pathfinding pathfinding) {
+        this.tag = tag;
         this.level = level;
         this.pathfinding = pathfinding;
     }
@@ -51,7 +52,7 @@ public class PickupWeapon extends BehaviourNode {
             return getStatus();
         }
 
-        if(inventory.containsItem(id)){
+        if(inventory.containsItem(tag)){
         	setStatus(BehaviourStatus.SUCCESS);
             return getStatus();
         }
@@ -61,7 +62,7 @@ public class PickupWeapon extends BehaviourNode {
         int bestPath = Integer.MAX_VALUE;
 
 
-        Array<Entity> entities = level.getEntities(id);
+        Array<Entity> entities = level.getEntities(tag);
         for(Entity e: entities){
         	PhysicsComponent p = e.getComponent(ComponentTypes.Physics);
             if(p != null){
@@ -87,23 +88,20 @@ public class PickupWeapon extends BehaviourNode {
 
     @Override
     public Node toDotNode() {
-    	if(id == null){
-    		System.out.println("Null Weapon Tag");
-    	}
         return node("pickUpItem" + getNext())
                .with(Shape.RECTANGLE)
 			   .with(Style.FILLED, Color.rgb(getColor()).fill(), Color.BLACK.radial())
-               .with(Label.of("Pick up " + id));
+               .with(Label.of("Pick up " + tag));
     }
 
 	@Override
 	public void mutate() {
-			id = Weapon.tags.random();
+			tag = Weapon.tags.random();
 	}
 
 	@Override
 	public BehaviourNode clone() {
-		return new PickupWeapon(id, level, pathfinding);
+		return new PickupWeapon(tag, level, pathfinding);
 	}
 	
 	@Override
@@ -112,4 +110,16 @@ public class PickupWeapon extends BehaviourNode {
 		return new PickupWeapon(Weapon.tags.random(), level, pathfinding);
 	}
 
+	@Override
+	public Element toXML(Document doc) {
+		Element e = doc.createElement(getClass().getSimpleName());
+		e.setAttribute("tag", tag);
+		return e;
+	}
+	
+	@Override
+	public BehaviourNode fromXML(Element element) {
+		tag = element.getAttribute("tag");
+		return this;
+	}
 }

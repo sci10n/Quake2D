@@ -2,6 +2,9 @@ package se.sciion.quake2d.ai.behaviour.nodes;
 
 import static guru.nidi.graphviz.model.Factory.node;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
@@ -51,6 +54,17 @@ public class NOPNode extends BehaviourNode {
 	public BehaviourNode randomized() {
 		// TODO Auto-generated method stub
 		return new NOPNode();
+	}
+	
+	@Override
+	public Element toXML(Document doc) {
+		Element e = doc.createElement(getClass().getSimpleName());
+		return e;
+	}
+	
+	@Override
+	public BehaviourNode fromXML(Element element) {
+		return this;
 	}
 }
 

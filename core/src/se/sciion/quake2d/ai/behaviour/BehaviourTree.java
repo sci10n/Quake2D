@@ -1,6 +1,25 @@
 package se.sciion.quake2d.ai.behaviour;
 import static guru.nidi.graphviz.model.Factory.graph;
 
+import java.io.File;
+import java.io.IOException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.soap.Node;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
@@ -114,13 +133,61 @@ public class BehaviourTree{
 		return tree;
 	}
 
-	public static BehaviourTree fromJson(String behaviourTreeJson) {
-		return null;
-	}
+	public void toXML(String filePath){
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder;
+		Document doc = null;
 
-	public String toJson() {
-		return null;
+		try {
+			docBuilder = docFactory.newDocumentBuilder();
+			doc = docBuilder.newDocument();
+			
+			Element e = doc.createElement("BehaviorTree");
+			e.appendChild(root.toXML(doc));
+			doc.appendChild(e);
+			
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(new File(filePath));
+			
+			TransformerFactory factory =  TransformerFactory.newInstance();
+			Transformer transformer = factory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT,"yes");
+			
+			transformer.transform(source, result);
+			
+		} catch (ParserConfigurationException | TransformerException e) {
+			e.printStackTrace();
+		}
 	}
 	
+	public BehaviourTree fromXML(String path){
+		try {
+			File file = new File(path);
+			DocumentBuilder docBuilder;
+			docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document doc = docBuilder.parse(file);
+			
+			Element treeElement =  (Element) doc.getFirstChild();
+			NodeList list = treeElement.getChildNodes();
+			for(int i = 0; i < list.getLength(); i++){
+			
+				if(list.item(i).getNodeType() == Node.ELEMENT_NODE){
+					Element rootElement = (Element) list.item(i);
+					root = Trees.prototypesMap.get(rootElement.getTagName()).clone().fromXML(rootElement);
+				}
+			}
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return this;
+	}
 	
 }

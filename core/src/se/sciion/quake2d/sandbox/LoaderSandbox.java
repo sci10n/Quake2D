@@ -90,14 +90,12 @@ public class LoaderSandbox extends ApplicationAdapter {
 	}
 
 	private BehaviourTree loadBehaviourTree(String filePath) {
-		FileHandle fileHandle = Gdx.files.internal(filePath);
-		String behaviourTreeJson = fileHandle.readString();
-		return BehaviourTree.fromJson(behaviourTreeJson);
+		BehaviourTree tree = new BehaviourTree();
+		tree.fromXML(filePath);
+		return tree;
 	}
 
 	private void saveBehaviourTree(BehaviourTree behaviourTree, String filePath) {
-		FileHandle fileHandle = Gdx.files.local(filePath);
-		String behaviourTreeJson = behaviourTree.toJson();
-		fileHandle.writeString(behaviourTreeJson, false);
+		behaviourTree.toXML(filePath);
 	}
 }

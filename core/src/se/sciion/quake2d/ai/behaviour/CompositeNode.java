@@ -1,5 +1,10 @@
 package se.sciion.quake2d.ai.behaviour;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.level.Entity;
@@ -65,6 +70,31 @@ public abstract class CompositeNode extends BehaviourNode {
 		for (BehaviourNode n : children) {
 			n.setOwner(parent);
 		}
+	}
+	
+	@Override
+	public BehaviourNode fromXML(Element element) {
+		NodeList list = element.getChildNodes();
+		for(int i = 0 ; i < list.getLength(); i++){
+			if(list.item(i).getNodeType() == Node.ELEMENT_NODE){
+				Element n = (Element) list.item(i);
+				BehaviourNode child = Trees.prototypesMap.get(n.getTagName()).clone().fromXML(n);
+				children.add(child);
+			}
+
+		}
+		
+		return this;
+	}
+	
+	@Override
+	public Element toXML(Document doc) {
+		Element e = doc.createElement(getClass().getSimpleName());
+		for(BehaviourNode n: children){
+			e.appendChild(n.toXML(doc));
+		}
+		doc.appendChild(e);
+		return e;
 	}
 	
 }

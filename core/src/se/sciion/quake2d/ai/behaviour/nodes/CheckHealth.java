@@ -6,6 +6,8 @@ import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
 
 import org.omg.PortableInterceptor.SUCCESSFUL;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
@@ -70,5 +72,18 @@ public class CheckHealth extends BehaviourNode {
 	@Override
 	public BehaviourNode randomized() {
 		return new CheckHealth(MathUtils.random());
+	}
+	
+	@Override
+	public Element toXML(Document doc) {
+		Element e = doc.createElement(getClass().getSimpleName());
+		e.setAttribute("ratio", Float.toString(ratio));
+		return e;
+	}
+	
+	@Override
+	public BehaviourNode fromXML(Element element) {
+		ratio = Float.parseFloat(element.getAttribute("ratio"));
+		return this;
 	}
 }

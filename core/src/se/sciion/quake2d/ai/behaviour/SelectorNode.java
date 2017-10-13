@@ -2,6 +2,9 @@ package se.sciion.quake2d.ai.behaviour;
 
 import static guru.nidi.graphviz.model.Factory.node;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
@@ -103,5 +106,4 @@ public class SelectorNode extends CompositeNode {
 		
 		return new SelectorNode(children);
 	}
-	
 }

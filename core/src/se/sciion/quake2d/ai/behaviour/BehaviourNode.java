@@ -1,5 +1,8 @@
 package se.sciion.quake2d.ai.behaviour;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import com.badlogic.gdx.utils.Array;
 
 import guru.nidi.graphviz.model.Node;
@@ -58,6 +61,8 @@ public abstract class BehaviourNode{
     public abstract void mutate();
     public abstract BehaviourNode clone();
     public abstract BehaviourNode randomized();
+    public abstract Element toXML(Document doc);
+    public abstract BehaviourNode fromXML(Element element);
     
     public String getColor() {
     	switch (status) {

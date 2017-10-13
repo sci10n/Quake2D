@@ -2,6 +2,9 @@ package se.sciion.quake2d.ai.behaviour.nodes;
 
 import static guru.nidi.graphviz.model.Factory.node;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
@@ -71,6 +74,19 @@ public class CheckWeapon extends BehaviourNode {
 	@Override
 	public BehaviourNode randomized() {
 		return new CheckWeapon(Weapon.tags.random());
+	}
+	
+	@Override
+	public Element toXML(Document doc) {
+		Element e = doc.createElement(getClass().getSimpleName());
+		e.setAttribute("type", weaponType);
+		return e;
+	}
+	
+	@Override
+	public BehaviourNode fromXML(Element element) {
+		weaponType = element.getAttribute("type");
+		return this;
 	}
 }
 
