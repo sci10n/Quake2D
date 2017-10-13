@@ -3,6 +3,8 @@ package se.sciion.quake2d.ai.behaviour.nodes;
 import static guru.nidi.graphviz.model.Factory.node;
 
 import org.apache.bcel.generic.CPInstruction;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -102,5 +104,19 @@ public class CheckEntityDistance extends BehaviourNode{
 	public BehaviourNode randomized() {
 		return new CheckEntityDistance(level.getTags().random(), MathUtils.random(0, 5), level);
 	}
-
+	
+	@Override
+	public Element toXML(Document doc) {
+		Element e = doc.createElement(getClass().getSimpleName());
+		e.setAttribute("threshold", Float.toString(threshold));
+		e.setAttribute("tag", tag);
+		return e;
+	}
+	
+	@Override
+	public BehaviourNode fromXML(Element element) {
+		threshold = Float.parseFloat(element.getAttribute("threshold"));
+		tag = element.getAttribute("tag");
+		return this;
+	}
 }

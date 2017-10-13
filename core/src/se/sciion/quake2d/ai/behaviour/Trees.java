@@ -7,6 +7,7 @@ import java.util.Date;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import se.sciion.quake2d.ai.behaviour.nodes.AttackNearest;
 import se.sciion.quake2d.ai.behaviour.nodes.CheckArmor;
@@ -36,14 +37,15 @@ public class Trees {
 	public int generation = 0;
 	public int populationLimit = 50;
 	private Array<BehaviourTree> population;
+	public static ObjectMap<String,BehaviourNode> prototypesMap;
 	public static Array<BehaviourNode> prototypes;
-	
+
 	private float crossoverChance = 0.3f;
 	private float mutationChance = 0.2f;
 
 	
 	public Trees(){
-		outputFile = new FileHandle(new File("statistics_" + new SimpleDateFormat("HH:mm:ss").format(new Date())));
+		outputFile = new FileHandle(new File("statistics_" + new SimpleDateFormat("HH_mm_ss").format(new Date())));
 		outputFile.writeString("Generation,Fitness,Victory\n", true);
 	}
 	
@@ -108,24 +110,27 @@ public class Trees {
 
 
 	public void createPrototypes(Level level, PhysicsSystem physics, Pathfinding pathfinding){
-		prototypes = new Array<BehaviourNode>();
-		prototypes.add(new AttackNearest("", level, physics));
-		prototypes.add(new CheckArmor(0.0f));
-		//prototypes.add(new CheckEntityDistance("", 0.0f,level));
-		prototypes.add(new CheckHealth(0.0f));
-		prototypes.add(new CheckWeapon(""));
-		prototypes.add(new MoveToNearest("", level, pathfinding,physics, 0.0f, 15.0f));
-		prototypes.add(new PickupArmor(level, "armor"));
-		prototypes.add(new PickupDamageBoost(level, "damage"));
-		prototypes.add(new PickupHealth(level, "health"));
-		prototypes.add(new PickupWeapon("", level, pathfinding));
-		//prototypes.add(new InverterNode());
-		//prototypes.add(new ParallelNode());
-		prototypes.add(new SelectorNode());
-		prototypes.add(new SequenceNode());
-		//prototypes.add(new SucceederNode());
+		prototypesMap = new ObjectMap<String,BehaviourNode>();
+		prototypesMap.put("AttackNearest", new AttackNearest("", level, physics));
+		prototypesMap.put("CheckArmor", new CheckArmor(0.0f));
+		prototypesMap.put("CheckEntityDistance", new CheckEntityDistance("", 0.0f,level));
+		prototypesMap.put("CheckHealth", new CheckHealth(0.0f));
+		prototypesMap.put("CheckWeapon", new CheckWeapon(""));
+		prototypesMap.put("MoveToNearest", new MoveToNearest("", level, pathfinding,physics, 0.0f, 15.0f));
+		prototypesMap.put("PickupArmor", new PickupArmor(level, "armor"));
+		prototypesMap.put("PickupDamageBoost", new PickupDamageBoost(level, "damage"));
+		prototypesMap.put("PickupHealth", new PickupHealth(level, "health"));
+		prototypesMap.put("PickupWeapon", new PickupWeapon("", level, pathfinding));
+		prototypesMap.put("InverterNode", new InverterNode());
+		prototypesMap.put("ParallelNode", new ParallelNode());
+		prototypesMap.put("SelectorNode", new SelectorNode());
+		prototypesMap.put("SequenceNode", new SequenceNode());
+		prototypesMap.put("SucceederNode", new SucceederNode());
+		
+		prototypes = prototypesMap.values().toArray();
 	}
 
+	
 
 
 	// Init population with single node trees

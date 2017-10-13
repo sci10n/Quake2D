@@ -3,6 +3,8 @@ package se.sciion.quake2d.ai.behaviour;
 import static guru.nidi.graphviz.model.Factory.node;
 
 import org.apache.bcel.generic.RET;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;

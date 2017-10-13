@@ -392,11 +392,16 @@ public class Environment implements Disposable{
 				SequenceNode s2 = new SequenceNode(new SucceederNode(new SelectorNode(new SequenceNode(otherDistanceCheck, new InverterNode(shotgunCheck), pickupWeaponShotgun), new SequenceNode(distanceCheck, new InverterNode(rifleCheck), pickupWeaponRifle))),  new SucceederNode(pickupBoost), moveToPlayer, attackPlayer);
 				SelectorNode s3 = new SelectorNode(s1, s4, s2);
 				
+				
 //				TreePool pool = new TreePool();
 				BehaviourTree tree = new BehaviourTree(s3);
+				tree.toXML("tree.xml");
+				
+				BehaviourTree tree2 = new BehaviourTree();
+				tree2.fromXML("tree.xml");
 //				tree.randomize(pool.getPrototypes(level, physicsSystem, pathfinding));
 
-				botInput.setBehaviourTree(tree);
+				botInput.setBehaviourTree(tree2);
 				BehaviourTreeVisualizer.getInstance().setDebugBot(botInput);
 			}
 		}

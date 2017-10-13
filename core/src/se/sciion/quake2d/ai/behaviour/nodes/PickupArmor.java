@@ -1,5 +1,8 @@
 package se.sciion.quake2d.ai.behaviour.nodes;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import com.badlogic.gdx.utils.Array;
 
 import se.sciion.quake2d.ai.behaviour.BehaviourNode;
@@ -37,5 +40,18 @@ public class PickupArmor extends PickupConsumable {
 	@Override
 	public BehaviourNode randomized() {
 		return new PickupArmor(level, tag);
+	}
+	
+	@Override
+	public Element toXML(Document doc) {
+		Element e = doc.createElement(getClass().getSimpleName());
+		e.setAttribute("tag", tag);
+		return e;
+	}
+	
+	@Override
+	public BehaviourNode fromXML(Element element) {
+		tag = element.getAttribute("tag");
+		return this;
 	}
 }

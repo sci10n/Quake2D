@@ -2,6 +2,9 @@ package se.sciion.quake2d.ai.behaviour.nodes;
 
 import static guru.nidi.graphviz.model.Factory.node;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
@@ -63,6 +66,19 @@ public class CheckArmor extends BehaviourNode {
 	@Override
 	public BehaviourNode randomized() {
 		return new CheckArmor(MathUtils.random());
+	}
+	
+	@Override
+	public Element toXML(Document doc) {
+		Element e = doc.createElement(getClass().getSimpleName());
+		e.setAttribute("ratio", Float.toString(ratio));
+		return e;
+	}
+	
+	@Override
+	public BehaviourNode fromXML(Element element) {
+		ratio = Float.parseFloat(element.getAttribute("ratio"));
+		return this;
 	}
 }
 
