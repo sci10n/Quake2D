@@ -61,6 +61,7 @@ import se.sciion.quake2d.level.components.WeaponComponent;
 import se.sciion.quake2d.level.items.ArmorRestore;
 import se.sciion.quake2d.level.items.DamageBoost;
 import se.sciion.quake2d.level.items.HealthRestore;
+import se.sciion.quake2d.level.items.HitscanWeapon;
 import se.sciion.quake2d.level.items.Item;
 import se.sciion.quake2d.level.items.Weapon;
 import se.sciion.quake2d.sandbox.LevelSandbox;
@@ -135,9 +136,7 @@ public class Environment implements Disposable{
 			}
 			
 		}
-		
-		Weapon wweapon = null;
-		
+				
 		MapLayer pickupLayer = map.getLayers().get("Pickups");
 		for(MapObject o: pickupLayer.getObjects()) {
 			RectangleMapObject r = (RectangleMapObject) o;
@@ -207,11 +206,12 @@ public class Environment implements Disposable{
 				
 				float cooldown = r.getProperties().get("cooldown", Float.class);
 				int bullets = r.getProperties().get("bullets", Integer.class);
-				int capacity = r.getProperties().get("capacity",Integer.class);
 				float knockback = r.getProperties().get("knockback", Float.class);
 				float spread = r.getProperties().get("spread",Float.class);
 				float speed = r.getProperties().get("speed", Float.class);
 				int baseDamage = r.getProperties().get("damage", Integer.class);
+				
+				Weapon weapon = null;
 				
 				Weapon.tags.add(o.getName());
 				if (o.getName().equals("shotgun")) {
@@ -219,6 +219,7 @@ public class Environment implements Disposable{
 					                                                  new Vector2(0.0f, 0.0f), new Vector2(-0.4f, -0.4f),
 					                                                  new Vector2(1.0f / 75.0f, 1.0f / 75.0f), 0.0f);
 					entity.addComponent(shotgunSprite);
+					
 				} else if (o.getName().equals("rifle")) {
 					SpriteComponent rifleSprite = new SpriteComponent(tileSet.getTile(186 + 1).getTextureRegion(),
 					                                                  new Vector2(0.0f, 0.0f), new Vector2(-0.4f, -0.4f),
@@ -231,8 +232,9 @@ public class Environment implements Disposable{
 					entity.addComponent(sniperSprite);
 				}
 
-				wweapon = new Weapon(o.getName(),cooldown, bullets, capacity, knockback, spread, speed, baseDamage);
-				PickupComponent pickup = new PickupComponent(level, wweapon);
+				weapon = new HitscanWeapon(o.getName(),cooldown, bullets, knockback, spread, 0.2f,baseDamage, physicsSystem, muzzleRegion);
+
+				PickupComponent pickup = new PickupComponent(level, weapon);
 				physicsSystem.registerCallback(pickup, entity);
 				entity.addComponent(pickup);
 			}

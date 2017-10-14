@@ -37,21 +37,9 @@ import se.sciion.quake2d.sandbox.LevelSandbox;
  */
 public class PhysicsSystem{
 
-	
-	private class Hitscan {
-		public Vector2 origin;
-		public Vector2 target;
-		public Vector2 interpolation;
-		public float alpha;
-		public float ellapsed;
-		public Entity responsible;
-	}
-	
-	private Vector2 p1,p2;
+	private Vector2 p1;
 	private ShapeRenderer renderer;
 	
-	public Array<Hitscan> hitscans;
-
 	private Array<PhysicsComponent> components;
 
 	private class LineOfSightCallback implements RayCastCallback {
@@ -114,7 +102,6 @@ public class PhysicsSystem{
 		solidcallback = new OverlapCallback();
 		components = new Array<PhysicsComponent>();
 		renderer = new ShapeRenderer();
-		hitscans = new Array<Hitscan>();
 	}
 
 	public void cleanup() {
@@ -131,7 +118,6 @@ public class PhysicsSystem{
 			}
 			removalList.clear();
 		}
-		hitscans.clear();
 		components.clear();
 	}
 
@@ -223,7 +209,6 @@ public class PhysicsSystem{
 		callback.target = target.cpy();
 		world.rayCast(callback, origin, target);
 		p1 = origin.cpy();
-		p2 = callback.target.cpy();
 		
 		if(callback.target == null){
 			return false;
@@ -248,39 +233,11 @@ public class PhysicsSystem{
 		if(LevelSandbox.DEBUG)
 			debugRenderer.render(world, combined);
 		
-		renderer.setProjectionMatrix(combined);
-		renderer.begin(ShapeType.Filled);
-		renderer.setColor(Color.GOLD);
-		for(Hitscan p: hitscans){			
-			renderer.rectLine(p.origin.cpy().lerp(p.target, p.ellapsed * 0.5f), p.interpolation, 0.1f);
-		}
-		renderer.end();
+
 	}
 
 	public void update(float delta) {
 		world.step(delta, 10, 10);
-		
-		for(Hitscan p: hitscans){
-			p.ellapsed = MathUtils.clamp(p.ellapsed + p.alpha * delta,0.0f,1.0f);
-			p.interpolation = p.origin.cpy().lerp(p.target, p.ellapsed);
-			if(p.ellapsed >= 1.0f){
-				for(PhysicsComponent phys :queryComponentAt(p.interpolation.x, p.interpolation.y)){
-					if(phys != null && phys.getParent() != null && phys.getParent() != p.responsible){
-						HealthComponent hlth = phys.getParent().getComponent(ComponentTypes.Health);
-						if(hlth != null){
-							float boostScl = 1.0f;
-							DamageBoostComponent boost = p.responsible.getComponent(ComponentTypes.Boost);
-							if(boost != null){
-								boostScl = boost.boost;
-							}
-							hlth.remove(1.0f * boostScl, p.responsible);
-						}
-					}
-				};
-				
-				hitscans.removeValue(p, true);
-			}
-		}
 	}
 
 	public void clear(){
@@ -289,23 +246,15 @@ public class PhysicsSystem{
 		cleanup();
 	}
 
-	public Vector2 hitScan(Vector2 origin, Vector2 heading,float speed, Entity responsible) {
+	public Vector2 hitScan(Vector2 origin, Vector2 heading) {
 		LineOfSightCallback callback = new LineOfSightCallback();
 		callback.target = null;
 		world.rayCast(callback, origin, origin.cpy().add(heading.cpy().scl(30.0f)));
 		if(callback.target != null){
-			Hitscan h = new Hitscan();
-			h.origin = origin.cpy();
-			h.target = callback.target.cpy();
-			h.alpha = 1.0f / h.origin.dst(h.target) * speed;
-			h.interpolation = origin.cpy();
-			h.responsible = responsible;
-			h.ellapsed = 0.0f;
-			hitscans.add(h);
 			return callback.target.cpy();
 		}
 
-		return new Vector2(0.0f, 0.0f);
+		return null;
 	}
 
 }

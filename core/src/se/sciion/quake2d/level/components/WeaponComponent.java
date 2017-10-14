@@ -26,60 +26,52 @@ import se.sciion.quake2d.level.system.SoundSystem;
  */
 public class WeaponComponent extends EntityComponent {
 
-	private float cooldown;
-	private TextureRegion bulletTexture;
-
-    private TextureRegion muzzleTexture;
-	private PhysicsSystem physicsSystem;
 	private Level level;
 
-	public WeaponComponent(Level level, PhysicsSystem physicsSystem, TextureRegion bulletTexture, TextureRegion muzzleTexture) {
-		cooldown = 0;
+	public WeaponComponent(Level level, PhysicsSystem physicsSystem, TextureRegion bulletTexture,
+			TextureRegion muzzleTexture) {
 
-		// Load the bullet texture here. A bit ugly, maybe do this in the level instead?
+		// Load the bullet texture here. A bit ugly, maybe do this in the level
+		// instead?
 		bulletTexture = new TextureRegion(new Texture(Gdx.files.internal("images/bullet.png")));
 
-		this.bulletTexture = bulletTexture;
-        this.muzzleTexture = muzzleTexture;
-		this.physicsSystem = physicsSystem;
 		this.level = level;
 	}
 
 	@Override
 	public void render(RenderModel batch) {
-		if (batch.debugging) return; // No debug render for this thing.
+		if (batch.debugging)
+			return; // No debug render for this thing.
 		SheetComponent spriteSheet = getParent().getComponent(ComponentTypes.Sheet);
-		if (spriteSheet == null) return;
+		if (spriteSheet == null)
+			return;
 
 		InventoryComponent inventory = getParent().getComponent(ComponentTypes.Inventory);
 		Array<Weapon> weapons = inventory.getItems(Weapon.class);
 
 		if (weapons.size >= 1) {
 			Weapon currentWeapon = weapons.first();
-
-			if (currentWeapon.cooldown - cooldown <= 0.05) {
-				PhysicsComponent playerPhysics = getParent().getComponent(ComponentTypes.Physics);
-				Vector2 playerPosition = playerPhysics.getBody().getPosition();
-				float playerAngle = playerPhysics.getBody().getAngle() * MathUtils.radiansToDegrees - 90.0f;
-				playerPosition.add(new Vector2(-0.2f, 0.6f).rotate(playerAngle));
-				batch.spriteRenderer.draw(muzzleTexture, playerPosition.x, playerPosition.y, 0.0f, 0.0f, muzzleTexture.getRegionWidth(),
-				                          muzzleTexture.getRegionHeight(), 1.0f / 48.0f, 1.0f / 48.0f, playerAngle);
-			}
-
+			
+			currentWeapon.render(batch);
 			if (currentWeapon.getTag().equals("shotgun"))
 				spriteSheet.setCurrentRegion("gun");
 			else if (currentWeapon.getTag().equals("rifle"))
 				spriteSheet.setCurrentRegion("silencer");
 			else if (currentWeapon.getTag().equals("sniper"))
 				spriteSheet.setCurrentRegion("machine");
-		} else spriteSheet.setCurrentRegion("stand");
+		} else
+			spriteSheet.setCurrentRegion("stand");
 	}
 
 	@Override
 	public void tick(float delta) {
-		cooldown -= delta;
-		if (cooldown < 0) {
-			cooldown = 0;
+		InventoryComponent inventory = getParent().getComponent(ComponentTypes.Inventory);
+		if (inventory == null)
+			return;
+
+		Array<Weapon> weapons = inventory.getItems(Weapon.class);
+		if (weapons.size >= 1) {
+			weapons.first().tick(delta);
 		}
 	}
 
@@ -90,21 +82,17 @@ public class WeaponComponent extends EntityComponent {
 
 	// Used for now to fire weapon. Should perhaps be internal logic
 	public boolean fire(Vector2 heading, Vector2 origin) {
-		if (cooldown <= 0.0f) {
-			InventoryComponent inventory = getParent().getComponent(ComponentTypes.Inventory);
-			if (inventory == null)
-				return false;
 
-			Array<Weapon> weapons = inventory.getItems(Weapon.class);
-			if (weapons.size >= 1) {
-				Weapon currentWeapon = weapons.first();
+		InventoryComponent inventory = getParent().getComponent(ComponentTypes.Inventory);
+		if (inventory == null)
+			return false;
 
-				
-				for(int i = 0; i < currentWeapon.bullets; i++) {
-					float angle = heading.angle() + MathUtils.randomTriangular(-currentWeapon.spread/2.0f, currentWeapon.spread/2.0f);
-					physicsSystem.hitScan(origin,heading.cpy().setAngle(angle),100.0f,parent);
-				}
-				
+		Array<Weapon> weapons = inventory.getItems(Weapon.class);
+		if (weapons.size >= 1) {
+			Weapon currentWeapon = weapons.first();
+
+			if (currentWeapon.fire(origin, heading, parent)) {
+
 				// Push player backwards
 				PhysicsComponent physics = getParent().getComponent(ComponentTypes.Physics);
 				if (physics != null) {
@@ -114,12 +102,9 @@ public class WeaponComponent extends EntityComponent {
 					vel.add(heading.scl(-currentWeapon.knockback));
 					physics.getBody().setLinearVelocity(vel);
 
-					SoundSystem.getInstance().playSound(currentWeapon.getTag(),
-								                        position, 1.0f);
+					SoundSystem.getInstance().playSound(currentWeapon.getTag(), position, 1.0f);
 				}
 
-
-				cooldown = currentWeapon.cooldown;
 				return true;
 			}
 		}

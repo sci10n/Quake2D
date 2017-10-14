@@ -75,8 +75,8 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	@Override
 	public void create() {
-		width = (int)(600 * Gdx.graphics.getDensity());
-		height = (int)(600 * Gdx.graphics.getDensity());
+		width = (int)(600 * Gdx.graphics.getDensity() * 3);
+		height = (int)(600 * Gdx.graphics.getDensity() * 3);
 		Gdx.graphics.setWindowedMode(width, height);
 		Gdx.graphics.setTitle("Quake 2D");
 
