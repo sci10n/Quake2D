@@ -56,9 +56,17 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
     \maketitle
     \section*{Abstract}
 
-    Behaviour trees are a popular model for representing the decision-making and plan execution process for NPCs in video games. These are built by hand, and require expertise to craft. They don't adapt well to other environments, and often require a custom BT. \footnote{Repository: \url{https://github.com/sci10n/Quake2D}}
+    Behaviour trees are a popular model for representing the decision-making and plan execution process for NPCs in video games. These are built by hand, and require expertise to craft. They don't adapt well to other environments, and often require a custom BT.
 
-    \tableofcontents \newpage
+    In this paper we demonstrate how to generate the BTs by using genetic programming; allowing us to essentially evolve novel behaviours automatically in our testbed. Results show that the evolved BT beats our hand-crafted BT by the \(5^{th}\) generation. \footnote{Repository: \url{https://github.com/sci10n/Quake2D}}
+
+    \vspace{1.8em}
+
+    \begingroup
+    \def\addvspace#1{}
+    \tableofcontents
+    \endgroup
+    \newpage
 
     \newpage % Next column...
     \nocite{*} % Include all.
