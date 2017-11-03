@@ -75,20 +75,15 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
     \clearpage
 
     \section{Introduction} \label{sec:introduction}
+	
+	Interactive media such as games there is often a need of simulating seemingly complex agent behaviors in realtime. In modern fast-pace computer games for example, the simulation needs to complete one step of the simulation in less than 16ms to provide a half-decent experience. These requirements have spawned some very fast and clever techniques to enable complex behavior for autonomus agents.
 
-
-
-        \subsection{The Motivation} \label{sec:the_motivation}
-
-
-
-        \subsection{Proposed Approach} \label{sec:proposed_approach}
-
+	These techniques often requires manual creation and in some cases, are hard to extend when new behaviors are needed for a game \textbf{Cite FSM}. In this project we have explored how one of the more widley hused techniques, \emph{Behavior Trees} can be extended to allow for not only hand crafter complex behaviors, but also for organic behaviors tailored to the specific game domain with the help of \emph{reinforcment learning}.
 
 
     \section{Background Theory} \label{sec:background_theory}
 
-
+	For a autonomus agent to give the illusion of intelligence, many different systems need to interact. In the case of this project, the spatial path-finding and the behavior model has been decoupled where the path-finding system only receives a target position in the simulated environment and left to find the best path to the target by it self.
 
         \subsection{Behaviour Trees} \label{sec:behaviour_trees}
 
@@ -96,7 +91,8 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         \subsection{Path Finding with A*} \label{sec:path_finding}
 
-
+	Agent path finding is done using the \emph{A*} graph traversal algorithm propsed by Peter E. Hart, Nils J. Nilsson, and Bertram Raphael ~\cite{hart1968formal} as an extension to \emph{Dijkstra's algorithm} which, given an \emph{admissible heuristic} and non-negative costs, will find the path from a node \(s\) to node \(n\) with the lowest cost.
+	
 
         \subsection{Genetic Programming} \label{sec:genetic_programming}
 
