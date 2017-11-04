@@ -87,17 +87,66 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         \subsection{Behaviour Trees} \label{sec:behaviour_trees}
 
-
+	
 
         \subsection{Path Finding with A*} \label{sec:path_finding}
 
-	Agent path finding is done using the \emph{A*} graph traversal algorithm propsed by Peter E. Hart, Nils J. Nilsson, and Bertram Raphael ~\cite{hart1968formal} as an extension to \emph{Dijkstra's algorithm} which, given an \emph{admissible heuristic} and non-negative costs, will find the path from a node \(s\) to node \(n\) with the lowest cost.
+	Agent path finding is done using the \emph{A*} graph traversal algorithm propsed by Peter E. Hart, Nils J. Nilsson, and Bertram Raphael ~\cite{hart1968formal} as an extension to \emph{Dijkstra's algorithm} which, given an \emph{admissible heuristic} and non-negative costs, will find the path from a node \(n_0\) to node \(n_g\) with the lowest cost.
 	
+	Calculating the expected cost of an path from \(n_0,...,n_k,...,n_g\) can be done as the folowing funcion:
+	\begin{equation*}
+		f(n_k) = g(n_k) + h(n_k)
+	\end{equation*}	
+	where \(g(n_k)\) is the true cost from \(n_0\) to node \(n_k\) and \(h(n_k)\) is a heuristic aproximation of the cost from \(n_k\) to \(n_g\).
 
-        \subsection{Genetic Programming} \label{sec:genetic_programming}
+        In this project, \emph{euclidean distance} is used as the heuristic \(h(n_k)\) since the path-finding is performed in a search-space where each node is defined as a point in the world-space. 
 
+	Additionally to regular \emph{A*}, the pathfinder also utilizes an \emph{influence map} to help the agent avoid suicidal paths, even if the selected path is optimal given the heuristic function. The \emph{influence map} takes into account the visibilty of each node in relation to adversarial game agentss' line-of-sight and updates the expected cost as:
+	\begin{equation*}
+		f(n_k) = g(n_k) + h(n_k) + i(n_k)
+	\end{equation*} 
+	which has the result of nodes within adversarial agents line-of-sight having a much higher associated traversial cost. 
+	
+\begin{minipage}{\linewidth}        	
+        \centering
+	\begin{minipage}{0.4\linewidth}
+	\begin{figure}[H]
+		\includegraphics[width=\linewidth]{share/bad.eps}
+		\caption{}
+		\label{fig:optimal_path}
+        \end{figure}
+	\end{minipage}
+	\hspace{0.05\linewidth}
+	\begin{minipage}{0.4\linewidth}
+	\begin{figure}[H]
+		\includegraphics[width=\linewidth]{share/good.eps}
+		\caption{}
+		\label{fig:smart_path}
+	\end{figure}
+	\end{minipage}
+\end{minipage}
+	Above are two example figures, one showing (fig~\ref{fig:optimal_path}) an optimal path using regular \emph{A*}, and the other showing the optimal path when taking into account the influence map (fig~\ref{fig:smart_path}).
+	
+	\subsection{Genetic Programming} \label{sec:genetic_programming}
 
+	In many scenarios you try to optimize the input of an function \(f(x_0,x_1,...,x_n)\) where some or all of the inputs are of an discreete nature (ordinal or nominal values). These types of problems are often hard to optimize using techniques developed for conitnious variables, such as \emph{gradient ascent/descent}.
 
+	\emph{Genetic programming} is an technique presented by \emph{Nils Barricelli} ~\cite{barricelli1954esempi} as a way to optimize computer programs by encoding with \emph{genetic representation} which could be processed by \emph{evolutionary algorithms}. 
+
+	\begin{figure}[H]
+		\includegraphics[width=0.8\linewidth]{share/Genetic_Program_Tree.png}
+		\caption{The \emph{genetic representation} is often done using a tree structure.}
+		\label{fig:genetic_representation}
+	\end{figure}
+
+	The typical \emph{evolutionary algorithm} can be described in the following steps.
+
+	Generate inital population where ieach individual as a randomized genetic representation.
+
+	Evaluate fitness for each individual
+
+	Regenerate the poulation using the individuals with the highest fitness from previous generation. The regeneration process i split into several parts, Selection, Breeding, Mutation and Replacment.
+	
     \section{Implementation Details} \label{sec:implementation_details}
 
 
@@ -105,13 +154,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
         \subsection{Game Architecture} \label{sec:game_architecture}
 
 
-
         \subsection{Behaviour Trees} \label{sec:behaviour_trees_implementation}
-
-
-
-        \subsection{Path Finding with A*} \label{sec:path_finding_implementation}
-
 
 
         \subsection{Genetic Programming} \label{sec:genetic_programming_implementation}
