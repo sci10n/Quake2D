@@ -25,6 +25,13 @@
             tracking=true, kerning=true, spacing=true,
             factor=1100, stretch=10, shrink=10]{microtype}
 
+\newcommand\blfootnote[1]{%
+    \begingroup
+        \renewcommand\thefootnote{}\footnote{#1}%
+        \addtocounter{footnote}{-1}%
+    \endgroup
+}
+
 \DeclareCaptionFormat{modifiedlst}{\rule{\textwidth}{0.85pt}\\[-2.9pt]#1#2#3}
 \captionsetup[lstlisting]{format =  modifiedlst,
 labelfont=bf,singlelinecheck=off,labelsep=space}
@@ -58,9 +65,9 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     Behaviour trees are a popular model for representing the decision-making and plan execution process for NPCs in video games. These are built by hand, and require expertise to craft. They don't adapt well to other environments, and often require a custom BT.
 
-    In this paper we demonstrate how to generate the BTs by using genetic programming; allowing us to essentially evolve novel behaviours automatically in our testbed. Results show that the evolved BT beats our hand-crafted BT by the \(5^{th}\) generation. \footnote{Repository: \url{https://github.com/sci10n/Quake2D}}
+    In this paper we demonstrate how to generate the BTs by using genetic programming; allowing us to essentially evolve novel behaviours automatically in our testbed. Instead of specifying low-level actions and conditions, we use high-level definitions. This leads to faster fitness convergence, and also allows us to skip the bloat control and tree pruning steps used by other methods. Results show that the evolved BT beats our hand-crafted BT by the \(5^{th}\) generation. \footnotemark[1]
 
-    \vspace{2.4em}
+    \vspace{1.0em}
 
     \begingroup
     \def\addvspace#1{}
@@ -72,6 +79,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
     \nocite{*} % Include all.
     \bibliographystyle{abbrv}
     \bibliography{report}
+    \footnote[1]{Repository: \url{https://github.com/sci10n/Quake2D}}
     \clearpage
 
     \section{Introduction} \label{sec:introduction}
@@ -95,6 +103,17 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
     For a autonomous agent to give the illusion of intelligence, many different systems need to interact. In the case of this project, the spatial path-finding and the behavior model has been decoupled where the path-finding system only receives a target position in the simulated environment and left to find the best path to the target by it self.
 
         \subsection{Behaviour Trees} \label{sec:behaviour_trees}
+
+        \begin{itemize}
+            \item{\textbf{Selector:} executes children from left \(\rightarrow\) right until \emph{one child} is found to be either \emph{running} or has already \emph{succeeded}, and returns this status. Otherwise, it if none match, it returns a \emph{failure}.}
+            \item{\textbf{Sequence:} executes children from left \(\rightarrow\) right until \emph{one child} is found to be either \emph{running} or \emph{failed}, and returns this status. If \emph{all children} have \emph{succeeded}, then also set status to \emph{success}.}
+            \item{\textbf{Parallel Selector/Sequence:} similar to the above, but executes \emph{all children simultaneously}.}
+            \item{\textbf{Inverter:} executes the child node and \emph{inverts the resulting state} when it has finished running.}
+            \item{\textbf{Succeeder:} when child has finished running, returns \emph{success} regardless of the child's status.}
+            \item{\textbf{Condition:} a leaf-node that queries the world state, if the query returns true, we give \emph{success}, if it's false, we instead give \emph{failure}. This node is usually instantaneous, and can't be \emph{running}.}
+            \item{\textbf{Action:} a leaf-node which modifies the world state, and returns \emph{success} if the action had the intended side-effect, \emph{failure} if couldn't complete or failed the action and \emph{running} if not done yet.}
+
+        \end{itemize}
 
         \begin{figure}[H]
             \centering
