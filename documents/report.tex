@@ -79,7 +79,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
     \nocite{*} % Include all.
     \bibliographystyle{abbrv}
     \bibliography{report}
-    \footnote[1]{Repository: \url{https://github.com/sci10n/Quake2D}}
+    \footnotetext[1]{Repository: \url{https://github.com/sci10n/Quake2D}}
     \clearpage
 
     \section{Introduction} \label{sec:introduction}
@@ -100,9 +100,26 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     \section{Background Theory} \label{sec:background_theory}
 
-    For a autonomous agent to give the illusion of intelligence, many different systems need to interact. In the case of this project, the spatial path-finding and the behavior model has been decoupled where the path-finding system only receives a target position in the simulated environment and left to find the best path to the target by it self.
+    For an autonomous agent to give the illusion of intelligence, many different systems and techniques need to interact with each other. In this chapter we describe the theory behind our three primary systems: \emph{behaviour trees}, \emph{path finding} \& \emph{genetic programming}.
 
         \subsection{Behaviour Trees} \label{sec:behaviour_trees}
+
+        Defining an accurate \emph{automatic planner} model is often impractical and usually overkill for real-world applications. Especially in games, where very simple models are enough to give the illusion of intelligence. In games, the most well-known \emph{behaviour selection algorithms} are \emph{FSMs}, \emph{GOAPs}, \emph{HTNs} and \emph{BTs} \cite{dawe2014overview}.
+
+        \emph{Finite State Machines (FSMs)} are simple but are hard to extend with additional states, making the amount of transitions to be specified to blow up \cite{dawe2014overview}. While both \emph{GOAP (Goal-Oriented Action Planner)} and \emph{HTN (Hierarchical Task Network)} are powerful models, these don't allow agents to explore new task definitions, and ``only'' provide an agent with novel ways of solving an already defined set of task defs.
+
+        \emph{Behaviour Trees (BTs)} on the other hand, when comparing to FSMs, provide advantages in terms of modularity, reactiveness and scalability. And more importantly, since they are a type of tree, allow for integration with the genetic programming approach. They were first popularized by the game \emph{Halo 2}, but are now used in other area as well, such as robotics.
+
+        In the \emph{Behaviour Tree Starter Kit}~\cite{champandard2014behaviour} and also in \emph{Chris Simpson's Gamasutra article}~\cite{simpson2014behavior}, the BT is a tree-like data structure which describes the decision-making process of the agent. It's evaluated pre-order from the root of the tree in each logic update tick.
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\linewidth]{share/behaviour_tree.pdf}
+            \caption{Example of Hand-Crafted Behaviour Tree}
+            \label{fig:behaviour_tree}
+        \end{figure}
+
+        Below you'll find the most common types of nodes in a behaviour tree, such as those specified in \emph{Behaviour Tree Starter Kit}~\cite{champandard2014behaviour} and \emph{Simpson's paper}~\cite{simpson2014behavior}. \emph{Selectors} and \emph{sequences} are \emph{composite control-flow nodes} which order and choose the children to run. \emph{Inverters} and \emph{succeeders} are \emph{decorator nodes} which modify the result of a leaf node. Finally, \emph{action and condition nodes} are \emph{leaf-nodes} which can either be \emph{running}, \emph{failed} or \emph{succeeded}. The states of these nodes propagates upwards in the tree.
 
         \begin{itemize}
             \item{\textbf{Selector:} executes children from left \(\rightarrow\) right until \emph{one child} is found to be either \emph{running} or has already \emph{succeeded}, and returns this status. Otherwise, it if none match, it returns a \emph{failure}.}
@@ -115,12 +132,9 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         \end{itemize}
 
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\linewidth]{share/behaviour_tree.pdf}
-            \caption{Example of Hand-Crafted Behaviour Tree}
-            \label{fig:behaviour_tree}
-        \end{figure}
+        We find that it's easier to understand behaviour trees with an example. Look back at \cref{fig:behaviour_tree}.
+
+        \newpage
 
         \subsection{Path Finding with A*} \label{sec:path_finding}
 
