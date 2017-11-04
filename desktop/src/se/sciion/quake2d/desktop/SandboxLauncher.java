@@ -13,7 +13,7 @@ public class SandboxLauncher {
 		config.useGL30 = true;
 		config.width = 600;
 		config.height = 600;
-		config.resizable = false;
+		config.resizable = true;
 		
 		new LwjglApplication(new LevelSandbox("levels/level_1.tmx",
 				                              "levels/level_2.tmx",

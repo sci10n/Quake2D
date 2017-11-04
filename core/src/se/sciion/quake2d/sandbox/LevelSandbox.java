@@ -33,6 +33,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class LevelSandbox extends ApplicationAdapter {
 
@@ -61,6 +62,8 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	private Trees trees;
 	
+	private ExtendViewport viewport;
+	
 	private int width;
 	private int height;
 	private int ROUND_PER_GENERATION;
@@ -77,6 +80,7 @@ public class LevelSandbox extends ApplicationAdapter {
 	public void create() {
 		width = (int)(600 * Gdx.graphics.getDensity());
 		height = (int)(600 * Gdx.graphics.getDensity());
+		
 		Gdx.graphics.setWindowedMode(width, height);
 		Gdx.graphics.setTitle("Quake 2D");
 
@@ -89,7 +93,8 @@ public class LevelSandbox extends ApplicationAdapter {
 		
 		level = new Level();
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 30, 30);
+		
+		viewport = new ExtendViewport(30, 30, camera);
 		physicsSystem = new PhysicsSystem();
 		pathfinding = new Pathfinding(30, 30, level);
 		trees = new Trees();
@@ -285,6 +290,13 @@ public class LevelSandbox extends ApplicationAdapter {
 
 	private boolean isDebugging() {
 		return DEBUG;
+	}
+	
+	@Override
+	public void resize(int width, int height) {
+		viewport.update(width, height);
+		camera.position.set(15, 15, 0);
+
 	}
 	
 	@Override
