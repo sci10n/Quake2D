@@ -84,7 +84,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     \section{Introduction} \label{sec:introduction}
 
-    In interactive media such as games, there is often a need for simulating seemingly complex agent behaviours in real-time. In modern fast-paced computer games for example, the render, physics and artificial intelligence steps all need to complete in a total of less than 16ms to provide a half-decent experience. These requirements have spawned some clever techniques to enable complex behaviours for autonomous agents, while keeping their computation time short.
+    In interactive media such as video games, there is often a need for simulating seemingly complex agent behaviours in soft real-time. In a modern fast-paced computer game for example, the render, physics and artificial intelligence updates all need to complete in a total of less than 16ms to provide a half-decent experience. These requirements have spawned some clever techniques to enable complex behaviours for autonomous agents while minimizing computation.
 
     These techniques often require manual behaviour definition, and in some cases, are hard to extend when new behaviours are needed for a game, as shown by industry researchers, e.g. \emph{Dawe et al}~\cite{dawe2014overview}, regarding the finite state machine architecture. In this project we have explored how one of the more widely used techniques, \emph{behaviour trees}, can be extended to allow for not only hand-crafted complex behaviors, but for organic behaviours tailored to the specific game domain by using \emph{reinforcement learning}. More specifically, we evolve behaviour trees with \emph{genetic programming}, which spawn behaviour tree offspring.
 
@@ -106,7 +106,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         Defining an accurate \emph{automatic planner} model is often impractical and usually overkill for real-world applications. Especially in games, where very simple models are enough to give the illusion of intelligence. In games, the most well-known \emph{behaviour selection algorithms} are \emph{FSMs}, \emph{GOAPs}, \emph{HTNs} and \emph{BTs} \cite{dawe2014overview}.
 
-        \emph{Finite State Machines (FSMs)} are simple but are hard to extend with additional states, making the amount of transitions to be specified to blow up \cite{dawe2014overview}. While both \emph{GOAP (Goal-Oriented Action Planner)} and \emph{HTN (Hierarchical Task Network)} are powerful models, these don't allow agents to explore new task definitions, and ``only'' provide an agent with novel ways of solving an already defined set of task defs.
+        \emph{Finite State Machines (FSMs)} are simple but are hard to extend with additional states, making the amount of transitions to increase exponentially \cite{dawe2014overview}. While both \emph{GOAP (Goal-Oriented Action Planner)} and \emph{HTN (Hierarchical Task Network)} are powerful models, these don't allow agents to explore new task definitions, and ``only'' provide an agent with novel ways of solving an already defined set of task defs.
 
         \emph{Behaviour Trees (BTs)} on the other hand, when comparing to FSMs, provide advantages in terms of modularity, reactiveness and scalability. And more importantly, since they are a type of tree, allow for integration with the genetic programming approach. They were first popularized by the game \emph{Halo 2}, but are now used in other area as well, such as robotics.
 
@@ -119,12 +119,11 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
             \label{fig:behaviour_tree}
         \end{figure}
 
-        Below you'll find the most common types of nodes in a behaviour tree, such as those specified in \emph{Behaviour Tree Starter Kit}~\cite{champandard2014behaviour} and \emph{Simpson's paper}~\cite{simpson2014behavior}. \emph{Selectors} and \emph{sequences} are \emph{composite control-flow nodes} which order and choose the children to run. \emph{Inverters} and \emph{succeeder} are \emph{decorator nodes} which modify the result of a leaf node. Finally, \emph{action and condition nodes} are \emph{leaf-nodes} which can either be \emph{running}, \emph{failed} or \emph{succeeded}. The states of these nodes propagates upwards in the tree.
+        Below you'll find the most common concrete types of nodes in a behaviour tree, as those in \emph{BTSK}~\cite{champandard2014behaviour}. Only \emph{action} and \emph{condition nodes} are \emph{leaf-nodes}, all others are either \emph{composite or decorator nodes} that have one or more children (hence, never a leaf node).
 
         \begin{itemize}
-            \item{\textbf{Selector:} executes children from left \(\rightarrow\) right until \emph{one child} is found to be either \emph{running} or has already \emph{succeeded}, and returns this status. Otherwise, it if none match, it returns a \emph{failure}.}
+            \item{\textbf{Selector:} executes children from left \(\rightarrow\) right until \emph{one child} is found to be either \emph{running} or has already \emph{succeeded}, and returns this status. Otherwise, if none matches, it returns a \emph{failure}.}
             \item{\textbf{Sequence:} executes children from left \(\rightarrow\) right until \emph{one child} is found to be either \emph{running} or \emph{failed}, and returns this status. If \emph{all children} have \emph{succeeded}, then also set status to \emph{success}.}
-            \item{\textbf{Parallel Selector/Sequence:} similar to the above, but executes \emph{all children simultaneously}.}
             \item{\textbf{Inverter:} executes the child node and \emph{inverts the resulting state} when it has finished running.}
             \item{\textbf{Succeeder:} when child has finished running, returns \emph{success} regardless of the child's status.}
             \item{\textbf{Condition:} a leaf-node that queries the world state, if the query returns true, we give \emph{success}, if it's false, we instead give \emph{failure}. This node is usually instantaneous, and can't be \emph{running}.}
@@ -132,80 +131,96 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         \end{itemize}
 
-        We find that it's easier to understand behaviour trees with an example. Look back at \cref{fig:behaviour_tree}. It's a sub-tree of the hand-crafted BT we produced for our testbed. Yellow represents \emph{running} nodes, green have \emph{succeeded} and red have \emph{failed}. First we enter the root node, the selector, which will in run its child nodes in order until one has succeeded. In this case the first child fails because the sub-tree of that child failed. The other sub-tree hasn't yet terminated with either succeed or fail, and the agent is currently trying to pick up armour.
+        We find that it's easier to understand behaviour trees with an example. We'll be using the tree in \cref{fig:behaviour_tree} as an example (it was produced within our testbed using a Graphviz library for Java). The yellow nodes means the node state is \emph{running}, the \emph{red} nodes have \emph{failed}, and \emph{green} nodes have \emph{succeeded}.
+
+        At a high-level, this BT checks the agent's health and armor, and if it's below a threshold, it will go and pick up the crates which replenish these stats.
+
+        It does this by starting at the root node, \emph{selector}, and executing the left child, the \emph{sequence}. It will also execute its left child, which is the \emph{inverter}. At last we reach a leaf-node, the \emph{health condition node}. This will probe the world for the state of the agent, and return \emph{success} because we've found that it's above 50\%. This result will propagate upward to its parent, the inverter, which will set its state to \emph{failed} (inverting the result of the child). We're back at the left sequence, and because one of the children have failed (the inverter), the sequence has \emph{failed} as well, and won't run the right child. Execute right node...
 
         \subsection{Path Finding with A*} \label{sec:path_finding}
 
-	Agent path finding is done using the \emph{A*} graph traversal algorithm proposed by Peter E. Hart, Nils J. Nilsson, and Bertram Raphael ~\cite{hart1968formal} as an extension to \emph{Dijkstra's algorithm} which, given an \emph{admissible heuristic} and non-negative costs, will find the path from a node \(n_0\) to node \(n_g\) with the lowest cost.
+	Agent path finding is done using the \emph{A*} graph traversal algorithm proposed by Peter E. Hart, Nils J. Nilsson, and Bertram Raphael ~\cite{hart1968formal} as an extension to \emph{Dijkstra's algorithm} which, given an \emph{admissible heuristic} and non-negative costs, will find the path from a node \(n_0\) to a node \(n_g\), with the lowest cost.
 	
-	Calculating the expected cost of an path from \(n_0,...,n_k,...,n_g\) can be done as the following function:
+    Calculating the expected cost of a path, like this: \(n_0 \rightarrow n_k \rightarrow n_g\), from \(n_0\) to \(n_g\) via \(n_k\) can be done with the following traversal function:
 	\begin{equation*}
 		f(n_k) = g(n_k) + h(n_k)
 	\end{equation*}	
-	where \(g(n_k)\) is the true cost from \(n_0\) to node \(n_k\) and \(h(n_k)\) is a heuristic approximation of the cost from \(n_k\) to \(n_g\).
+	where \(g(n_k)\) is the true cost from \(n_0\) to node \(n_k\) and \(h(n_k)\) is a heuristic approximation of the cost from \(n_k\) to \(n_g\). This allows us to explore the potentially most optimal paths before expanding the other ones.
 
-        In this project, \emph{euclidean distance} is used as the heuristic \(h(n_k)\) since the path-finding is performed in a search-space where each node is defined as a point in the world-space. 
+        In this project, the \emph{Euclidean distance} is used as the heuristic \(h(n_k)\). This since the path finding is performed in a search-space where each node is defined as a point in the testbed's 2-D world-space.
 
-	Additionally to regular \emph{A*}, the pathfinder also utilizes an \emph{influence map} to help the agent avoid suicidal paths, even if the selected path is optimal given the heuristic function. The \emph{influence map} takes into account the visibility of each node in relation to adversarial game agents' line-of-sight and updates the expected cost as:
+    Additionally, compared to regular \emph{A*}, the path-finder also utilizes an \emph{influence map} to help the agent avoid ``suicidal paths'', even if the selected path is optimal given the heuristic function. Our \emph{influence map}, like the ones shown in \emph{Dave Mark}~\cite{mark2015modular}, take into account the visibility of each node in relation to the adversarial game agents' line-of-sight, and therefore updates the expected cost as:
 	\begin{equation*}
 		f(n_k) = g(n_k) + h(n_k) + i(n_k)
 	\end{equation*} 
-	which has the result of nodes within adversarial agents line-of-sight having a much higher associated traversal cost. 
-	
-\begin{minipage}{\linewidth}        	
-        \centering
-	\begin{minipage}{0.4\linewidth}
+    where \(i(n_k)\) is the cost introduced by the influence map. This gives the the result that nodes within the adversarial agent's line-of-sight have a much higher associated traversal cost, and should be avoided. 
+    \begin{minipage}{\linewidth}        	
+    \centering
+	\begin{minipage}{0.45\linewidth}
 	\begin{figure}[H]
+        \centering
 		\includegraphics[width=\linewidth]{share/bad.eps}
-		\caption{}
+		\caption{optimal path}
 		\label{fig:optimal_path}
         \end{figure}
 	\end{minipage}
-	\hspace{0.05\linewidth}
-	\begin{minipage}{0.4\linewidth}
+	\hspace{0.00\linewidth}
+	\begin{minipage}{0.45\linewidth}
 	\begin{figure}[H]
+        \centering
 		\includegraphics[width=\linewidth]{share/good.eps}
-		\caption{}
+		\caption{tactical path}
 		\label{fig:smart_path}
 	\end{figure}
 	\end{minipage}
 \end{minipage}
-	Above are two example figures, one showing (fig~\ref{fig:optimal_path}) an optimal path using regular \emph{A*}, and the other showing the optimal path when taking into account the influence map (fig~\ref{fig:smart_path}).
+
+\vspace{0.5em}
+
+    Above are two example figures: \cref{fig:optimal_path} shows an optimal path using regular \emph{A*}, and the other, \cref{fig:smart_path} shows the optimal path when taking into account the influence map; sneaking behind cover.
 	
 	\subsection{Genetic Programming} \label{sec:genetic_programming}
 
-	In many scenarios you try to optimize the input of an function \(f(x_0,x_1,...,x_n)\) where some or all of the inputs are of an discrete nature (ordinal or nominal values). These types of problems are often hard to optimize using techniques developed for continuous variables, such as \emph{gradient ascent/descent}.
+    In many scenarios you try to optimize the input of a function: \(f(x_0,x_1,...,x_n)\), where some or all of the inputs are of a discrete nature (ordinal or nominal values). These types of problems are often hard to optimize using techniques developed for continuous variables, such as \emph{gradient ascent/descent}.
 
-	\emph{Genetic programming} is an technique presented by \emph{Nils Barricelli} ~\cite{barricelli1954esempi} as a way to optimize computer programs by encoding with \emph{genetic representation} which could be processed by \emph{evolutionary algorithms}. 
+	\emph{Genetic programming} is a technique that was introduced by \emph{Barricelli et al}~\cite{barricelli1954esempi}, as a way to optimize computer programs by encoding the parameters to be optimized as \emph{genetic representations} which could be processed by traditional \emph{evolutionary algorithms}.
 
 	\begin{figure}[H]
-		\includegraphics[width=0.8\linewidth]{share/Genetic_Program_Tree.png}
-		\caption{The \emph{genetic representation} is often done using a tree structure in \emph{genetic programming}.}
+        \centering
+		\includegraphics[width=0.5\linewidth]{share/Genetic_Program_Tree.png}
+		\caption{The \emph{genetic representation} is often done using a tree-like structure in \emph{genetic programming}.}
 		\label{fig:genetic_representation}
 	\end{figure}
 
-	The typical \emph{evolutionary algorithm} can be described in the following steps:
+	The most general form of \emph{evolutionary algorithms} can be described in the following few steps:
     \begin{enumerate}
-        \item Generate initial population - Create a pool \(\mathcal{P_0}\) of individuals with randomized genetic representations.
-        \item Evaluate \emph{fitness} for each individual \(x_i\) - this usually requires a domain specific \emph{fitness function} \(f(x_i)\rightarrow f_i \in \mathbf{R}\), which will be described in further detail later in this section.
-        \item Remove individuals with poor \textit{low fitness score} and \emph{regenerate} the population pool.
+        \item Generate an initial population by creating a initial pool \(\mathcal{P}_0\), of individuals with randomized genetic representations (context-specific data).
+        \item Evaluate the \emph{fitness} for each individual \(x_i \in \mathcal{P}_t\). This usually requires a domain-specific \emph{fitness function}: \(f(x_i)\rightarrow f_i \in \mathbf{R}\), which will be described in further details later in this chapter.
+        \item Remove individuals with poor \textit{low fitness score} and \emph{regenerate} the population pool \(\mathcal{P}_{t+1} \subset \mathcal{P}_t\).
     \end{enumerate}
 
-    The \emph{fitness function} for this project is an \emph{linear combination} of desirable behaviours collected during the \emph{Fitness evaluation} simulation such as \emph{damage dealt} to adversary, whether the agent with a specific BT \emph{survived}, and how many \emph{weapons the agent picked-up}. 
+    The fitness function for this project is composed of a \emph{linear combination} of desirable behaviours collected during the \emph{fitness evaluation} simulation, such as, amount of \emph{damage dealt} to the adversary, whether the agent with a specific BT \emph{survived}, and how many \emph{weapons the agent has picked-up}. In the implementation section we'll specify \(f_i\) more concretly, for now we just explain the general theory behind genetic programming and how to select \(\mathcal{P}_{t+1}\).
 
-	\emph{Regeneration} of the population pool for the next generation \(\mathcal{P}_{t+1}\) is done using three functions:
+	\emph{Regeneration} of the population pool for the next generation, \(\mathcal{P}_{t+1}\), is done using the three functions:
 
-    \textbf{Select} ~ \(\Phi_s(\mathcal{P}_t) \rightarrow x_i \in \mathcal{P}_t\) individuals with high \emph{fitness score}. In this project, \emph{selection} is done proportionally to the \emph{fitness score} for each individual. Each individual \(x_i\) has a probability \(P(x_i|f_i)\) to be selected for the next generation \(\mathcal{P}_{t+1}\):
+    \vspace{1em}
+
+    \textbf{Selection} ~ \(\Phi_s(\mathcal{P}_t) \rightarrow x_i \in \mathcal{P}_t\) ~ individuals with high \emph{fitness score} in the new population \(\mathcal{P}_{t+1}\). In this project, \emph{selection} is done proportionally to the \emph{fitness score} for each individual. Each individual \(x_i\) has a probability \(P(x_i|f_i)\) to be selected for the next generation \(\mathcal{P}_{t+1}\) according to some random process:
     \begin{equation*}
-        P(x_i|f_i) = \frac{f_i}{\sum_{j = 1}^{N}f_j}
+        P(x_i|f_i) = \frac{f_i}{\sum_{j = 1}^{N}f_j} \; \; \text{where} \; \; N = |\mathcal{P}_t|
     \end{equation*}
-    where \(N = |\mathcal{P}_t|\)
 
-    \textbf{Crossover} ~ \(\Phi_c(x_i,x_j) \rightarrow \hat{x_i},\hat{x_j}\) individuals from the new population, in the case of \emph{genetic programming}, crossover is done by swapping random \emph{sub-trees} in each BT. All sub-tree has an equal probability of being selected for \emph{crossover}
+    \textbf{Crossover} ~ \(\Phi_c(x_i,x_j) \rightarrow \hat{x}_i,\hat{x}_j\) ~ individuals from the new population which have been crossed over, in the case of \emph{genetic programming}, \emph{crossover} is done by swapping random \emph{sub-trees} in each BT. All sub-trees has an equal probability of being selected to crossover, creating new individuals in \(\mathcal{P}_{t+1}\).
 
-    \textbf{Mutate} ~ \(\Phi_m(x_i) \rightarrow \hat{x_i}\) a subset of the new population, slightly tweaking a random parameter or adding/removing a random child node. Once these steps have been performed, a new generation of individuals have been produced which can repeat the optimization process until we reach converge to a population of \emph{behaviours} close the global maximum of the fitness function.
+    \vspace{1em}
 
-	
+    \textbf{Mutation} ~ \(\Phi_m(x_i) \rightarrow \hat{x}_i\) ~ a subset of the new population, but slightly tweaked with a random parameter or adding/removing a random child node. If no mutation is done, then the genetic programming might converge to some local optimum because of monoculture, and never reach real global optimum.
+
+    \vspace{1em}
+
+    Once these steps have been performed, a new generation of individuals have been produced, which can then be used to repeat the optimization process until we converge to a population with behaviours close the global maximum of the fitness function \(f_i\).
+
+
     \section{Implementation Details} \label{sec:implementation_details}
 
 
