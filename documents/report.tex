@@ -196,7 +196,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
     \begin{enumerate}
         \item Generate an initial population by creating a initial pool \(\mathcal{P}_0\), of individuals with randomized genetic representations (context-specific data).
         \item Evaluate the \emph{fitness} for each individual \(x_i \in \mathcal{P}_t\). This usually requires a domain-specific \emph{fitness function}: \(f(x_i)\rightarrow f_i \in \mathbf{R}\), which will be described in further details later in this chapter.
-        \item Remove individuals with poor \textit{low fitness score} and \emph{regenerate} the population pool \(\mathcal{P}_{t+1} \subset \mathcal{P}_t\).
+        \item Remove individuals with poor \textit{low fitness score} and \emph{regenerate} population pool: \(\mathcal{P}_{t+1} = \Phi(\mathcal{P}_t)\).
     \end{enumerate}
 
     The fitness function for this project is composed of a \emph{linear combination} of desirable behaviours collected during the \emph{fitness evaluation} simulation, such as, amount of \emph{damage dealt} to the adversary, whether the agent with a specific BT \emph{survived}, and how many \emph{weapons the agent has picked-up}. In the implementation section we'll specify \(f_i\) more concretly, for now we just explain the general theory behind genetic programming and how to select \(\mathcal{P}_{t+1}\).
