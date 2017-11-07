@@ -229,12 +229,32 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         Given the very limited effective implementation time of this project. The architecture of the game is designed to allow for fast prototyping and not necessarily based on strong and scalable software design philosophies. The structural design is based on the \textit{entity component system} design which has seen high use in the contemporary games industry, being used in projects such as the \textit{Unity} game engine. The primary reference implementation is taken from the book \textit{Game programming patterns} writen by \textit{R. Nystrom}~\cite{nystrom2014game} in conjunction with \textit{M. Boström} design from \textit{Speed coding Zelda}~\footnote{\url{https://github.com/MilleBo/SpeedCodingZelda}}. The resulting implementation can be seen in the source code in the package \textit{se.sciion.quake2d.level}.
 
+        The \textit{entity component system}, as the name might suggest, consists of three interacting class types. The \textit{entity}, the \textit{component}, and the \textit{system}.
+
+        \textbf{INSERT IMAGE OF UML}
+        The entity is defined as a class only consisting of components together with some functions that the components within the collection can use to query for references to each other. This allows for components that heavily depend on each other to have high coupling while independent components doesn't have any coupling.
+        \textbf{INSERT IMAGE OF COMPNENT COMMUNICATION}
+
+        Outside the Entity, a set of systems are running, managing inter-entity communication such as path-finding, physics, and level design. These systems are passed as references to the components that are interested in them, allowing for the components to decide what to do with the data provided by the systems without caring about the systems implementation details. 
+        \textbf{INSERT IMAGE OF SYSTEM COMMUNICATION}
+
         \subsection{Behaviour Trees} \label{sec:behaviour_trees_implementation}
 
 
         \subsection{Genetic Programming} \label{sec:genetic_programming_implementation}
 
+        All BTs generated for the \textit{genetic programming} optimization has to be generated during \textit{runtime}. This is done by creating an set \(\mathcal{P}\) with a \textit{prototype object} of each \textit{behaviour node} \(p\).
 
+        Each \textit{behaviour node prototype} contains a function which causes the node to randomize it self \(\rho(p)\). For leaf nodes this means tweaking parameters such as \textit{thresholds} and \textit{entity tags}
+        \begin{equation*}
+            \rho(p) \rightarrow \hat{p}
+        \end{equation*}
+
+        But for composite nodes, it involves changing the children \(\{n_0,n_1,...,n_m\} \in p\) on the form:
+        \begin{equation*}
+            \rho(p) \rightarrow \forall_{n \in p}{\rho(n)}
+        \end{equation*}
+        which given that \(n_k\) can be a composite as well, allows for creation of all possible trees which the prototypes in \(\mathcal{P}\) can define. This can be seen as each tree representing a sentence in the regular grammar of the alphabet \(\mathcal{P}\).
 
     \section{Results and Screenshots} \label{sec:results_and_screenshots}
 
