@@ -243,18 +243,26 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         \subsection{Genetic Programming} \label{sec:genetic_programming_implementation}
 
-        All BTs generated for the \textit{genetic programming} optimization has to be generated during \textit{runtime}. This is done by creating an set \(\mathcal{P}\) with a \textit{prototype object} of each \textit{behaviour node} \(p\).
+        All BTs generated for the \textit{genetic programming} optimization has to be generated during \textit{runtime}. This is done by creating an set \(\mathcal{P}\) with a \textit{prototype object} (following the \textit{prototype pattern}~\cite{nystrom2014game}) of each \textit{behaviour node} \(p\).
 
-        Each \textit{behaviour node prototype} contains a function which causes the node to randomize it self \(\rho(p)\). For leaf nodes this means tweaking parameters such as \textit{thresholds} and \textit{entity tags}
+        \textbf{Behaviour tree generation}: Each \textit{behaviour node prototype} contains a function which causes the node to randomize it self \(\rho(p)\). For leaf nodes this means tweaking parameters such as \textit{thresholds} and \textit{entity tags}
         \begin{equation*}
             \rho(p) \rightarrow \hat{p}
         \end{equation*}
+        where \(\hat{p}\) is a new instance of the same behaviour type as \(p\).
 
-        But for composite nodes, it involves changing the children \(\{n_0,n_1,...,n_m\} \in p\) on the form:
+        Composite nodes, it involves changing the children \(\{n_0,n_1,...,n_m\} \in p\) on the form:
         \begin{equation*}
             \rho(p) \rightarrow \forall_{n \in p}{\rho(n)}
         \end{equation*}
         which given that \(n_k\) can be a composite as well, allows for creation of all possible trees which the prototypes in \(\mathcal{P}\) can define. This can be seen as each tree representing a sentence in the regular grammar of the alphabet \(\mathcal{P}\).
+
+        \textbf{Mutation of nodes}: As with the \textit{randomization}, the mutation of BTs are done in a recursive manner where each node mutate it self, and in the case of composite nodes, also its children. The mutation function \(\mu(p)\) is defined as \(\mu(p) \rightarrow \hat{p}\) for leaf nodes and 
+        \begin{align*}
+            \mu(p) &\rightarrow \forall_{n \in p}{\mu(n)} \\
+            \mu(p) &\rightarrow \{p_0,p_1,...,p_k,n_0,m_1,...,n_m\}, p_n \in \mathcal{P}, k \in \mathbf{R} \\
+        \end{align*}
+        where the first definition mutates the existing children and the second adds \(k\) new nodes \(\{p_0,p_1,...,p_k\}\) to the child set.
 
     \section{Results and Screenshots} \label{sec:results_and_screenshots}
 
