@@ -223,11 +223,17 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     \section{Implementation Details} \label{sec:implementation_details}
 
+        After presenting these theoretical methods we'll now describe the additional changes necessary to make these work in practice (as per our implementation).
 
+        Both the top-down shooter game (target \emph{testbed}) and our \emph{behaviour tree evolution} (the \emph{technique}) are written in \emph{Java} and use \emph{libGDX} for graphics/audio. This has allowed us to quickly produce a prototype, and while the game itself isn't the main topic of this paper, a rough outline can be found in \cref{sec:game_architecture}.
+
+        Every \emph{entity} in the game can be transformed into an intelligent agent with a \texttt{BotInputComponent}, which associates a given \emph{behaviour tree} with a entity. It hooks together with the \emph{path finder} to enable the entity to \emph{traverse \& interact} with the environment. With GP, additional BTs can be generated and used.
+
+        \newpage
 
         \subsection{Game Architecture} \label{sec:game_architecture}
 
-        Given the very limited effective implementation time of this project. The architecture of the game is designed to allow for fast prototyping and not necessarily based on strong and scalable software design philosophies. The structural design is based on the \textit{entity component system} design which has seen high use in the contemporary games industry, being used in projects such as the \textit{Unity} game engine. The primary reference implementation is taken from the book \textit{Game programming patterns} writen by \textit{R. Nystrom}~\cite{nystrom2014game} in conjunction with \textit{M. Boström} design from \textit{Speed coding Zelda}~\footnote{\url{https://github.com/MilleBo/SpeedCodingZelda}}. The resulting implementation can be seen in the source code in the package \textit{se.sciion.quake2d.level}.
+        Given the very limited implementation time of this project, the architecture of the game is designed to allow for fast prototyping and not necessarily based on strong and scalable software design philosophies. The structural design is based on the \textit{entity component system} design, which has seen high use in the contemporary games industry and is being used in high-profile projects such as the \textit{Unity} game engine. The primary reference implementation is taken from the book \textit{Game Programming Patterns} written by \textit{R. Nystrom}~\cite{nystrom2014game} in conjunction with the \textit{M. Boström} design from \textit{Speed Coding Zelda}~\footnote{\url{www://github.com/MilleBo/SpeedCodingZelda}}. The resulting implementation can be seen in the source code in the package: \texttt{se.sciion.quake2d.level}.
 
         The \textit{entity component system}, as the name might suggest, consists of three interacting class types. The \textit{entity}, the \textit{component}, and the \textit{system}.
 
@@ -238,8 +244,69 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
         Outside the Entity, a set of systems are running, managing inter-entity communication such as path-finding, physics, and level design. These systems are passed as references to the components that are interested in them, allowing for the components to decide what to do with the data provided by the systems without caring about the systems implementation details. 
         \textbf{INSERT IMAGE OF SYSTEM COMMUNICATION}
 
+        \clearpage
+
+        \begin{figure}[H]
+            \onecolumn
+            \centering
+            \includegraphics[width=\textwidth]{share/behaviour_tree_uml.eps}
+            \caption{Class hierarchy overview of our behaviour tree implementation in Java. Based on BT-SK~\cite{champandard2014behaviour}.}
+            \label{fig:behaviour_tree_hierarchy}
+            \twocolumn
+        \end{figure}
+
         \subsection{Behaviour Trees} \label{sec:behaviour_trees_implementation}
 
+        Inside of \texttt{se.sciion.quake2d.ai.behaviour} you'll find the implementation of our BTs. They are specified using inheritance, as shown in \cref{fig:behaviour_tree_hierarchy}. In our variant, only the leaves above are non-abstract.
+
+        All are derived from the \texttt{BehaviourNode}, which provides the \emph{State}, and methods for updating states, by evaluating it and its children (if it has any). This is done with the \texttt{tick} function, which is called for each agent's behaviour tree and once for each frame.
+
+        \vspace{-0.4em}
+
+        \begin{algorithm}
+            \caption{Pseudo-Code for the BT's Tick Step}
+            \label{alg:behaviour_tree_update}
+            \begin{algorithmic}
+                \REQUIRE{some initial \(State\) to the behaviour tree}
+                \IF{\(State \neq Running\)}
+                    \STATE \(doBehaviourEnter()\)
+                \ENDIF
+                \STATE \(State \leftarrow doBehaviourUpdate()\)
+                \IF{\(State \neq Running\)}
+                    \STATE \(doBehaviourExit()\)
+                \ENDIF
+            \end{algorithmic}
+        \end{algorithm}
+
+        \vspace{-0.6em}
+
+        In each of these entities' behaviour tree, built from the bottom-up and linked, there is one \texttt{root} node. Only this node needs to be evaluated, since the root will recursively evaluate its children when requested.
+
+        The standard non-leaf nodes are implemented in a straight-forward way following \cref{sec:behaviour_trees}. Instead, we concentrate on explaining \emph{actions} and \emph{conditions} we have implemented, and how these communicate with the other systems to be able to query the world.
+
+        We've adopted a fairly simple solution, where the leaf-node is given a reference to systems that it wants to communicate with, and a entity owner too.
+
+        \hfill\vspace{19.4em}
+
+        For example, if a BT wants a \emph{AttackNearest} node beneath a \emph{Succeeder}, we'd first have to hand over a reference to the \emph{path finder} and a \emph{target tag} to the constructed node: \emph{AttackNearest(path-finder, tag)}. Only after that we: \emph{SucceederNode(attack-nearest)}, which we can use to build a next layer above itself.
+
+        Below is a list of all actions and conditions we've implemented in our game, along with a description:
+
+        \begin{itemize}
+            \item{\textbf{AttackNearest(\emph{tag}):} finds the closest entity with \emph{tag} and \emph{path find} to it. Shoot with weapon. \emph{Success} if we were able to fire, \emph{false} otherwise.}
+            \item{\textbf{MoveToNearest(\emph{tag}):} finds the close entity with \emph{tag} and \emph{path find} to it. Stops when close. \emph{Success} when we're close, \emph{fails} if no valid path.}
+            \item{\textbf{PickUpConsumable(\emph{type}):} finds the closest consumable of \emph{type} (\emph{health}, \emph{armor} and \emph{boost}), \emph{path find} to it and \emph{pick it up}. \emph{Fails} if it can't...}
+            \item{\textbf{PickUpWeapon(\emph{type}):} finds a close weapon of \emph{type} (\emph{shotgun}, \emph{rifle} \& \emph{sniper}). \emph{Path find} to it \& try to \emph{pick it up}. \emph{Succeeds} when picked up.}
+        \end{itemize}
+
+        \begin{itemize}
+            \item{\textbf{CheckArmor(\emph{ratio}):} checks entity owner's \emph{armor}, gives \emph{Success} if above \emph{ratio}, \emph{fail} if below.}
+            \item{\textbf{CheckHealth(\emph{ratio}):} checks entity owner's \emph{health}, gives \emph{Success} if above \emph{ratio}, \emph{fail} if below.}
+            \item{\textbf{CheckWeapon(\emph{type}):} checks entity owner's \emph{inventory} for weapon \emph{type}. \emph{Success} if we got it.}
+            \item{\textbf{CheckDistance(\emph{tag, r})} checks if entity with \emph{tag} is above \emph{r} units away. \emph{Succeeds} query if so.}
+        \end{itemize}
+
+        \clearpage
 
         \subsection{Genetic Programming} \label{sec:genetic_programming_implementation}
 
