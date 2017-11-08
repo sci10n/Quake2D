@@ -319,20 +319,43 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
         where \(\hat{p}\) is a new instance of the same behaviour type as \(p\).
 
         Composite nodes, it involves changing the children \(\{n_0,n_1,...,n_m\} \in p\) on the form:
-        \begin{equation*}
-            \rho(p) \rightarrow \forall_{n \in p}{\rho(n)}
-        \end{equation*}
-        which given that \(n_k\) can be a composite as well, allows for creation of all possible trees which the prototypes in \(\mathcal{P}\) can define. This can be seen as each tree representing a sentence in the regular grammar of the alphabet \(\mathcal{P}\).
+        \begin{align*}
+            \rho(p) &\rightarrow \forall_{n \in p}{\rho(n)} \\
+        \end{align*}
+        where \(n\) can be turned into \(\emptyset\), which given that \(n_k\) can be a composite as well, allows for creation of all possible trees which the prototypes in \(\mathcal{P}\) can define. This can be seen as each tree representing a sentence in the regular grammar of the alphabet \(\mathcal{P}\).
 
         \textbf{Mutation of nodes}: As with the \textit{randomization}, the mutation of BTs are done in a recursive manner where each node mutate it self, and in the case of composite nodes, also its children. The mutation function \(\mu(p)\) is defined as \(\mu(p) \rightarrow \hat{p}\) for leaf nodes and 
         \begin{align*}
             \mu(p) &\rightarrow \forall_{n \in p}{\mu(n)} \\
-            \mu(p) &\rightarrow \{p_0,p_1,...,p_k,n_0,m_1,...,n_m\}, p_n \in \mathcal{P}, k \in \mathbf{R} \\
+            \mu(p) &\rightarrow \{p_0,p_1,...,p_k,n_0,m_1,...,n_m\}, p_n \in \mathcal{P}, k \in \mathbf{N} \\
         \end{align*}
+
         where the first definition mutates the existing children and the second adds \(k\) new nodes \(\{p_0,p_1,...,p_k\}\) to the child set.
 
-    \section{Results and Screenshots} \label{sec:results_and_screenshots}
+        \textbf{Fitness function}
+            As alluded to in the theory section, the fitness function is defined as an arbitrary linear combination of game related parameters. The full implementation is described in pseudo-code below.
+        \vspace{-0.4em}
 
+        \begin{algorithm}[H]
+            \caption{Pseudo-Code for the fitness function}
+            \label{alg:fitness_function}
+            \begin{algorithmic}
+                \REQUIRE {$damage$ being the damage given}
+                \REQUIRE {$armor$ begin the armour picked-up}
+                \REQUIRE {$weapon$ to be the weapon picked-up}
+                \REQUIRE {$kills$ to be the number of agents killed}
+                $Score$ = $5 *damage$ + $2 * armor$ + $50 * weapon$ + $1000 * kills$
+                \IF {Individual Won}
+                    \RETURN $Score + 500$
+                \ELSE
+                    \RETURN $Score$
+                \ENDIF
+            \end{algorithmic}
+        \end{algorithm}
+        \vspace{-0.6em}
+        The score is also divided by the number of round each individual played during one generation. This allows for a given individual to test its' fitness against multiple adversaries to get a better estimated fitness.
+
+    \section{Results and Screenshots} \label{sec:results_and_screenshots}
 
 
         \subsection{Generated Behaviours} \label{sec:generated_behaviours}
@@ -341,13 +364,38 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         \subsection{Behaviour Fitness} \label{sec:behaviour_fitness}
 
+        As can be observed on in the bar-plot below. The fitness score increase significantly during the first couple of generations to later converge. The variance for each generation is very high which means that the individuals performs different from each other, signifying that the \textit{mutation} and \textit{cross-over} produces different offspring. This is generally a good thing since we always want as different approaches being tested for each generation to prevent getting stuck in a local maxima.
 
+        \textbf{Graph of fitness over generations}
 
         \subsection{Survival Rate} \label{sec:survival_rate}
 
+        The survival rate increases and converges in the same number of generations as the fitness score. This is expected since the fitness score gets raised when an individual manges to defeat the hard-coded behaviour tree. 
 
+        \textbf{Graph of survival rate over generations}
 
     \section{Discussion and Outlook} \label{sec:discussion_and_outlook}
+
+    \subsection{Convergence Rate}
+
+        As can be seen in the plots in the result section, the evolutionary algorithm converges to an high game proficiency in just a couple of generations. The fact that it manges to this can reflect poorly on our skills as game designers. Since we can expect that the more complex behaviours required to proficiently play a game, the more generations it will take until it produces such behaviour trees. It can also be viewed as the fitness function, tree mutation, and pool of possible actions being well tuned to the specific requirements of this project. Which one is the correct interpretation is trivial and left to the reader as an exercise. 
+
+    \subsection{Limitations}
+
+
+    \subsection{Related Work}
+
+    The genetic programming solution was initially based on the work by~\cite{colledanchise2015learning}. The solution proposed in the paper did not pan out in our case since they use an selection heuristic during the mutation phase, allowing for higher fitness increase over fewer generations. The paper also used primitive actions which would not scale to the type of game used in this project without very large behaviour trees. 
+
+
+    \subsection{Future Work}
+
+    Extract the behaviour tree part and genetic programming as an independent library. Use heuristics during the creation of each new generation. Add additional behaviours and game mechanics to the project. Have it compete with it self instead of an hard-coded adversary. Have the fitness evaluation run in headless mode.
+
+    \begin{itemize}
+        \item Software architecture
+        \item Resulting behaviour trees
+    \end{itemize}
 
 
 
