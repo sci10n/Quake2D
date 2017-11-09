@@ -333,6 +333,27 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
         \end{align*}
         where the first definition mutates the existing children and the second adds \(k\) new nodes \(\{p_0,p_1,...,p_k\}\) to the child set.
 
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\linewidth]{share/leaf_mutation.eps}
+            \caption{}
+            \label{fig:leaf_mutation}
+        \end{figure}
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\linewidth]{share/child_replacement.eps}
+            \caption{}
+            \label{fig:child_replacement}
+        \end{figure}
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.8\linewidth]{share/node_swapping.eps}
+            \caption{}
+            \label{fig:node_swapping}
+        \end{figure}
+
     \clearpage
 
     \section{Results and Screenshots} \label{sec:results_and_screenshots}
@@ -341,7 +362,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         As can be seen in \cref{fig:behaviour_tree_screenshot}, the environment is composed of \emph{static collidable walls}, \emph{dynamic pick up crates}, \emph{user/agent controlled players}, and \emph{graphical scenery details} based on \emph{tiled textures}. Maps are specified using the \emph{Tiled} editor, which means we can build new environments to test our solution. We've also created a serializer for our behaviour trees, that enables us to save and load behaviour trees to disk.
 
-        Additonally, we've developed several tools for showing our agent's behaviour in real-time. As can be seen in \cref{fig:path_finding_screenshot}, we're able to \emph{visualize path finding information} for the intelligent agents. Here the \emph{yellow line} is the \emph{target path} specified by the \emph{path finding} system given a \emph{target location} (shown as a \emph{yellow cross}) by the \emph{behaviour tree}. In this example, the target is the \emph{rifle pickup crate}. You'll also see a colored grid being displayed. This tells us something about the state of the \emph{influence map}, where the \emph{blue and red lines} are grids that each agent is able to shoot towards, while \emph{mangenta lines} are locations where both agents are able to shoot towards.
+        Additonally, we've developed several tools for showing our agent's behaviour in real-time. As can be seen, \cref{fig:path_finding_screenshot}, we're able to \emph{visualize path finding information} for the intelligent agents. Here the \emph{yellow line} is the \emph{target path} specified by the \emph{path finding} system given a \emph{target location} (shown as a \emph{yellow cross}) by the \emph{behaviour tree}. In this example, the target is the \emph{rifle pickup crate}. You'll also see a colored grid being displayed. This tells us something about the state of the \emph{influence map}, where the \emph{blue and red lines} are grids that each agent is able to shoot towards, while \emph{mangenta lines} are locations where both agents are able to shoot towards.
 
         \begin{figure}[H]
             \centering
@@ -357,14 +378,14 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
             \label{fig:path_finding_screenshot}
         \end{figure}
 
-        For debugging and analyzing agent behaviour, we've also implemented a way to visualize BTs, the one in \cref{fig:hand_crafted_behaviour_tree} from the situation in \cref{fig:path_finding_screenshot}, in real-time by using a \emph{Graphviz}\footnote{\url{https://github.com/nidi3/graphviz-java}} library. It opens in a separate window and runs in another thread, where we can see instant changes in the BT's nodes' state.
+        For debugging and analyzing agent behaviour, we've also implemented a way to visualize BTs, the one in \cref{fig:hand_crafted_behaviour_tree} from the \cref{fig:path_finding_screenshot} situation, in real-time by using a \emph{Graphviz}\footnote{\url{https://github.com/nidi3/graphviz-java}} library. It opens in a separate window and runs in another thread, where we can see instant changes in the BT's nodes' state.
 
         We've uploaded a video\footnote{\url{https://vimeo.com/Quake2D}} of our solution in action.
 
         \begin{figure}[H]
             \centering
             \includegraphics[width=\linewidth]{share/hand_crafted_behaviour_tree.pdf}
-            \caption{A Hand-Crafted BT (Larger in Appendix)}
+            \caption{Hand-Crafted BT (Larger in Appendix)}
             \label{fig:hand_crafted_behaviour_tree}
         \end{figure}
 
