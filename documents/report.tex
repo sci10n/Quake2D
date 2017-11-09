@@ -88,7 +88,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     In interactive media such as video games, there is often a need for simulating seemingly complex agent behaviours in soft real-time. In a modern fast-paced computer game for example, the render, physics and artificial intelligence updates all need to complete in a total of less than 16ms to provide a half-decent experience. These requirements have spawned some clever techniques to enable complex behaviours for autonomous agents while minimizing computation.
 
-    These techniques often require manual behaviour definition, and in some cases, are hard to extend when new behaviours are needed for a game, as shown by industry researchers, e.g. \emph{Dawe et al}~\cite{dawe2014overview}, regarding the finite state machine architecture. In this project we have explored how one of the more widely used techniques, \emph{behaviour trees}, can be extended to allow for not only hand-crafted complex behaviors, but for organic behaviours tailored to the specific game domain by using \emph{reinforcement learning}. More specifically, we evolve behaviour trees with \emph{genetic programming}, which spawn behaviour tree offspring.
+    These techniques often require manual behaviour definition, and in some cases, are hard to extend when new behaviours are needed for a game, as shown by industry researchers, e.g. \emph{Dawe et al}~\cite{dawe2014overview}, regarding the finite state machine architecture. In this project we have explored how one of the more widely used techniques, \emph{behaviour trees}, can be extended to allow for not only hand-crafted complex behaviors, but for organic behaviours tailored to the specific game domain by using \emph{reinforcement learning}. More specifically, we evolve behaviour trees with \emph{genetic programming}, as in \emph{{\"O}gren et al.}~\cite{colledanchise2015learning} or \emph{Hoff et al.}~\cite{hoff2016evolving}.
 
     Alongside the proposed method in \cref{sec:proposed_approach}, a testbed consisting of a top-down arena shooter was built. It features a sufficiently complex environment to support interesting behaviours by the enemy bot. We describe the features of our testbed in \cref{sec:implementation_details}.
 
@@ -367,6 +367,10 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
             \caption{A Hand-Crafted BT (Larger in Appendix)}
             \label{fig:hand_crafted_behaviour_tree}
         \end{figure}
+
+        Finally, we present the results from our solution. After generating fifty random individuals for \(\mathcal{P}_0\), we applied genetic programming until we had \(\mathcal{P}_{50}\), the resulting pool of \emph{evolved behaviour trees}. The fitness for each individual in each generation was found by having a match against our crafted behaviour tree, and recording match statistics, used to calculate \(f_i\).
+
+        \newpage
 
         \subsection{Generated Behaviours} \label{sec:generated_behaviours}
 
