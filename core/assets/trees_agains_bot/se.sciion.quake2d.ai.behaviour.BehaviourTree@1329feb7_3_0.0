@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SequenceNode>
+<PickupArmor tag="armor"/>
+<PickupArmor tag="armor"/>
+<AttackNearest tag="armor"/>
+</SequenceNode>
+</BehaviorTree>

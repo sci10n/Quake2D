@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SequenceNode>
+<PickupWeapon tag="shotgun"/>
+<SequenceNode>
+<PickupHealth tag="health"/>
+<MoveToNearest max-distance="15.0" min-distance="0.0" tag="player"/>
+<SequenceNode>
+<PickupWeapon tag="shotgun"/>
+<MoveToNearest max-distance="15.0" min-distance="0.0" tag="player"/>
+<CheckWeapon type="shotgun"/>
+</SequenceNode>
+</SequenceNode>
+<AttackNearest tag="shotgun"/>
+<PickupDamageBoost tag="damage"/>
+</SequenceNode>
+</BehaviorTree>

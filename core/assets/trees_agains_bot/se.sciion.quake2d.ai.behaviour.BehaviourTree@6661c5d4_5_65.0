@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SequenceNode>
+<PickupWeapon tag="shotgun"/>
+<SequenceNode>
+<PickupHealth tag="health"/>
+<AttackNearest tag="shotgun"/>
+<CheckWeapon type="shotgun"/>
+</SequenceNode>
+<PickupWeapon tag="shotgun"/>
+</SequenceNode>
+</BehaviorTree>

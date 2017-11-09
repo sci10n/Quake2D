@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SelectorNode>
+<MoveToNearest max-distance="15.0" min-distance="0.0" tag="health"/>
+<PickupDamageBoost tag="damage"/>
+<SequenceNode>
+<AttackNearest tag="player"/>
+<SequenceNode>
+<AttackNearest tag="health"/>
+</SequenceNode>
+<SequenceNode>
+<PickupWeapon tag="rifle"/>
+<SelectorNode>
+<SequenceNode>
+<AttackNearest tag="rifle"/>
+<MoveToNearest max-distance="15.0" min-distance="0.0" tag="shotgun"/>
+<PickupWeapon tag="rifle"/>
+<SequenceNode>
+<MoveToNearest max-distance="15.0" min-distance="0.0" tag="player"/>
+<CheckWeapon type="rifle"/>
+<CheckArmor ratio="0.059816778"/>
+</SequenceNode>
+</SequenceNode>
+<PickupDamageBoost tag="damage"/>
+<PickupWeapon tag="shotgun"/>
+<PickupDamageBoost tag="damage"/>
+</SelectorNode>
+<MoveToNearest max-distance="15.0" min-distance="0.0" tag="armor"/>
+</SequenceNode>
+<PickupWeapon tag="rifle"/>
+</SequenceNode>
+<SelectorNode>
+<SequenceNode>
+<PickupHealth tag="health"/>
+<PickupWeapon tag="shotgun"/>
+<MoveToNearest max-distance="15.0" min-distance="0.0" tag="armor"/>
+</SequenceNode>
+<MoveToNearest max-distance="15.0" min-distance="0.0" tag="shotgun"/>
+<PickupArmor tag="armor"/>
+</SelectorNode>
+</SelectorNode>
+</BehaviorTree>

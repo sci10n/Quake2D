@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SelectorNode>
+<AttackNearest tag="armor"/>
+<MoveToNearest max-distance="15.0" min-distance="0.0" tag="health"/>
+<PickupWeapon tag="rifle"/>
+<PickupArmor tag="armor"/>
+<SequenceNode>
+<PickupHealth tag="health"/>
+</SequenceNode>
+</SelectorNode>
+</BehaviorTree>

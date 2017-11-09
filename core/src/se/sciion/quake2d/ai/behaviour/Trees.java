@@ -65,9 +65,10 @@ public class Trees {
 				c.fitness = stats.getFitness(tree)/normalizedFitness;
 				candidates.add(c);
 				if(stats.hasSurvived(tree)){
-					//System.out.println("Tree: " + tree + " survivied");
+					System.out.println("Tree: " + tree + " survivied");
 				}
 				
+				tree.toXML("trees/" + "_"  + generation + "_" + stats.getFitness(tree));
 				outputFile.writeString("" + generation + "," +  stats.getFitness(tree) + "," + (stats.hasSurvived(tree) ? 1 : 0 ) +  "\n", true);
 		}
 		
@@ -121,11 +122,11 @@ public class Trees {
 		prototypesMap.put("PickupDamageBoost", new PickupDamageBoost(level, "damage"));
 		prototypesMap.put("PickupHealth", new PickupHealth(level, "health"));
 		prototypesMap.put("PickupWeapon", new PickupWeapon("", level, pathfinding));
-		prototypesMap.put("InverterNode", new InverterNode());
-		prototypesMap.put("ParallelNode", new ParallelNode());
+		//prototypesMap.put("InverterNode", new InverterNode());
+		//prototypesMap.put("ParallelNode", new ParallelNode());
 		prototypesMap.put("SelectorNode", new SelectorNode());
 		prototypesMap.put("SequenceNode", new SequenceNode());
-		prototypesMap.put("SucceederNode", new SucceederNode());
+		//prototypesMap.put("SucceederNode", new SucceederNode());
 		
 		prototypes = prototypesMap.values().toArray();
 	}

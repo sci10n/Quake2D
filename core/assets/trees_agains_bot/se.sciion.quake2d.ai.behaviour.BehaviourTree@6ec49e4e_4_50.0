@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SelectorNode>
+<SelectorNode>
+<PickupWeapon tag="shotgun"/>
+<SequenceNode>
+<CheckHealth ratio="0.8121438"/>
+<SequenceNode>
+<PickupArmor tag="armor"/>
+</SequenceNode>
+</SequenceNode>
+<PickupArmor tag="armor"/>
+</SelectorNode>
+<AttackNearest tag="health"/>
+<CheckEntityDistance tag="player" threshold="3.0"/>
+</SelectorNode>
+</BehaviorTree>

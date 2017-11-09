@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SequenceNode>
+<SequenceNode>
+<CheckArmor ratio="0.840941"/>
+<CheckHealth ratio="0.5061559"/>
+<CheckWeapon type="shotgun"/>
+</SequenceNode>
+</SequenceNode>
+</BehaviorTree>

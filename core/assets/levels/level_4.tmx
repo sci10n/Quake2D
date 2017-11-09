@@ -258,7 +258,7 @@
     <property name="health" type="int" value="20"/>
    </properties>
   </object>
-  <object id="230" name="PlayerSpawn" type="PlayerSpawn" x="1567" y="1568" width="64" height="64">
+  <object id="230" name="BotSpawn" type="BotSpawn" x="1567" y="1568" width="64" height="64">
    <properties>
     <property name="health" type="int" value="20"/>
    </properties>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SequenceNode>
+<PickupWeapon tag="shotgun"/>
+<SelectorNode>
+<SelectorNode>
+<SelectorNode>
+<PickupDamageBoost tag="damage"/>
+<PickupArmor tag="armor"/>
+<CheckArmor ratio="0.80860054"/>
+<CheckHealth ratio="0.029120505"/>
+</SelectorNode>
+<PickupArmor tag="armor"/>
+<PickupHealth tag="health"/>
+<PickupArmor tag="armor"/>
+</SelectorNode>
+<PickupHealth tag="health"/>
+<PickupWeapon tag="shotgun"/>
+<AttackNearest tag="rifle"/>
+</SelectorNode>
+</SequenceNode>
+</BehaviorTree>

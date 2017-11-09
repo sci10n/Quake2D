@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SelectorNode>
+<AttackNearest tag="rifle"/>
+<SelectorNode>
+<SequenceNode>
+<MoveToNearest max-distance="15.0" min-distance="0.0" tag="health"/>
+<PickupDamageBoost tag="damage"/>
+<PickupHealth tag="health"/>
+<CheckEntityDistance tag="shotgun" threshold="0.0"/>
+</SequenceNode>
+<CheckEntityDistance tag="rifle" threshold="2.0"/>
+<CheckEntityDistance tag="health" threshold="1.0"/>
+</SelectorNode>
+<SelectorNode>
+<CheckEntityDistance tag="health" threshold="5.0"/>
+<AttackNearest tag="health"/>
+<CheckEntityDistance tag="player" threshold="3.0"/>
+</SelectorNode>
+<CheckEntityDistance tag="armor" threshold="0.0"/>
+<CheckWeapon type="rifle"/>
+</SelectorNode>
+</BehaviorTree>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SelectorNode>
+<CheckWeapon type="shotgun"/>
+<AttackNearest tag="armor"/>
+<PickupDamageBoost tag="damage"/>
+<PickupHealth tag="health"/>
+<MoveToNearest max-distance="15.0" min-distance="0.0" tag="damage"/>
+</SelectorNode>
+</BehaviorTree>

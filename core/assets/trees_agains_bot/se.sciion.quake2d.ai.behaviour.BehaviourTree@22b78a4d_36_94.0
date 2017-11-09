@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SequenceNode>
+<PickupWeapon tag="shotgun"/>
+<SelectorNode>
+<SelectorNode>
+<AttackNearest tag="player"/>
+<PickupArmor tag="armor"/>
+<PickupHealth tag="health"/>
+<SequenceNode>
+<PickupWeapon tag="shotgun"/>
+<AttackNearest tag="shotgun"/>
+<MoveToNearest max-distance="15.0" min-distance="0.0" tag="health"/>
+</SequenceNode>
+</SelectorNode>
+<PickupHealth tag="health"/>
+<SequenceNode>
+<SelectorNode>
+<CheckHealth ratio="0.25086462"/>
+<PickupHealth tag="health"/>
+<PickupArmor tag="armor"/>
+<AttackNearest tag="rifle"/>
+</SelectorNode>
+<SelectorNode>
+<CheckWeapon type="shotgun"/>
+</SelectorNode>
+<CheckWeapon type="rifle"/>
+<CheckHealth ratio="0.026682034"/>
+</SequenceNode>
+<SequenceNode>
+<PickupArmor tag="armor"/>
+<AttackNearest tag="shotgun"/>
+<SelectorNode>
+<SequenceNode>
+<PickupHealth tag="health"/>
+<PickupDamageBoost tag="damage"/>
+<PickupWeapon tag="rifle"/>
+<PickupHealth tag="health"/>
+<PickupHealth tag="health"/>
+</SequenceNode>
+<AttackNearest tag="shotgun"/>
+<CheckArmor ratio="0.80860054"/>
+<SequenceNode>
+<SequenceNode>
+<PickupArmor tag="armor"/>
+<PickupHealth tag="health"/>
+<PickupDamageBoost tag="damage"/>
+<PickupArmor tag="armor"/>
+<PickupDamageBoost tag="damage"/>
+</SequenceNode>
+<PickupArmor tag="armor"/>
+<AttackNearest tag="shotgun"/>
+</SequenceNode>
+<MoveToNearest max-distance="15.0" min-distance="0.0" tag=""/>
+</SelectorNode>
+</SequenceNode>
+</SelectorNode>
+</SequenceNode>
+</BehaviorTree>

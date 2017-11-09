@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SequenceNode>
+<PickupWeapon tag="shotgun"/>
+<SelectorNode>
+<SelectorNode>
+<AttackNearest tag="player"/>
+<PickupArmor tag="armor"/>
+<SequenceNode>
+<AttackNearest tag="shotgun"/>
+<PickupArmor tag="armor"/>
+<AttackNearest tag="shotgun"/>
+</SequenceNode>
+<SequenceNode>
+<AttackNearest tag="shotgun"/>
+<AttackNearest tag="shotgun"/>
+<PickupArmor tag="armor"/>
+</SequenceNode>
+</SelectorNode>
+<PickupHealth tag="health"/>
+<PickupWeapon tag="rifle"/>
+<SequenceNode>
+<AttackNearest tag="shotgun"/>
+<AttackNearest tag="shotgun"/>
+<SequenceNode>
+<PickupWeapon tag="shotgun"/>
+<SelectorNode>
+<SelectorNode>
+<AttackNearest tag="player"/>
+<PickupArmor tag="armor"/>
+<PickupHealth tag="health"/>
+<SequenceNode>
+<AttackNearest tag="shotgun"/>
+<AttackNearest tag="shotgun"/>
+<PickupArmor tag="armor"/>
+</SequenceNode>
+</SelectorNode>
+<PickupHealth tag="health"/>
+<PickupWeapon tag="rifle"/>
+<SequenceNode>
+<AttackNearest tag="shotgun"/>
+<AttackNearest tag="shotgun"/>
+<SelectorNode>
+<SequenceNode>
+<AttackNearest tag="shotgun"/>
+<SequenceNode>
+<AttackNearest tag="shotgun"/>
+<PickupHealth tag="health"/>
+<AttackNearest tag="shotgun"/>
+</SequenceNode>
+<PickupWeapon tag="rifle"/>
+<PickupHealth tag="health"/>
+<PickupHealth tag="health"/>
+</SequenceNode>
+<PickupArmor tag="armor"/>
+<PickupHealth tag="health"/>
+<SequenceNode>
+<AttackNearest tag="sniper"/>
+<PickupArmor tag="armor"/>
+<AttackNearest tag="shotgun"/>
+</SequenceNode>
+</SelectorNode>
+</SequenceNode>
+</SelectorNode>
+</SequenceNode>
+</SequenceNode>
+</SelectorNode>
+</SequenceNode>
+</BehaviorTree>

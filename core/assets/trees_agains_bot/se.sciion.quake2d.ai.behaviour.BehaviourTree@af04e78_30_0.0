@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SequenceNode>
+<CheckEntityDistance tag="rifle" threshold="4.0"/>
+<AttackNearest tag="shotgun"/>
+</SequenceNode>
+</BehaviorTree>

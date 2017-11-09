@@ -394,15 +394,15 @@ public class Environment implements Disposable{
 				
 				
 //				TreePool pool = new TreePool();
-				BehaviourTree tree = new BehaviourTree(s3);
-				tree.toXML("tree.xml");
-				
-				BehaviourTree tree2 = new BehaviourTree();
-				tree2.fromXML("tree.xml");
+//				BehaviourTree tree = new BehaviourTree(s3);
+//				tree.toXML("tree.xml");
+//				
+//				BehaviourTree tree2 = new BehaviourTree();
+//				tree2.fromXML("tree.xml");
 //				tree.randomize(pool.getPrototypes(level, physicsSystem, pathfinding));
 
-				botInput.setBehaviourTree(tree2);
-				BehaviourTreeVisualizer.getInstance().setDebugBot(botInput);
+//				botInput.setBehaviourTree(tree2);
+//				BehaviourTreeVisualizer.getInstance().setDebugBot();
 			}
 		}
 	}
