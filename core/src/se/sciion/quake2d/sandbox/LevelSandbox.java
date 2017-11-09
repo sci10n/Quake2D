@@ -85,7 +85,7 @@ public class LevelSandbox extends ApplicationAdapter {
 		Gdx.graphics.setTitle("Quake 2D");
 
 		// This is a bit weird, but still make sense I guess...
-		visualizer = BehaviourTreeVisualizer.getInstance(width);
+		visualizer = BehaviourTreeVisualizer.getInstance(800);
 		model = new RenderModel();
 		assets = new AssetManager();
 
