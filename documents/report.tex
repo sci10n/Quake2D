@@ -80,7 +80,9 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
     \bibliographystyle{abbrv}
     \bibliography{report}
     \footnotetext[1]{Repository: \url{https://github.com/sci10n/Quake2D}}
+    \thispagestyle{empty}
     \clearpage
+    \addtocounter{page}{-1}
 
     \section{Introduction} \label{sec:introduction}
 
@@ -335,12 +337,12 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     \section{Results and Screenshots} \label{sec:results_and_screenshots}
 
-        Below are a couple of in-game screenshots from \emph{Quake2D}, our testbed for \emph{behaviour tree evolution}. Here we've chosen to show two bots playing against each other in the arena, each of them loaded with our trivially hand-crafted behaviour tree in \cref{fig:hand_crafted_behaviour_tree}.
+        Below are a couple of in-game screenshots from \emph{Quake 2D}, our testbed for \emph{behaviour tree evolution}. Here we've chosen to show two bots playing against each other in the arena, each of them loaded with a basic hand-made behaviour tree shown in \cref{fig:hand_crafted_behaviour_tree}.
 
         \begin{figure}[H]
             \centering
             \includegraphics[width=\linewidth]{share/screenshot.png}
-            \caption{Screenshot of a Arena in Quake 2-D}
+            \caption{Screenshot of a Bot vs Bot in Quake 2-D}
             \label{fig:behaviour_tree_screenshot}
         \end{figure}
 
@@ -353,7 +355,8 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         \begin{figure}[H]
             \centering
-            \caption{}
+            \includegraphics[width=\linewidth]{share/hand_crafted_behaviour_tree.pdf}
+            \caption{A Hand-Crafted BT (Larger in Appendix)}
             \label{fig:hand_crafted_behaviour_tree}
         \end{figure}
 
@@ -371,6 +374,15 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     \section{Discussion and Outlook} \label{sec:discussion_and_outlook}
 
+    \onecolumn
+    \clearpage
 
+    \appendix
+    \thispagestyle{empty}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[angle=90,height=0.98\textheight]{share/hand_crafted_behaviour_tree.pdf}
+    \end{figure}
 
 \end{document}
