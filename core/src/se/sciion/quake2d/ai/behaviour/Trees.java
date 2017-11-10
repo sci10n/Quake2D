@@ -68,7 +68,7 @@ public class Trees {
 					System.out.println("Tree: " + tree + " survivied");
 				}
 				
-				tree.toXML("trees/" + "_"  + generation + "_" + stats.getFitness(tree));
+				tree.toXML("trees/" + generation + "_" + stats.getFitness(tree) +"_" + population.indexOf(tree, true) + ".xml");
 				outputFile.writeString("" + generation + "," +  stats.getFitness(tree) + "," + (stats.hasSurvived(tree) ? 1 : 0 ) +  "\n", true);
 		}
 		

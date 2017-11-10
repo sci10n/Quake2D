@@ -96,8 +96,11 @@ public class Environment implements Disposable{
 	}
 	
 	public void start() {
-		loadMap();
-		running = true;
+		try{
+			loadMap();
+		}finally{
+			running = true;
+		}
 	}
 	
 	private void loadMap() {
@@ -362,6 +365,12 @@ public class Environment implements Disposable{
 
 				BotInputComponent botInput = new BotInputComponent(pathfinding, physicsSystem);
 
+				{
+						BehaviourTree tree = new BehaviourTree();
+						tree.fromXML("trees_against_it_other/45_1945.5_48.xml");
+						botInput.setBehaviourTree(tree);
+						tree.setOwner(entity);
+				}
 				entity.addComponent(health);
 				entity.addComponent(physics);
 				entity.addComponent(weapon);

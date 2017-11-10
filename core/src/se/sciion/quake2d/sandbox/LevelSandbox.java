@@ -35,6 +35,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
+import javazoom.jl.decoder.FrameDecoder;
+
 public class LevelSandbox extends ApplicationAdapter {
 
 	private AssetManager assets;
@@ -48,7 +50,7 @@ public class LevelSandbox extends ApplicationAdapter {
 	public static String TITLE = "Quake 2D";
 	public static String PLAY_LEVEL = "";
     public static boolean DEBUG  = false;
-	public static boolean EVOLVE = true;
+	public static boolean EVOLVE = false;
 	public static float GP_DELTA = 16.0f;
 	public static boolean FAST_FORWARD = true;
 
@@ -64,8 +66,8 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	private ExtendViewport viewport;
 	
-	private int width;
-	private int height;
+	//private int width;
+	//private int height;
 	private int ROUND_PER_GENERATION;
 	private int numRounds = 0;
 	
@@ -78,15 +80,15 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	@Override
 	public void create() {
-		width = (int)(600 * Gdx.graphics.getDensity());
-		height = (int)(600 * Gdx.graphics.getDensity());
+		//width = (int)(Gdx.graphics.getWidth() * Gdx.graphics.getDensity());
+		//height = (int)(Gdx.graphics.getHeight() * Gdx.graphics.getDensity());
 		
-		Gdx.graphics.setWindowedMode(width, height);
-		Gdx.graphics.setTitle("Quake 2D");
+		//Gdx.graphics.setWindowedMode(width, height);
+		//Gdx.graphics.setTitle("Quake 2D");
 
 		// This is a bit weird, but still make sense I guess...
-		visualizer = BehaviourTreeVisualizer.getInstance(width);
-		visualizer.setVisible(false);
+		visualizer = BehaviourTreeVisualizer.getInstance(1024);
+		visualizer.setVisible(true);
 		model = new RenderModel();
 		assets = new AssetManager();
 
@@ -161,10 +163,10 @@ public class LevelSandbox extends ApplicationAdapter {
 
 		if(trees.getPopulation() == null){
 			trees.initPopulation();
-			ROUND_PER_GENERATION = trees.populationLimit * 4;
+			ROUND_PER_GENERATION = trees.populationLimit * 2;
 		}
 		
-		//SoundSystem.getInstance().playSound("fight");
+		SoundSystem.getInstance().playSound("fight");
 		
 		if (EVOLVE) {
 			System.out.println("Trees: " + counter1 + " fight!");
@@ -189,6 +191,26 @@ public class LevelSandbox extends ApplicationAdapter {
 			}
 
 			counter1 = (counter1 + 1) % trees.populationLimit;
+		}
+		else{
+			{
+			BotInputComponent input = players.get(0).getComponent(ComponentTypes.BotInput);
+			if(input != null){
+				BehaviourTree tree = new BehaviourTree();
+				tree.fromXML("trees_agains_bot/se.sciion.quake2d.ai.behaviour.BehaviourTree@1f8c53b0_76_4750.0");
+				input.setBehaviourTree(tree);
+				level.getStats().recordParticipant(tree);
+			}
+			}
+			{
+			BotInputComponent input = players.get(1).getComponent(ComponentTypes.BotInput);
+			if(input != null){
+				BehaviourTree tree = new BehaviourTree();
+				tree.fromXML("trees_against_it_other/45_1989.5_38.xml");
+				input.setBehaviourTree(tree);
+				level.getStats().recordParticipant(tree);
+			}
+			}
 		}
 	}
 	
@@ -294,8 +316,8 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	@Override
 	public void render() {
-//		findNextLevel(); // Do we switch to new levels?
-//		float frameDelta = Gdx.graphics.getDeltaTime();
+		findNextLevel(); // Do we switch to new levels?
+		float frameDelta = Gdx.graphics.getDeltaTime();
 //
 //		if (Gdx.input.isKeyPressed(Keys.LEFT) && EVOLVE)
 //			GP_DELTA = MathUtils.clamp(GP_DELTA - 32.0f * frameDelta, 0.0f, 200.0f);
@@ -309,8 +331,8 @@ public class LevelSandbox extends ApplicationAdapter {
 //			frameDelta *= GP_DELTA;
 //		} else Gdx.graphics.setTitle(TITLE + MODE);
 //
-//		if (Gdx.input.isKeyJustPressed(Keys.O))
-//			toggleDebugDraw();
+		if (Gdx.input.isKeyJustPressed(Keys.O))
+			toggleDebugDraw();
 //		if (Gdx.input.isKeyJustPressed(Keys.E))
 //			toggleEvolution();
 //
@@ -319,38 +341,38 @@ public class LevelSandbox extends ApplicationAdapter {
 //			SoundSystem.getInstance().toggleMute();
 
 //		Gdx.gl.glClearColor(0, 0, 0, 1);
-//		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 
-//		camera.update();
+		camera.update();
 
-		while(true){
-			PLAY_LEVEL = this.levels.random();
+//		while(true){
+//			PLAY_LEVEL = this.levels.random();
 			if(environment != null && environment.isRunning()) {
 	
 				if (!visualizer.isPaused()) {
-					level.tick(0.1f);
-					physicsSystem.update(0.1f);
+					level.tick(frameDelta);
+					physicsSystem.update(frameDelta);
 					physicsSystem.cleanup();
 	
 					pathfinding.update(physicsSystem);
-					environment.tick(0.1f);
+					environment.tick(frameDelta);
 				}
 	
-//				model.setProjectionMatrix(camera.combined);
-//				environment.render(model);
-//	
-//				if (isDebugging()) {
-//					pathfinding.render(model);
-//					level.debugRender(model);
-//				}
-//	
-//				physicsSystem.render(camera.combined);
+				model.setProjectionMatrix(camera.combined);
+				environment.render(model);
+	
+				if (isDebugging()) {
+					pathfinding.render(model);
+					level.debugRender(model);
+				}
+	
+				physicsSystem.render(camera.combined);
 			}
 	
 			if(!environment.isRunning()){
 				endMatch();
 				beginMatch(PLAY_LEVEL);
 			}
-		}
+//		}
 	}
 }

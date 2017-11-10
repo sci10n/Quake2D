@@ -69,7 +69,7 @@ public abstract class BehaviourNode{
     	case RUNNING: return "f3b61f";
     	case SUCCESS: return "7dd181";
     	case FAILURE: return "e26d5a";
-    	case UNDEFINED: return "a2abb5";
+    	case UNDEFINED: return "c2cece";
     	default: return "ffffff";
     	}
     }
