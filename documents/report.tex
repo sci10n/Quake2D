@@ -2,6 +2,7 @@
 \documentclass[a4paper, twocolumn]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{lmodern}
 \usepackage[pdftex, hidelinks,
             pdftitle={Behaviour Tree Evolution by Genetic Programming},
             pdfauthor={Martin Estgren and Erik S. V. Jansson},
@@ -15,6 +16,7 @@
 \usepackage{booktabs}
 \usepackage{mathtools}
 \usepackage{algorithmic}
+\usepackage{multicol}
 \usepackage{graphicx}
 \usepackage{courier}
 \usepackage{amsmath}
@@ -362,7 +364,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         As can be seen in \cref{fig:behaviour_tree_screenshot}, the environment is composed of \emph{static collidable walls}, \emph{dynamic pick up crates}, \emph{user/agent controlled players}, and \emph{graphical scenery details} based on \emph{tiled textures}. Maps are specified using the \emph{Tiled} editor, which means we can build new environments to test our solution. We've also created a serializer for our behaviour trees, that enables us to save and load behaviour trees to disk.
 
-        Additonally, we've developed several tools for showing our agent's behaviour in real-time. As can be seen, \cref{fig:path_finding_screenshot}, we're able to \emph{visualize path finding information} for the intelligent agents. Here the \emph{yellow line} is the \emph{target path} specified by the \emph{path finding} system given a \emph{target location} (shown as a \emph{yellow cross}) by the \emph{behaviour tree}. In this example, the target is the \emph{rifle pickup crate}. You'll also see a colored grid being displayed. This tells us something about the state of the \emph{influence map}, where the \emph{blue and red lines} are grids that each agent is able to shoot towards, while \emph{mangenta lines} are locations where both agents are able to shoot towards.
+        Additionally, we've developed several tools for showing our agent's behaviour in real-time. As can be seen, \cref{fig:path_finding_screenshot}, we're able to \emph{visualize path finding information} for the intelligent agents. Here the \emph{yellow line} is the \emph{target path} specified by the \emph{path finding} system given a \emph{target location} (shown as a \emph{yellow cross}) by the \emph{behaviour tree}. In this example, the target is the \emph{rifle pickup crate}. You'll also see a coloured grid being displayed. This tells us something about the state of the \emph{influence map}, where the \emph{blue and red lines} are grids that each agent is able to shoot towards, while \emph{magenta lines} are locations where both agents are able to shoot towards.
 
         \begin{figure}[H]
             \centering
@@ -395,14 +397,69 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         \subsection{Generated Behaviours} \label{sec:generated_behaviours}
 
+        Each fitness evaluation was performed on a randomly selected hand-crafted level to prevent the behaviour trees getting overfitting to a specific level. 
 
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\linewidth]{share/tree-fitness-4750.png}
+            \caption{Generated tree with very high fitness (4750)}
+            \label{fig:tree_fitness_4075}
+        \end{figure}
+        As can be seen in the image above. The tree is way to big to provide any significant insight unless interactively evaluated during run time. It manages however to reach a fitness score very close to the limit on all the levels it was evaluated on. When tested against a human player it becomes very hard to defeat.
+
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\linewidth]{share/tree-fitness-3780.png}
+            \caption{Generated tree with high fitness}
+            \label{fig:tree_fitness_3650}
+        \end{figure}
+        The tree manages to defeat the hard coded bot on al levels without bloating to unmanageable size. Prior exploration of generated trees indicated that as long as the tree have a \textit{sequence} of \textit{pick-up shotgun} and \texttt{attack player}, it would reach an fitness of around \(1000\).
+
+
+        \clearpage
 
         \subsection{Behaviour Fitness} \label{sec:behaviour_fitness}
 
+        \begin{figure}[H]
+            \onecolumn
+            \centering
+            \begin{minipage}{\textwidth}  
+                \includegraphics[width=\textwidth]{share/result-againts-bot.png}
+                \caption{Fitness over generations when evaluating against a hard-coded bot.}
+                \label{fig:fitness-against-bot}
+            \end{minipage}
+            \begin{minipage}{\textwidth}  
+                \includegraphics[width=\textwidth]{share/result-random.png}
+                \caption{Fitness over generations when evaluating against 2 random peers.}
+                \label{fig:fitness-against-random}
+            \end{minipage}
+            \twocolumn
+        \end{figure}
 
+        Looking at the general fitness over generations we can observe how once the behaviour trees routinely defeats its adversary, the mean fitness plateaus but the fitness variance fills the entire range of possible fitness values. Looking at the general fitness when evaluating each tree against random peers, we see something similar but it doesn't converges with the same rate. \hfill\vspace{50.4em} A possible explanation is the stochastic nature of both level selection and the randomized adversary which should be much closer in performance compared to the hard-coded tree. Once trees which can defeat the hard-coded bot have been generated, additional fitness can only be reached by overfitting to the given level selection. The trees with peer evaluation on the other hand can't find a solution on how to reliably defeat the enemy. The adversary co-evolves with them which makes it very hard to find a ``holy-bullet'' since the generation after everyone has it.
+
+        \clearpage
 
         \subsection{Survival Rate} \label{sec:survival_rate}
 
+        \begin{figure}[H]
+            \onecolumn
+            \centering
+            \begin{minipage}{\textwidth}  
+                \includegraphics[width=\textwidth]{share/result-victories-against-bot.png}
+                \caption{Number of victories for each generation when evaluating against a hard-coded bot.}
+                \label{fig:victory-against-bot}
+            \end{minipage}
+            \begin{minipage}{\textwidth}  
+                \includegraphics[width=\textwidth]{share/result-victories-random.png}
+                \caption{Number of victories for each generations when evaluating against 2 random peers.}
+                \label{fig:victory-against-random}
+            \end{minipage}
+            \twocolumn
+        \end{figure}
+
+        In the ideal case, the survival rate follows as an consequence of the fitness score. In the two figures above we can see the same trend as in the fitness, the higher the fitness, the higher the survival rate. If this wasn't the case, our fitness evaluation wouldn't provide a good metric for evaluating combat performance.  
 
 
     \section{Discussion and Outlook} \label{sec:discussion_and_outlook}
