@@ -1,5 +1,6 @@
 \RequirePackage[l2tabu, orthodox]{nag}
 \documentclass[a4paper, twocolumn]{article}
+\usepackage[english]{isodate}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -55,66 +56,59 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
 \title{\textbf{Behaviour Tree Evolution by Genetic Programming}\\
        \Large{\emph{-- Learning Novel Bot Behaviours in a 2D Top-Down Arena Shooter --}}}
+\date{Linköping University, \today}
 \author{{\textbf{Martin Estgren}} \;\;\;\;\;\;\;\;\;\, {\href{mailto:mares480@student.liu.se}
                                                        {\texttt{<mares480@student.liu.se>}}} \\
         {\textbf{Erik S. V. Jansson}} \;\;\;\;         {\href{mailto:erija578@student.liu.se}
                                                        {\texttt{<erija578@student.liu.se>}}} \\~\\
-        {Linköping University, Sweden}\vspace{-2.0ex}}
+        \vspace{-5.0ex}}
 
 \begin{document}
     \maketitle
     \section*{Abstract}
 
-    Behaviour trees are a popular model for representing the decision-making and plan execution process for NPCs in video games. These are built by hand, and often require expertise to craft into interesting and intelligent behaviours. Behaviour trees often don't adapt well to new environments, requiring many custom trees.
+    Behaviour trees are a popular model for representing the decision-making and plan execution process for NPCs in video games. These are built by hand, and often require expertise to craft into interesting and intelligent behaviours. These types of behaviour trees usually don't adapt well to new environments, and need many tailor-made trees for each situation.
 
-    In this paper we demonstrate how to generate the trees by using genetic programming; allowing us to essentially evolve novel behaviours automatically in our testbed. Instead of specifying low-level actions and conditions, we use high-level definitions. This leads to faster fitness convergence, and also allows us to skip the bloat control and tree pruning steps used by other methods. Results show that the evolved trees reliably defeats our hand-crafted behaviour by the \(20^{th}\) generation. \footnotemark[1]
+    In this paper we demonstrate how to generate the trees by using genetic programming; allowing us to essentially evolve novel behaviours automatically in our testbed. Instead of specifying low-level actions and conditions, we use high-level definitions. This leads to faster fitness convergence, and also allows us to skip the bloat control and tree pruning steps used by other similar behaviour tree evolution methods. Results show that the evolved trees reliably defeats our hand-crafted behaviours by the \(20^{th}\) generation.
 
-    \vspace{1.0em}
+    \vspace{1em}
 
     \begingroup
     \def\addvspace#1{}
     \tableofcontents
     \endgroup
-    \newpage
-
-    \newpage % Next column...
-    \nocite{*} % Include all.
-    \bibliographystyle{abbrv}
-    \bibliography{report}
-    \footnotetext[1]{Repository: \url{https://github.com/sci10n/Quake2D}}
-    \thispagestyle{empty}
-    \clearpage
-    \addtocounter{page}{-1}
 
     \section{Introduction} \label{sec:introduction}
 
-    In interactive media such as video games, there is often a need for simulating seemingly complex agent behaviours in soft real-time. In a modern fast-paced computer game for example, the render, physics and artificial intelligence updates all need to complete in a total of less than 16ms to provide a half-decent experience. The resource constraint have spawned some clever techniques to enable complex behaviours for autonomous agents while minimizing computational time.
+    In interactive media such as video games, there is often a need for simulating seemingly complex agent behaviours in (soft) real-time. In a modern fast-paced computer game for example, the render, physics and artificial intelligence updates all need to complete in a total of less than 16ms to provide a half-decent experience. These resource constraint have spawned some very clever techniques to enable complex behaviours for autonomous agents while minimizing their required computational time.
 
-    These techniques often require manual behaviour definition, and in some cases, are hard to extend when new behaviours are needed for a game. as shown by industry researchers, e.g. \emph{Dawe et al}~\cite{dawe2014overview}, regarding the finite state machine architecture. In this project we have explored how one of the more widely used techniques, \emph{behaviour trees}, can be extended to allow for not only hand-crafted complex behaviors, but for organic behaviours tailored to the specific game domain by using \emph{reinforcement learning}. More specifically, we evolve behaviour trees with \emph{genetic programming}, as in \emph{{\"O}gren et al.}~\cite{colledanchise2015learning} or \emph{Hoff et al.}~\cite{hoff2016evolving}.
+    These techniques often require the bot behaviours to be manually defined, and in some cases, are quite hard to extend when new behaviours are needed later in the game development process. This has been shown to be true by industry researchers, such as \emph{Dawe et al}~\cite{dawe2014overview}, regarding the \emph{finite state machine architecture} (which we talk more about later).
 
-    Alongside the proposed method in \cref{sec:proposed_approach}, a testbed consisting of a top-down arena shooter was built. It features a sufficiently complex environment to support interesting behaviours by the enemy bot. We describe the features of our testbed in \cref{sec:implementation_details}.
+    In this project we have explored how one of the more widely used techniques, \emph{behaviour trees}, can be extended to allow for not only hand-crafted complex behaviors, but for organic behaviours, tailored to the specific game domain by using a \emph{reinforcement learning} approach. More specifically, we evolve the behaviour trees by using \emph{genetic programming}. It's by no means a novel approach, but there still has been relatively little research in the area. In our \emph{behaviour evolution algorithm}, based on the work of \emph{{\"O}gren et al.}~\cite{colledanchise2015learning}, we instead use \emph{high-level behaviours}, which removes the need for \emph{bloat control} or \emph{pruning}. Leading to a simpler algorithm than \emph{{\"O}gren et al.}~\cite{colledanchise2015learning}.
+
+    Alongside the proposed method in \cref{sec:proposed_approach}, a testbed consisting of a top-down arena shooter was built. It features a sufficiently complex environment to support interesting behaviours by the enemy bot. We describe the features of our testbed in \cref{sec:results_and_screenshots}.
 
     This report starts off in \cref{sec:background_theory} by giving a brief overview of the relevant techniques and related work necessary to follow our reasoning and findings. In \cref{sec:implementation_details} we describe the details needed to implement these techniques in practice, along with the testbed architecture we've used. This gives the reader information on any peculiarities and pit-falls. We follow this by showing in \cref{sec:results_and_screenshots} the testbed, and give some generated offspring generated by our method along with measurements of its efficiency. Finally, we reflect on our method, giving downsides, and present some possible future work in \cref{sec:discussion_and_outlook}.
 
-    \vspace{-0.8em}
-
     \subsection{Proposed Approach} \label{sec:proposed_approach}
 
-    Apply \emph{genetic programming} to the \emph{behaviours trees} by creating \emph{high-level actions and conditions} nodes. Ideally this should allow for faster convergence rates and somewhat shallower generated behaviour trees, eliminating the need for bloat control and pruning. Since BTs are trees, the \emph{mutation mechanism} should modify \emph{control-flow structure} and \emph{leaf-node settings}, while the \emph{crossover mechanism} will swap sub-trees.
+    Apply \emph{genetic programming} to the \emph{behaviours trees} by creating \emph{high-level actions and conditions} nodes. Ideally this should allow for faster convergence rates and somewhat shallower generated behaviour trees, eliminating the need for \emph{bloat control} and \emph{pruning}. Since BTs are trees, the \emph{mutation mechanism} should modify \emph{control-flow structure} and \emph{leaf-node settings}, while the \emph{crossover mechanism} will swap sub-trees.
 
     \section{Background Theory} \label{sec:background_theory}
 
-    For an autonomous agent to give the illusion of intelligence, many different systems need to interact with each other. In this chapter we describe the theory behind our three primary systems: \emph{behaviour trees}, \emph{path finding} \& \emph{genetic programming}.
+    For an autonomous agent to give the illusion of being intelligent, many different systems need to interact with each other. In this chapter we describe the theory behind our three primarily used techniques: \emph{behaviour trees}, \emph{path finding}, \emph{genetic programming}. There are entire books written on these techniques, hence we'll only describe each of these superficially, if you want a deeper treatment, see our references.
 
         \subsection{Behaviour Trees} \label{sec:behaviour_trees}
 
         Defining an accurate \emph{automatic planner} model is often impractical and usually overkill for real-world applications. Especially in games, where very simple models are enough to give the illusion of intelligence. In games, the most well-known \emph{behaviour selection algorithms} are \emph{FSMs}, \emph{GOAPs}, \emph{HTNs} and \emph{BTs} \cite{dawe2014overview}.
 
-        \emph{Finite State Machines (FSMs)} are simple but hard to extend with additional states, resulting in an exponential increase of transitions \cite{dawe2014overview}. While both \emph{GOAP (Goal-Oriented Action Planner)} and \emph{HTN (Hierarchical Task Network)} are powerful models, these don't allow agents to explore new task definitions, and ``only'' provide an agent with novel ways of solving an already defined set of task. Planning has seen some use in the games industry. Most notably in the game \textit{F.E.A.R} where adversarial agents used a planning system to combat the player \cite{orkin2006three}.
+        \emph{Finite State Machines (FSMs)} are simple but hard to extend with additional states, resulting in an exponential increase of transitions \cite{dawe2014overview}. While both \emph{GOAP (Goal-Oriented Action Planner)} and \emph{HTN (Hierarchical Task Network)} are powerful models, these don't allow agents to explore new task definitions, and ``only'' provide an agent with novel ways of solving an already defined set of task. Planning has seen some use in the games industry. Most notably in the game \textit{F.E.A.R}~\cite{orkin2006three} where adversarial agents used a planning system to combat the player.
 
-        \emph{Behaviour Trees (BTs)} on the other hand, when comparing to FSMs, provide advantages in terms of modularity, reactiveness and scalability. And more importantly, since they are a type of tree, allow for integration with the genetic programming approach. They were first popularized by the game \emph{Halo 2} \cite{isla2005managing}, but are now used in other area as well, such as robotics.
+        \emph{Behaviour Trees (BTs)} on the other hand, when comparing to FSMs, provide advantages in terms of modularity, reactiveness and scalability. And more importantly, since they are a type of tree, allow for integration with the genetic programming approach. They were first popularized in \emph{Halo 2} \cite{isla2005managing}, but are now applied in other area as well, such as robotics.
 
-        In the \emph{Behaviour Tree Starter Kit}~\cite{champandard2014behaviour} and also in \emph{Chris Simpson's Gamasutra article}~\cite{simpson2014behavior}, the BT is a tree-like data structure which describes the decision-making process of the agent. It's evaluated pre-order from the root of the tree in each logic update tick.
+        \emph{Behaviour Tree Evolution (BTE)} is a technique which uses some form of genetic programming on BTs. It's a relatively new technique that has been applied to \emph{strategy games} and \emph{platformers}. Some of the previous work is due to \emph{Lim et al.}~\cite{lim2010evolving}, \emph{Colledanchise et al.}~\cite{colledanchise2015learning} and a recent thesis by \emph{Hoff et al.}~\cite{hoff2016evolving}. To our knowledge, our paper is the first to attempt to apply BTE in a \emph{shooter game}, and also the first to use \emph{high-level behaviours} for a simpler algorithm.
+
+        In the \emph{Behaviour Tree Starter Kit}~\cite{champandard2014behaviour} and also in \emph{Chris Simpson's Gamasutra article}~\cite{simpson2014behavior}, the BT is a tree-like data structure which describes the decision-making process of the agent. It's evaluated pre-order from the root of the tree, in each logic update tick.
 
         \begin{figure}[H]
             \centering
@@ -123,7 +117,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
             \label{fig:behaviour_tree}
         \end{figure}
 
-        Below you'll find the most common concrete types of nodes in a behaviour tree, as those in \emph{BTSK}~\cite{champandard2014behaviour}. Only \emph{action} and \emph{condition nodes} are \emph{leaf-nodes}, all others are either \emph{composite or decorator nodes} that have one or more children (hence, never a leaf node).
+        In the coming page you'll find the most common types of \emph{concrete nodes} in a behaviour tree, in particular those found in the \emph{BTSK}~\cite{champandard2014behaviour}. Only \emph{action} and \emph{condition nodes} are \emph{leaf-nodes}, and are \emph{concrete nodes}. All others are either \emph{composite or decorators} (\emph{abstract nodes}), which need to be instantiated to become concrete, such as the \emph{sequence} or \emph{inverter}; that have one/more children (it's never a leaf node).
 
         \begin{itemize}
             \item{\textbf{Selector:} executes children from left \(\rightarrow\) right until \emph{one child} is found to be either \emph{running} or has already \emph{succeeded}, and returns this status. Otherwise, if none matches, it returns a \emph{failure}.}
@@ -139,19 +133,19 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         At a high-level, this BT checks the agent's health and armour, and if it's below a threshold, it will go and pick up the crates which replenish these stats.
 
-        It does this by starting at the root node, \emph{selector}, and executing the left child, the \emph{sequence}. It will also execute its left child, which is the \emph{inverter}. At last we reach a leaf-node, the \emph{health condition node}. This will probe the world for the state of the agent, and return \emph{success} because we've found that it's above 50\%. This result will propagate upward to its parent, the inverter, which will set its state to \emph{failed} (inverting the result of the child). We're back at the left sequence, and because one of the children have failed (the inverter), the sequence has \emph{failed} as well, and won't run the right child. 
+        It does this by starting at the root node, \emph{selector}, and executing the left child, the \emph{sequence}. It will also execute its left child, which is the \emph{inverter}. At last we reach a leaf-node, the \emph{health condition node}. This will probe the world for the state of the agent, and return \emph{success} because we've found that it's above 50\%. This result will propagate upward to its parent, the inverter, which will set its state to \emph{failed} (inverting the result of the child). We're back at the left sequence, and because one of the children have failed (the inverter), the sequence has \emph{failed} as well, and won't run the right child (gray means the node has never been evaluated). Finally, because the selector's left child has \emph{failed}, we execute the right branch too (remember, at least one child must succeed!). We use the same process before, but get stuck in \emph{``pick up armor''} until that action has finished \emph{running} in the world (has succeeded or failed).
 
         \subsection{Path Finding with A*} \label{sec:path_finding}
 
 	Agent path finding is done using the \emph{A*} graph traversal algorithm proposed by Peter E. Hart, Nils J. Nilsson, and Bertram Raphael ~\cite{hart1968formal} as an extension to \emph{Dijkstra's algorithm} which, given an \emph{admissible heuristic} and non-negative costs, will find the path from a node \(n_0\) to a node \(n_g\), with the lowest cost.
 	
-    Calculating the expected cost of a path \(n_0 \rightarrow n_k \rightarrow n_g\), from \(n_0\) to \(n_g\) via \(n_k\) can be done with the following traversal function:
+    Calculating the expected cost of a path \(n_0 \rightarrow n_k \rightarrow n_g\), from \(n_0\) to \(n_g\) via \(n_k\) can be done with the following path finding cost function:
 	\begin{equation*}
 		f(n_k) = g(n_k) + h(n_k)
 	\end{equation*}	
-	where \(g(n_k)\) is the true cost from \(n_0\) to \(n_k\) and \(h(n_k)\) is a heuristic approximation of the cost from \(n_k\) to \(n_g\). This allows us to explore the potentially most optimal paths first.
+	where \(g(n_k)\) is the true cost from \(n_0\) to \(n_k\) and \(h(n_k)\) is a heuristic approximation of the cost from \(n_k\) to \(n_g\). This allows us to explore the potentially most optimal paths first before considering the others.
 
-        In this project, the \emph{Euclidean distance} is used as the heuristic \(h(n_k)\). Since the path finding is performed in a search-space where each node is defined as a point in the testbed's 2-D world-space.
+        In this project, the \emph{Euclidean distance} is used as the heuristic \(h(n_k)\). This, since the path finding is performed in a search-space where each node is defined as a point in the testbed's 2-D world-space.
 
     Additionally, compared to regular \emph{A*}, the path-finder also utilizes an \emph{influence map} to help the agent avoid ``suicidal paths'', even if the selected path is optimal given the heuristic function. Our \emph{influence map}, like the ones shown in \emph{Dave Mark}~\cite{mark2015modular}, take into account the visibility of each node in relation to the adversarial game agents' line-of-sight, and therefore updates the expected cost as:
 	\begin{equation*}
@@ -185,18 +179,18 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 	
 	\subsection{Genetic Programming} \label{sec:genetic_programming}
 
-    In many scenarios you try to optimize a function: \(f(x_0,x_1,...,x_n)\), where some or all of the inputs are of a discrete nature (ordinal or nominal values). These types of problems are often hard to optimize using techniques developed for continuous variables, such as \emph{gradient ascent/descent}.
+    In many scenarios you try to optimize a function: \(f(x_0,x_1,...,x_n)\), where some or all of the inputs are of a discrete nature (ordinal or nominal values). These types of problems are often hard to optimize using techniques developed for continuous variables, such as \emph{gradient ascent/descent}, e.g. in a \emph{perceptron}.
 
 	\emph{Genetic programming} is a technique that was introduced by \emph{Barricelli et al}~\cite{barricelli1954esempi}, as a way to optimize computer programs by encoding the parameters to be optimized as \emph{genetic representations} which could be processed by traditional \emph{evolutionary algorithms}.
 
 	\begin{figure}[H]
         \centering
 		\includegraphics[width=0.5\linewidth]{share/Genetic_Program_Tree.png}
-		\caption{The \emph{genetic representation} is often done using a tree-like structure in \emph{genetic programming}.}
+        \caption{The \emph{genetic representation} is often done using a tree-like structure in \emph{genetic programming}. Image is taken from: \texttt{\href{https://upload.wikimedia.org/wikipedia/commons/7/77/Genetic\_Program\_Tree.png}{Wikipedia}} (public domain).}
 		\label{fig:genetic_representation}
 	\end{figure}
 
-	The most general form of \emph{evolutionary algorithms} can be described in the following few steps:
+	The most general form of the \emph{evolutionary algorithm} can be described in the following steps:
     \begin{enumerate}
         \item Generate an initial population by creating a initial pool \(\mathcal{P}_0\), of individuals with randomized genetic representations (context-specific data).
         \item Evaluate the \emph{fitness} for each individual \(x_i \in \mathcal{P}_t\). This usually requires a domain-specific \emph{fitness function}: \(f(x_i)\rightarrow f_i \in \mathbf{R}\), which will be described in further details later in this chapter.
@@ -209,7 +203,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     \vspace{1em}
 
-    \textbf{Selection} ~ \(\Phi_s(\mathcal{P}_t) \rightarrow x_i \in \mathcal{P}_t\) ~ individuals with high \emph{fitness score} in the new population \(\mathcal{P}_{t+1}\). In this project, \emph{selection} is done proportionally to the \emph{fitness score} for each individual. Each individual \(x_i\) has a probability \(P(x_i|f_i)\) to be selected for the next generation \(\mathcal{P}_{t+1}\) according to some random process:
+    \textbf{Selection} ~ \(\Phi_s(\mathcal{P}_t) \rightarrow x_i \in \mathcal{P}_t\) ~ individuals with high \emph{fitness score} in the new population \(\mathcal{P}_{t+1}\). In this project, \emph{selection} is done proportionally to the \emph{fitness score} for each individual. Each individual \(x_i\) has a probability \(P(x_i|f_i)\) to be selected for the next generation \(\mathcal{P}_{t+1}\) according to some random process.
     \begin{equation*}
         P(x_i|f_i) = \frac{f_i}{\sum_{j = 1}^{N}f_j} \; \; \text{where} \; \; N = |\mathcal{P}_t|
     \end{equation*}
@@ -218,7 +212,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     \vspace{1em}
 
-    \textbf{Mutation} ~ \(\Phi_m(x_i) \rightarrow \hat{x}_i\) ~ a subset of the new population, but slightly tweaked with a random parameter or adding/removing a random child node. If no mutation is done, then the genetic programming might converge to some local optimum because of monoculture, and never reach real global optimum.
+    \textbf{Mutation} ~ \(\Phi_m(x_i) \rightarrow \hat{x}_i\) ~ a subset of the new population, but slightly tweaked with a random parameter or by adding/removing random child nodes. If no mutation is done, then the genetic programming might converge to some local optima because of monoculture, and never reach a global optimum.
 
     \vspace{1em}
 
@@ -233,8 +227,6 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         Every \emph{entity} in the game can be transformed into an intelligent agent with a \texttt{BotInputComponent}, which associates a given \emph{behaviour tree} with a entity. It hooks together with the \emph{path finder} to enable the entity to \emph{traverse \& interact} with the environment. With GP, additional BTs can be generated and used.
 
-        \newpage
-
         \subsection{Game Architecture} \label{sec:game_architecture}
 
         Given the very limited implementation time of this project, the architecture of the game is designed to allow for fast prototyping and not necessarily based on strong and scalable software design philosophies. The structural design is based on the \textit{entity component system} design, which has seen high use in the contemporary games industry and is being used in high-profile projects such as the \textit{Unity} game engine. The primary reference implementation is taken from the book \textit{Game Programming Patterns} written by \textit{R. Nystrom}~\cite{nystrom2014game} remixed with the component system from \textit{M. Boström}s' \textit{Speed Coding Zelda}~\footnote{\url{www://github.com/MilleBo/SpeedCodingZelda}}. The resulting implementation can be seen in the source code in the package: \texttt{se.sciion.quake2d.level}.
@@ -243,20 +235,28 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         The entity is defined as a class only consisting of components together with some functions that the components within the collection can use to query for references to each other. This allows for components that heavily depend on each other to have high coupling while independent components doesn't have any coupling.
 
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.8\linewidth]{share/player_entity.eps}
+            \includegraphics[width=0.8\linewidth]{share/agent_entity.eps}
+            \includegraphics[width=0.8\linewidth]{share/pickup_entity.eps}
+            \caption{List of Components in Entity}
+            \label{fig:entity_component_system}
+        \end{figure}
+
         Outside the Entity, a set of systems are running, managing inter-entity communication such as path-finding, physics, and level design. These systems are passed as references to the components that are interested in them, allowing for the components to decide what to do with the data provided by the systems without caring about the systems implementation details. 
 
         \twocolumn[{
         \begin{figure}[H]
             \centering
             \includegraphics[width=\textwidth]{share/behaviour_tree_uml.eps}
-            \caption{Class hierarchy overview of our behaviour tree implementation in Java. Based on BT-SK~\cite{champandard2014behaviour}.}
             \label{fig:behaviour_tree_hierarchy}
         \end{figure}
         }]
 
         \subsection{Behaviour Trees} \label{sec:behaviour_trees_implementation}
 
-        Inside of \texttt{se.sciion.quake2d.ai.behaviour} you'll find the implementation of our BTs. They are specified using inheritance, as shown in \cref{fig:behaviour_tree_hierarchy}. In our variant, only the leaves above are non-abstract.
+        Inside of \texttt{se.sciion.quake2d.ai.behaviour} you'll find the implementation of our BTs. They are specified using inheritance, as in the figure above. In our variant, only the leaves above are non-abstract.
 
         All are derived from the \texttt{BehaviourNode}, which provides the \emph{State}, and methods for updating states, by evaluating it and its children (if it has any). This is done with the \texttt{tick} function, which is called for each agent's behaviour tree and once for each frame.
 
@@ -275,26 +275,24 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
             \end{algorithmic}
         \end{algorithm}
 
-        Each of these entities' behaviour tree are built from the bottom-up and linked. There is one \texttt{root} node which needs to be evaluated, since the root will recursively evaluate its children when requested.
+        Each of these entities' behaviour tree are built from the bottom-up and linked. There is only one \texttt{root} node which needs to be evaluated, since it will recursively evaluate all it's children when requested.
 
-        The standard non-leaf nodes are implemented in a straight-forward way following \cref{sec:behaviour_trees}. Instead, we concentrate on explaining \emph{actions} and \emph{conditions} we have implemented, and how these communicate with the other systems to be able to query the world.
+        The standard non-leaf nodes are implemented in a straight-forward way following \cref{sec:behaviour_trees}. Instead, we continue by explaining the \emph{actions} \& \emph{conditions} we have implemented, and how these communicate with the other systems to be able to query the world.
 
-        We've adopted a fairly simple solution, where the leaf-node is given a reference to systems that it wants to communicate with, and a entity owner.
+        We've adopted a fairly simple solution, where the leaf-node is given a reference to systems that it wants to communicate with, and the entity owner.
 
-        For example, if a BT wants a \emph{AttackNearest} node beneath a \emph{Succeeder}, we'd first have to hand over a reference to the \emph{path finder} and a \emph{target tag} to the constructed node: \emph{AttackNearest(path-finder, tag)}. Only after that we execute: \emph{SucceederNode(attack-nearest)}, which we can use to build a next layer above itself.
+        For example, if a BT wants a \emph{AttackNearest} node beneath a \emph{Succeeder}, we'd first have to hand over a reference to the \emph{path finder} and a \emph{target tag} to the node's constructor, such as: \emph{AttackNearest(path-finder, tag)}. Only after that are we allowed to execute: \emph{SucceederNode(attack-nearest)}, which we can utilize to construct the next parent layer above it.
 
         Below is a list of all actions and conditions we've implemented in our game, along with a description:
 
         \begin{itemize}
             \item{\textbf{AttackNearest(\emph{tag}):} finds the closest entity with \emph{tag} and \emph{path find} to it. Shoot with weapon. \emph{Success} if we were able to fire, \emph{false} otherwise.}
             \item{\textbf{MoveToNearest(\emph{tag}):} finds the close entity with \emph{tag} and \emph{path find} to it. Stops when close. \emph{Success} when we're close, \emph{fails} if no valid path.}
-            \item{\textbf{PickUpConsumable(\emph{type}):} finds the closest consumable of \emph{type} (\emph{health}, \emph{armor} and \emph{boost}), \emph{path find} to it and \emph{pick it up}. \emph{Fails} if it can't...}
+            \item{\textbf{PickUpConsumable(\emph{type}):} finds the closest consumable of \emph{type} (\emph{health}, \emph{armor} and \emph{boost}), \emph{path find} to it and \emph{pick it up}. \emph{Fails} if it couldn't.}
             \item{\textbf{PickUpWeapon(\emph{type}):} finds a close weapon of \emph{type} (\emph{shotgun}, \emph{rifle} \& \emph{sniper}). \emph{Path find} to it \& try to \emph{pick it up}. \emph{Succeeds} when picked up.}
         \end{itemize}
-
         \begin{itemize}
-            \item{\textbf{CheckArmor(\emph{ratio}):} checks entity owner's \emph{armor}, gives \emph{Success} if above \emph{ratio}, \emph{fail} if below.}
-            \item{\textbf{CheckHealth(\emph{ratio}):} checks entity owner's \emph{health}, gives \emph{Success} if above \emph{ratio}, \emph{fail} if below.}
+            \item{\textbf{CheckStatus(\emph{ratio, type}):} checks the entity owner's \emph{status} (\emph{health} or \emph{armor}), and returns \emph{Success} if above the \emph{ratio}, or \emph{fail} if its below.}
             \item{\textbf{CheckWeapon(\emph{type}):} checks entity owner's \emph{inventory} for weapon \emph{type}. \emph{Success} if we got it.}
             \item{\textbf{CheckDistance(\emph{tag, r})} checks if entity with \emph{tag} is above \emph{r} units away. \emph{Succeeds} query if so.}
         \end{itemize}
@@ -323,6 +321,20 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
         \end{align*}
         where the first definition mutates the existing children and the second adds \(k\) new nodes \(\{p_0,p_1,...,p_k\}\) to the child set.
 
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\linewidth]{share/leaf_mutation.eps}
+            \caption{Example of Mutation for the Leaf Node}
+            \label{fig:leaf_mutation}
+        \end{figure}
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\linewidth]{share/child_replacement.eps}
+            \caption{Example of Mutation for Composite Node}
+            \label{fig:child_replacement}
+        \end{figure}
+
         \textbf{Fitness function}
             As alluded to in the theory section, the fitness function is defined as an arbitrary linear combination of game related parameters. The full implementation is described in pseudo-code below.
         \vspace{-0.4em}
@@ -346,27 +358,6 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
         \vspace{-0.6em}
 
         The score is also divided by the number of round each individual played during one generation. This allows for a given individual to test its fitness against multiple adversaries to get a better estimated fitness, a useful detail when fitness evaluation is don against random other peers from the same generation.
-
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\linewidth]{share/leaf_mutation.eps}
-            \caption{Example of Mutation for the Leaf Node}
-            \label{fig:leaf_mutation}
-        \end{figure}
-
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\linewidth]{share/child_replacement.eps}
-            \caption{Example of Mutation for Composite Node}
-            \label{fig:child_replacement}
-        \end{figure}
-
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=0.8\linewidth]{share/node_swapping.eps}
-            \caption{Visualization of BT Crossover}
-            \label{fig:node_swapping}
-        \end{figure}
 
     \clearpage
 
@@ -407,6 +398,49 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         \newpage
 
+        \twocolumn[{
+        \subsection{Behaviour Fitness} \label{sec:behaviour_fitness}
+
+        Looking at the general fitness over generations we can observe how once the behaviour trees routinely defeats its adversary, the mean fitness plateaus and the variance fills the entire range of possible fitness values. When evaluating each tree against random peers, we see something similar but it converges with a slower rate. 
+
+        \begin{figure}[H]
+            \centering
+            \begin{minipage}{\textwidth}  
+                \includegraphics[width=\textwidth]{share/result-againts-bot.png}
+                \caption{Fitness over generations when evaluating against a hard-coded bot.}
+                \label{fig:fitness-against-bot}
+            \end{minipage}
+            \begin{minipage}{\textwidth}  
+                \includegraphics[width=\textwidth]{share/result-random.png}
+                \caption{Fitness over generations when evaluating against 2 random peers.}
+                \label{fig:fitness-against-random}
+            \end{minipage}
+        \end{figure}
+
+}]
+
+    \twocolumn[{
+        \subsection{Survival Ratio} \label{sec:survival_ratio}
+        In the ideal case, the survival rate follows as an consequence of the fitness score. In the two figures above we can see the same trend as in the fitness, the higher the fitness, the higher the survival rate. If this wasn't the case, our fitness evaluation wouldn't provide a good metric for evaluating combat performance.  
+
+        \begin{figure}[H]
+            \centering
+            \begin{minipage}{\textwidth}  
+                \includegraphics[width=\textwidth]{share/result-victories-against-bot.png}
+                \caption{Number of victories for each generation when evaluating against a hard-coded bot.}
+                \label{fig:victory-against-bot}
+            \end{minipage}
+            \begin{minipage}{\textwidth}  
+                \includegraphics[width=\textwidth]{share/result-victories-random.png}
+                \caption{Number of victories for each generations when evaluating against 2 random peers.}
+                \label{fig:victory-against-random}
+            \end{minipage}
+        \end{figure}
+
+        }]
+
+        \clearpage
+
         \subsection{Generated Behaviours} \label{sec:generated_behaviours}
 
         Each fitness evaluation was performed on a randomly selected hand-crafted level to prevent the behaviour trees getting overfitting to a specific level. 
@@ -428,82 +462,53 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
         \end{figure}
         The smaller tree above in fig~\cref{fig:tree_fitness_3650} manages to defeat the hard coded bot on al levels without bloating to unmanageable size. Prior exploration of generated trees indicated that as long as the tree have a \textit{sequence} of \textit{pick-up shotgun} and \textit{attack player}, it would reach an fitness of around \(1000\).
 
-        \twocolumn[{
-        \subsection{Behaviour Fitness} \label{sec:behaviour_fitness}
-
-        \begin{figure}[H]
-            \centering
-            \begin{minipage}{\textwidth}  
-                \includegraphics[width=\textwidth]{share/result-againts-bot.png}
-                \caption{Fitness over generations when evaluating against a hard-coded bot.}
-                \label{fig:fitness-against-bot}
-            \end{minipage}
-            \begin{minipage}{\textwidth}  
-                \includegraphics[width=\textwidth]{share/result-random.png}
-                \caption{Fitness over generations when evaluating against 2 random peers.}
-                \label{fig:fitness-against-random}
-            \end{minipage}
-        \end{figure}
-
-}]
-        Looking at the general fitness over generations we can observe how once the behaviour trees routinely defeats its adversary, the mean fitness plateaus and the variance fills the entire range of possible fitness values. When evaluating each tree against random peers, we see something similar but it converges with a slower rate. 
-
-
-    \twocolumn[{
-        \subsection{Survival Rate} \label{sec:survival_rate}
-
-        \begin{figure}[H]
-            \centering
-            \begin{minipage}{\textwidth}  
-                \includegraphics[width=\textwidth]{share/result-victories-against-bot.png}
-                \caption{Number of victories for each generation when evaluating against a hard-coded bot.}
-                \label{fig:victory-against-bot}
-            \end{minipage}
-            \begin{minipage}{\textwidth}  
-                \includegraphics[width=\textwidth]{share/result-victories-random.png}
-                \caption{Number of victories for each generations when evaluating against 2 random peers.}
-                \label{fig:victory-against-random}
-            \end{minipage}
-        \end{figure}
-
-        }]
-        In the ideal case, the survival rate follows as an consequence of the fitness score. In the two figures above we can see the same trend as in the fitness, the higher the fitness, the higher the survival rate. If this wasn't the case, our fitness evaluation wouldn't provide a good metric for evaluating combat performance.  
-
     \section{Discussion and Outlook} \label{sec:discussion_and_outlook}
 
-    \subsection{Convergence Rate}
+    \subsection*{Convergence Rate}
 
         As can be seen in the plots in the result section, the evolutionary algorithm converges to an high game proficiency in just a couple of generations. The fact that it manges to this can reflect poorly on our skills as game designers. Since we can expect that the more complex behaviours required to proficiently play a game, the more generations it will take until it produces such behaviour trees. It can also be viewed as the fitness function, tree mutation, and pool of possible actions being well tuned to the specific requirements of this project. Which one is the correct interpretation is trivial and left to the reader as an exercise. 
 
         A possible explanation to the different convergence rates when evaluating against a hard-coded tree or adversarial peers is the stochastic nature of both level selection and the randomized adversary. The adversarial peer should be much closer in performance compared to the hard-coded tree. Once trees which can defeat the hard-coded bot have been generated, additional fitness can only be reached by overfitting to the given level selection. The trees with peer evaluation on the other hand can't find a solution on how to reliably defeat the enemy. The adversary co-evolves with them which makes it very hard to find a ``holy-bullet'' since the generation after everyone has it.
 
-    \subsection{Limitations}
+    \subsection*{Limitations}
 
     When tested against a human player it becomes very hard to defeat.
 
 
-    \subsection{Related Work}
+    \subsection*{Related Work}
 
     The genetic programming solution was initially based on the work by~\cite{colledanchise2015learning}. The solution proposed in the paper did not pan out in our case since they use an selection heuristic during the mutation phase, allowing for higher fitness increase over fewer generations. The paper also used primitive actions which would not scale to the type of game used in this project without very large behaviour trees. 
 
 
-    \subsection{Future Work}
+    \subsection*{Future Work}
 
-    Extract the behaviour tree part and genetic programming as an independent library. Use heuristics during the creation of each new generation. Add additional behaviours and game mechanics to the project. Have it compete with it self instead of an hard-coded adversary. Have the fitness evaluation run in headless mode.
+    Extract the behaviour tree part and genetic programming as an independent library. Use heuristics during the creation of each new generation. Add additional behaviours and game mechanics to the project. Have it compete with it self instead of an hard-coded adversary. Have the fitness evaluation run in headless mode. \footnote{Repository: \url{https://github.com/sci10n/Quake2D}}
 
-    \begin{itemize}
-        \item Software architecture
-    \end{itemize}
+    \clearpage
+
+    \nocite{*} % Include all.
+    \bibliographystyle{abbrv}
+    \bibliography{report}
 
     \onecolumn
     \clearpage
 
     \appendix
+
     \thispagestyle{empty}
 
     \begin{figure}[H]
         \centering
         \includegraphics[angle=90,height=0.98\textheight]{share/hand_crafted_behaviour_tree.pdf}
+    \end{figure}
+
+    \clearpage
+
+    \thispagestyle{empty}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[angle=90,height=0.98\textheight]{share/tree-fitness-3780.png}
     \end{figure}
 
 \end{document}
