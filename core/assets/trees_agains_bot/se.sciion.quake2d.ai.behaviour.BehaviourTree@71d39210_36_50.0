@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SequenceNode>
+<PickupWeapon tag="shotgun"/>
+<SequenceNode>
+<CheckArmor ratio="0.06602299"/>
+<PickupArmor tag="armor"/>
+<SequenceNode>
+<SequenceNode>
+<CheckWeapon type="sniper"/>
+<CheckArmor ratio="0.26069248"/>
+<MoveToNearest max-distance="15.0" min-distance="0.0" tag="health"/>
+<CheckHealth ratio="0.59399825"/>
+<CheckHealth ratio="0.22531217"/>
+</SequenceNode>
+<CheckArmor ratio="0.73664093"/>
+<PickupDamageBoost tag="damage"/>
+</SequenceNode>
+</SequenceNode>
+</SequenceNode>
+</BehaviorTree>

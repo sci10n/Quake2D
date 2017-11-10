@@ -48,7 +48,7 @@ public class LevelSandbox extends ApplicationAdapter {
 	public static String TITLE = "Quake 2D";
 	public static String PLAY_LEVEL = "";
     public static boolean DEBUG  = false;
-	public static boolean EVOLVE = false;
+	public static boolean EVOLVE = true;
 	public static float GP_DELTA = 16.0f;
 	public static boolean FAST_FORWARD = true;
 
@@ -72,7 +72,7 @@ public class LevelSandbox extends ApplicationAdapter {
 	public LevelSandbox(String ... levels) {
 		this.levels = new Array<String>(levels);
 		int lastLevel = this.levels.size - 1;
-		PLAY_LEVEL = this.levels.first();
+		PLAY_LEVEL = this.levels.random();
 		if (EVOLVE) MODE = " Evolution";
 	}
 	
@@ -86,6 +86,7 @@ public class LevelSandbox extends ApplicationAdapter {
 
 		// This is a bit weird, but still make sense I guess...
 		visualizer = BehaviourTreeVisualizer.getInstance(width);
+		visualizer.setVisible(false);
 		model = new RenderModel();
 		assets = new AssetManager();
 
@@ -153,22 +154,20 @@ public class LevelSandbox extends ApplicationAdapter {
 	}
 	
 	private int counter1 = 0;
-	private int counter2 = 0;
 
-	private int botBeaten = 0;
 	public void beginMatch(String levelPath) {
 		environment = new Environment(levelPath, level, physicsSystem, pathfinding, camera, assets);
 		environment.start();
 
 		if(trees.getPopulation() == null){
 			trees.initPopulation();
-			ROUND_PER_GENERATION = trees.populationLimit;
+			ROUND_PER_GENERATION = trees.populationLimit * 4;
 		}
 		
-		SoundSystem.getInstance().playSound("fight");
+		//SoundSystem.getInstance().playSound("fight");
 		
 		if (EVOLVE) {
-			System.out.println("Trees: " + counter1 + " " + counter2 + " fight!");
+			System.out.println("Trees: " + counter1 + " fight!");
 		} else System.out.println("Fighting against hand-made trees.");
 
 		pathfinding.update(physicsSystem);
@@ -185,14 +184,8 @@ public class LevelSandbox extends ApplicationAdapter {
 			BotInputComponent input2 = players.get(0).getComponent(ComponentTypes.BotInput);
 			if(input2 != null){
 
-				if(botBeaten > trees.populationLimit/2){
-					BehaviourTree tree = trees.getPopulation().random();
-					input2.setBehaviourTree(tree);
-				}
-				else{
-					input2.setBehaviourTree(trees.getEnemy(level, physicsSystem, pathfinding));
-				}
-				//level.getStats().recordParticipant(tree);
+			input2.setBehaviourTree(trees.getPopulation().random());
+				level.getStats().recordParticipant(input2.getBehaviourTree());
 			}
 
 			counter1 = (counter1 + 1) % trees.populationLimit;
@@ -221,7 +214,6 @@ public class LevelSandbox extends ApplicationAdapter {
 		level.clearStats();
 		
 		counter1 = 0;
-		counter2 = 0;
 	}
 	
 	public void endMatch() {
@@ -237,6 +229,7 @@ public class LevelSandbox extends ApplicationAdapter {
 						a = health.getArmor();
 					}
 					level.getStats().recordHealth(h, a, input.getBehaviourTree());
+					
 				}
 			}
 		}
@@ -301,63 +294,63 @@ public class LevelSandbox extends ApplicationAdapter {
 	
 	@Override
 	public void render() {
-		findNextLevel(); // Do we switch to new levels?
-		float frameDelta = Gdx.graphics.getDeltaTime();
-
-		if (Gdx.input.isKeyPressed(Keys.LEFT) && EVOLVE)
-			GP_DELTA = MathUtils.clamp(GP_DELTA - 32.0f * frameDelta, 0.0f, 200.0f);
-		else if (Gdx.input.isKeyPressed(Keys.RIGHT) && EVOLVE)
-			GP_DELTA = MathUtils.clamp(GP_DELTA + 32.0f * frameDelta, 0.0f, 200.0f);
-		if (Gdx.input.isKeyJustPressed(Keys.F))
-			toggleFastForward();
-
-		if (FAST_FORWARD && EVOLVE) {
-			Gdx.graphics.setTitle(TITLE + MODE + " @ " + (int)GP_DELTA + "x");
-			frameDelta *= GP_DELTA;
-		} else Gdx.graphics.setTitle(TITLE + MODE);
-
-		if (Gdx.input.isKeyJustPressed(Keys.O))
-			toggleDebugDraw();
-		if (Gdx.input.isKeyJustPressed(Keys.E))
-			toggleEvolution();
-
+//		findNextLevel(); // Do we switch to new levels?
+//		float frameDelta = Gdx.graphics.getDeltaTime();
+//
+//		if (Gdx.input.isKeyPressed(Keys.LEFT) && EVOLVE)
+//			GP_DELTA = MathUtils.clamp(GP_DELTA - 32.0f * frameDelta, 0.0f, 200.0f);
+//		else if (Gdx.input.isKeyPressed(Keys.RIGHT) && EVOLVE)
+//			GP_DELTA = MathUtils.clamp(GP_DELTA + 32.0f * frameDelta, 0.0f, 200.0f);
+//		if (Gdx.input.isKeyJustPressed(Keys.F))
+//			toggleFastForward();
+//
+//		if (FAST_FORWARD && EVOLVE) {
+//			Gdx.graphics.setTitle(TITLE + MODE + " @ " + (int)GP_DELTA + "x");
+//			frameDelta *= GP_DELTA;
+//		} else Gdx.graphics.setTitle(TITLE + MODE);
+//
+//		if (Gdx.input.isKeyJustPressed(Keys.O))
+//			toggleDebugDraw();
+//		if (Gdx.input.isKeyJustPressed(Keys.E))
+//			toggleEvolution();
+//
 		if (EVOLVE) SoundSystem.getInstance().setMute(true);
-		else if (Gdx.input.isKeyJustPressed(Keys.M))
-			SoundSystem.getInstance().toggleMute();
+//		else if (Gdx.input.isKeyJustPressed(Keys.M))
+//			SoundSystem.getInstance().toggleMute();
 
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
+//		Gdx.gl.glClearColor(0, 0, 0, 1);
+//		Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 
-		camera.update();
+//		camera.update();
 
-		if(environment != null && environment.isRunning()) {
-
-			if (!visualizer.isPaused()) {
-				level.tick(frameDelta);
-				physicsSystem.update(frameDelta);
-				physicsSystem.cleanup();
-
-				pathfinding.update(physicsSystem);
-				environment.tick(frameDelta);
+		while(true){
+			PLAY_LEVEL = this.levels.random();
+			if(environment != null && environment.isRunning()) {
+	
+				if (!visualizer.isPaused()) {
+					level.tick(0.1f);
+					physicsSystem.update(0.1f);
+					physicsSystem.cleanup();
+	
+					pathfinding.update(physicsSystem);
+					environment.tick(0.1f);
+				}
+	
+//				model.setProjectionMatrix(camera.combined);
+//				environment.render(model);
+//	
+//				if (isDebugging()) {
+//					pathfinding.render(model);
+//					level.debugRender(model);
+//				}
+//	
+//				physicsSystem.render(camera.combined);
 			}
-
-			model.setProjectionMatrix(camera.combined);
-			environment.render(model);
-
-			if (isDebugging()) {
-				pathfinding.render(model);
-				level.debugRender(model);
+	
+			if(!environment.isRunning()){
+				endMatch();
+				beginMatch(PLAY_LEVEL);
 			}
-
-			physicsSystem.render(camera.combined);
-		}
-
-		if(Gdx.input.isKeyJustPressed(Keys.Q) || !environment.isRunning()){
-			endMatch();
-			beginMatch(PLAY_LEVEL);
-		}
-		if(Gdx.input.isKeyJustPressed(Keys.H)) {
-			visualizer.setVisible(!visualizer.isVisible());
 		}
 	}
 }

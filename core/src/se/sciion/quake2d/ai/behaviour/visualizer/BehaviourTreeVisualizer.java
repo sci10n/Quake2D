@@ -121,8 +121,21 @@ public class BehaviourTreeVisualizer extends JFrame {
 	public BotInputComponent getDebugBot() {
 		return debugBot;
 	}
+
+	public void exportToSvg(BehaviourTree behaviourTree) {
+		Graph btGraph = behaviourTree.toDotGraph();
+		try {
+			Graphviz.fromGraph(btGraph)
+					.width(windowSize)
+					.render(Format.SVG).toFile(Gdx.files.internal("export/tree.svg").file());
+		} catch (Exception hehNotEvenOnce) {
+			// Be naughty and never catch exceptions, that's the true Java way.
+		}
+	}
 	
 	public boolean isPaused() {
+		if (Gdx.input.isKeyPressed(Keys.I) && paused)
+			exportToSvg(debugBot.getBehaviourTree());
 		if(Gdx.input.isKeyPressed(Keys.P) && !paused)
 			paused = true;
 		else if(Gdx.input.isKeyPressed(Keys.P) && paused)

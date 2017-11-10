@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SequenceNode>
+<PickupWeapon tag="shotgun"/>
+<SelectorNode>
+<SelectorNode>
+<AttackNearest tag="player"/>
+<PickupArmor tag="armor"/>
+<PickupHealth tag="health"/>
+<SequenceNode>
+<AttackNearest tag="shotgun"/>
+<AttackNearest tag="shotgun"/>
+<PickupArmor tag="armor"/>
+</SequenceNode>
+</SelectorNode>
+<SequenceNode>
+<PickupWeapon tag="shotgun"/>
+<AttackNearest tag="shotgun"/>
+<PickupArmor tag="armor"/>
+</SequenceNode>
+<PickupWeapon tag="rifle"/>
+<SequenceNode>
+<AttackNearest tag="shotgun"/>
+<PickupWeapon tag="shotgun"/>
+<SelectorNode>
+<SelectorNode>
+<SelectorNode>
+<AttackNearest tag="player"/>
+<PickupArmor tag="armor"/>
+<PickupHealth tag="health"/>
+<PickupHealth tag="health"/>
+</SelectorNode>
+<PickupHealth tag="health"/>
+<PickupWeapon tag="rifle"/>
+<PickupDamageBoost tag="damage"/>
+</SelectorNode>
+<PickupArmor tag="armor"/>
+<PickupHealth tag="health"/>
+<SequenceNode>
+<AttackNearest tag="shotgun"/>
+<SelectorNode/>
+<AttackNearest tag="shotgun"/>
+</SequenceNode>
+</SelectorNode>
+</SequenceNode>
+</SelectorNode>
+</SequenceNode>
+</BehaviorTree>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SequenceNode>
+<AttackNearest tag="shotgun"/>
+<PickupDamageBoost tag="damage"/>
+<SelectorNode>
+<CheckHealth ratio="0.28655374"/>
+<PickupDamageBoost tag="damage"/>
+</SelectorNode>
+</SequenceNode>
+</BehaviorTree>

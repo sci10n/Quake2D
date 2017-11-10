@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SelectorNode>
+<PickupWeapon tag="rifle"/>
+<AttackNearest tag="damage"/>
+<SequenceNode>
+<PickupHealth tag="health"/>
+</SequenceNode>
+<SelectorNode>
+<CheckEntityDistance tag="health" threshold="4.0"/>
+</SelectorNode>
+<PickupDamageBoost tag="damage"/>
+</SelectorNode>
+</BehaviorTree>

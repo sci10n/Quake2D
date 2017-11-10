@@ -71,7 +71,7 @@ public class SucceederNode extends DecoratorNode {
 			 node = new SucceederNode(children.first().clone());
 		}
 		else{
-			node = new SucceederNode();
+			node = new SucceederNode(Trees.prototypes.random().randomized());
 		}
 		return node;
 	}

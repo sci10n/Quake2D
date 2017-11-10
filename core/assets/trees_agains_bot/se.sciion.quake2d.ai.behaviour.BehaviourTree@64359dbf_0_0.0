@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SequenceNode>
+<CheckHealth ratio="0.47798067"/>
+<CheckArmor ratio="0.52640724"/>
+<PickupDamageBoost tag="damage"/>
+</SequenceNode>
+</BehaviorTree>

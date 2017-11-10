@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SelectorNode>
+<AttackNearest tag="health"/>
+<CheckWeapon type="rifle"/>
+<PickupHealth tag="health"/>
+<PickupHealth tag="health"/>
+<CheckWeapon type="rifle"/>
+</SelectorNode>
+</BehaviorTree>

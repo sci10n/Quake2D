@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
+<SequenceNode>
+<PickupWeapon tag="shotgun"/>
+<SelectorNode>
+<SelectorNode>
+<AttackNearest tag="player"/>
+<PickupArmor tag="armor"/>
+<PickupHealth tag="health"/>
+<AttackNearest tag="shotgun"/>
+</SelectorNode>
+<PickupHealth tag="health"/>
+<PickupWeapon tag="rifle"/>
+<SelectorNode>
+<SelectorNode>
+<AttackNearest tag="player"/>
+<PickupArmor tag="armor"/>
+<PickupHealth tag="health"/>
+<SequenceNode>
+<PickupWeapon tag="shotgun"/>
+<AttackNearest tag="shotgun"/>
+<PickupArmor tag="armor"/>
+</SequenceNode>
+</SelectorNode>
+<PickupHealth tag="health"/>
+<PickupWeapon tag="rifle"/>
+<SequenceNode>
+<PickupArmor tag="armor"/>
+<AttackNearest tag="shotgun"/>
+<SelectorNode>
+<AttackNearest tag="rifle"/>
+<AttackNearest tag="shotgun"/>
+<CheckArmor ratio="0.80860054"/>
+<SequenceNode>
+<SequenceNode>
+<PickupArmor tag="armor"/>
+<PickupHealth tag="health"/>
+<AttackNearest tag="armor"/>
+<PickupArmor tag="armor"/>
+<PickupDamageBoost tag="damage"/>
+</SequenceNode>
+<SelectorNode>
+<SequenceNode>
+<PickupHealth tag="health"/>
+<PickupDamageBoost tag="damage"/>
+<SelectorNode>
+<SequenceNode>
+<PickupHealth tag="health"/>
+<PickupDamageBoost tag="damage"/>
+<PickupWeapon tag="rifle"/>
+<PickupHealth tag="health"/>
+<PickupHealth tag="health"/>
+</SequenceNode>
+<AttackNearest tag="shotgun"/>
+<CheckArmor ratio="0.80860054"/>
+<PickupArmor tag="armor"/>
+</SelectorNode>
+<PickupHealth tag="health"/>
+<PickupHealth tag="health"/>
+</SequenceNode>
+<AttackNearest tag="shotgun"/>
+<AttackNearest tag="health"/>
+<SequenceNode>
+<AttackNearest tag="shotgun"/>
+<SelectorNode/>
+<AttackNearest tag="shotgun"/>
+</SequenceNode>
+</SelectorNode>
+<AttackNearest tag="shotgun"/>
+</SequenceNode>
+</SelectorNode>
+</SequenceNode>
+</SelectorNode>
+</SelectorNode>
+</SequenceNode>
+</BehaviorTree>
