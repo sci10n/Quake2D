@@ -503,9 +503,11 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     A possible explanation to the different convergence rates when evaluating against a hard-coded tree or adversarial peers is the stochastic nature of both level selection and the randomized adversary. The adversarial peer should be much closer in performance compared to the hard-coded tree. Once trees which can defeat the hard-coded bot have been generated, additional fitness can only be reached by overfitting to the given level selection. The trees with peer evaluation on the other hand can't find a solution on how to reliably defeat the enemy. The adversary co-evolves with them which makes it very hard to find a ``holy-bullet'' since the generation after everyone has it.
 
+    When tested against a human player the generated behaviours becomes very hard to defeat. Even for behaviour trees with a fitness score of around 3000.
+
     \subsection*{Limitations}
 
-    When tested against a human player the generated behaviours becomes very hard to defeat. Since we decided on very high level actions, the produced behaviours often appears clunky compared to a human player. For example, two bots might decide to walk to the same \emph{health} pick-up when both have a very low \emph{health} instead of just killing each other. 
+    Since we decided on very high level actions, the produced behaviours often appears clunky compared to a human player. For example, two bots might decide to walk to the same \emph{health} pick-up when both have a very low \emph{health} instead of just killing each other. Current fitness evaluation is bound to the render thread which severely limits the number of evaluations that can be done during one second. The amount of actions, object types, and levels have been fairly limited in this project to produce faster results and ease debugging.
 
 
     \subsection*{Related Work}
@@ -515,7 +517,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     \subsection*{Future Work}
 
-    Extract the behaviour tree part and genetic programming as an independent library. Use heuristics during the creation of each new generation. Add additional behaviours and game mechanics to the project. Have it compete with it self instead of an hard-coded adversary. Have the fitness evaluation run in headless mode. \footnote{Repository: \url{https://github.com/sci10n/Quake2D}}
+    Extract the behaviour tree part and genetic programming as an independent library. Use heuristics during the creation of each new generation. Add additional behaviours and game mechanics to the project. Have it compete with it self instead of an hard-coded adversary. This has been tested to some extent during the project but not to the extent that would yield interesting results. Have the fitness evaluation run in headless mode. \footnote{Repository: \url{https://github.com/sci10n/Quake2D}} for the ones interested in looking at the full source code. 
 
     \nocite{*} % Include all.
     \bibliographystyle{abbrv}
