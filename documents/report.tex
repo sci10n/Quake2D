@@ -197,7 +197,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
         \item Remove individuals with poor \textit{low fitness score} and \emph{regenerate} population pool: \(\mathcal{P}_{t+1} = \Phi(\mathcal{P}_t)\).
     \end{enumerate}
 
-    The fitness function for this project is composed of a \emph{linear combination} of desirable behaviours collected during the \emph{fitness evaluation} simulation, such as, amount of \emph{damage dealt} to the adversary, whether the agent with a specific BT \emph{survived}, and how many \emph{weapons the agent has picked-up}. In the implementation section we'll specify \(f_i\) more concretely, for now we just explain the general theory behind genetic programming and how to select \(\mathcal{P}_{t+1}\).
+    The fitness function for this project is composed of a \emph{linear combination} of desirable behaviours collected during the \emph{fitness evaluation} simulation, such as, amount of \emph{damage dealt} to the adversary, whether the agent with a specific BT \emph{survived}, and how many \emph{weapons the agent has picked-up}. In the implementation section we'll specify \(f_i\) more concretely, for now we just explain the general theory behind genetic programming and how to find \(\mathcal{P}_{t+1}\).
 
 	\emph{Regeneration} of the population pool for the next generation, \(\mathcal{P}_{t+1}\), is done using the three functions:
 
