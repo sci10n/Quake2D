@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
-<SequenceNode>
-<CheckArmor ratio="0.39388418"/>
-<PickupWeapon tag="shotgun"/>
-<PickupArmor tag="armor"/>
-<CheckWeapon type=""/>
-</SequenceNode>
-</BehaviorTree>

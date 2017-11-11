@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
-<SequenceNode>
-<AttackNearest tag="shotgun"/>
-<PickupWeapon tag="shotgun"/>
-<AttackNearest tag="health"/>
-</SequenceNode>
-</BehaviorTree>

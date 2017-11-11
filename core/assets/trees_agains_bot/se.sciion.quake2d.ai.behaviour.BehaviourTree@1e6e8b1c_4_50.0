@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
-<SequenceNode>
-<PickupHealth tag="health"/>
-<CheckHealth ratio="0.87883943"/>
-<PickupWeapon tag="shotgun"/>
-<PickupHealth tag="health"/>
-<PickupHealth tag="health"/>
-</SequenceNode>
-</BehaviorTree>
