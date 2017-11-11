@@ -69,7 +69,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     Behaviour trees are a popular model for representing the decision-making and plan execution process for NPCs in video games. These are built by hand, and often require expertise to craft into interesting and intelligent behaviours. These types of behaviour trees usually don't adapt well to new environments, and need many tailor-made trees for each situation.
 
-    In this paper we demonstrate how to generate the trees by using genetic programming; allowing us to essentially evolve novel behaviours automatically in our testbed. Instead of specifying low-level actions and conditions, we use high-level definitions. This leads to faster fitness convergence, and also allows us to skip the bloat control and tree pruning steps used by other similar behaviour tree evolution methods. Results show that the evolved trees reliably defeats our hand-crafted behaviours by the \(20^{th}\) generation.
+    In this paper we demonstrate how to generate the trees by using genetic programming; allowing us to essentially evolve novel behaviours automatically in our testbed. Instead of specifying low-level actions and conditions, we use high-level definitions. This leads to faster fitness convergence, and also allows us to skip the bloat control and tree pruning steps used by other similar behaviour tree evolution methods. Results show that the evolved trees reliably defeats our hand-crafted behaviours by the \(25^{th}\) generation.
 
     \vspace{1em}
 
@@ -421,9 +421,13 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         Finally, we present the results from our solution. After generating fifty random individuals for \(\mathcal{P}_0\), we applied genetic programming until we had \(\mathcal{P}_{50}\), the resulting pool of \emph{evolved behaviour trees}. The fitness for each individual in each generation was found by having a match against our crafted behaviour tree, and recording match statistics, used to calculate \(f_i\).
 
+        We've also attempted to evaluate individuals in a generation by pitting them against other individuals in the same generation (we call them \emph{peers} below). Therefore two results will be presented, one where the fitness \(f_i\) is evaluated against our \emph{hand-crafted tree} and one against its \emph{peers} in the same generation.
+
+        In \cref{sec:generated_behaviours} we provide two behaviour trees generated with our solution at \(\mathcal{P}_{50}\) when playing against hand-crafted behaviour trees. We then give in \cref{sec:behaviour_fitness} graphs of the evolution of the fitness function per generation, for both the peer and the hand-crafted evaluation methods from \(\mathcal{P}_0\) up to \(\mathcal{P}_{50}\). In \cref{sec:survival_ratio} we measure the effectiveness of the behaviour tree by looking at the amount of individuals in the generation that have survived against our hand-crafted behavior trees as the number of generation progresses forward.
+
         \subsection{Generated Behaviours} \label{sec:generated_behaviours}
 
-        Each fitness evaluation was performed on a randomly selected hand-crafted level to prevent the behaviour trees getting overfitting to a specific level. 
+        Each fitness evaluation was performed on a randomly selected hand-crafted level to prevent the behaviour trees getting overfitted to a specific level. 
 
         \begin{figure}[H]
             \centering
@@ -443,25 +447,24 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
             \caption{Generated tree with high fitness (3650). This tree on the other hand is only fours levels deep.}
             \label{fig:tree_fitness_3650}
         \end{figure}
-        Here is a smaller tree of the same generation in \cref{fig:tree_fitness_3650}, it also manages to defeat the hard-coded bot on all levels without bloating to unmanageable size. Prior exploration of generated trees indicated that as long as the tree have a \textit{sequence} of \textit{pick-up shotgun} and \textit{attack player}, it would reach a fitness of around \(1000\). Because this kind of sub-tree is quite common, it tends to appear in many BT crossovers.
+        Here is a smaller tree of the same generation in \cref{fig:tree_fitness_3650}, it also manages to defeat the hard-coded bot on all levels without bloating to unmanageable size. Prior exploration of generated trees indicated that as long as the tree has a \textit{sequence} of \textit{pick-up shotgun} and \textit{attack player}, it would reach a fitness of around \(1000\). Because this kind of sub-tree is quite common, it tends to appear in many BT crossovers.
 
         Since this behaviour tree is a lot smaller, it's quite easy to analyze the expected behaviour in comparison to the one in \cref{fig:tree_fitness_4075}. At the end of this paper we've therefore provided a scaled-up version of this tree so the reader can look through it in more detail.
 
         \twocolumn[{
         \subsection{Behaviour Fitness} \label{sec:behaviour_fitness}
-
-        Looking at the general fitness over generations we can observe how once the behaviour trees routinely defeats its adversary, the mean fitness plateaus and the variance fills the entire range of possible fitness values. When evaluating each tree against random peers, we see something similar but it converges with a slower rate. 
-
+        Looking at the general fitness over generations, we can observe that once the behaviour trees routinely starts defeating its adversary, the mean fitness plateaus and the variance fills the entire range of possible fitness values. When evaluating each tree against random peers, we see something similar but it converges with a slower rate. One possible hypothesis of why this happens is that the amount of ``junk'' behaviours that get by in \cref{fig:fitness-against-random} at the start are all also low-performing BTs. Therefore, there is no real competition at the start until one of them gets a good mutation or crossover. After that, this better BT will very likely pass on its genes onto the next generation and generate a lot better BTs than before. In our hard-coded bot, this happens quickly because the competition at the start is already quite high.
+        \vspace{2em}
         \begin{figure}[H]
             \centering
             \begin{minipage}{\textwidth}  
                 \includegraphics[width=\textwidth]{share/result-againts-bot.png}
-                \caption{Fitness over generations when evaluating against a hard-coded bot. Higher score faster is better.}
+                \caption{Fitness over generations when evaluating against a hard-coded bot. Higher score is better.}
                 \label{fig:fitness-against-bot}
             \end{minipage}
             \begin{minipage}{\textwidth}  
                 \includegraphics[width=\textwidth]{share/result-random.png}
-                \caption{Fitness over generations when evaluating against 2 random peers. Higher score faster is better.}
+                \caption{Fitness over generations when evaluating against 2 random peers. Higher score is better.}
                 \label{fig:fitness-against-random}
             \end{minipage}
         \end{figure}
@@ -470,18 +473,18 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     \twocolumn[{
         \subsection{Survival Ratio} \label{sec:survival_ratio}
-        In the ideal case, the survival rate follows as an consequence of the fitness score. In the two figures above we can see the same trend as in the fitness, the higher the fitness, the higher the survival rate. If this wasn't the case, our fitness evaluation wouldn't provide a good metric for evaluating combat performance.  
-
+        In the ideal case, the survival rate follows as a consequence of the fitness score. In the two figures below we can see the same trend as in the fitness, the higher the fitness, the higher the survival rate. If this wasn't the case, our fitness evaluation wouldn't provide a good metric for evaluating combat performance.  
+        \vspace{4em}
         \begin{figure}[H]
             \centering
             \begin{minipage}{\textwidth}  
                 \includegraphics[width=\textwidth]{share/result-victories-against-bot.png}
-                \caption{Number of victories for each generation when evaluating against a hard-coded bot. Higher value is better.}
+                \caption{Victories for each generation when evaluating against a hard-coded bot. Higher value is better.}
                 \label{fig:victory-against-bot}
             \end{minipage}
             \begin{minipage}{\textwidth}  
                 \includegraphics[width=\textwidth]{share/result-victories-random.png}
-                \caption{Number of victories for each generations when evaluating against 2 random peers. Higher value is better.}
+                \caption{Victories for each generations when evaluating against 2 random peers. Higher value is better.}
                 \label{fig:victory-against-random}
             \end{minipage}
         \end{figure}
