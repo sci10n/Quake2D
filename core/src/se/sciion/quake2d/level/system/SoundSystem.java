@@ -10,8 +10,10 @@ public class SoundSystem {
 	private HashMap<String, Sound> sounds;
     private boolean muted;
 	private float volume;
+    private boolean setup;
 
 	public SoundSystem(float volume) {
+        this.setup = false;
         this.muted = false;
 		this.volume = volume;
 		this.sounds = new HashMap<String, Sound>();
@@ -22,6 +24,8 @@ public class SoundSystem {
 			String soundName = soundPath.split("/")[1].split("\\.")[0];
 			addSound(soundName, assetManager.get(soundPath, Sound.class));
 		}
+
+        setup = true;
 	}
 	
 	public static SoundSystem getInstance() {
@@ -31,6 +35,7 @@ public class SoundSystem {
 	}
 
 	public boolean addSound(String id, Sound sound) {
+        if (!setup) return false;
 		if(!sounds.containsKey(id)) {
 			sounds.put(id, sound);
 		} else return false;
@@ -54,16 +59,19 @@ public class SoundSystem {
 	}
 
 	public void playSound(String id) {
+        if (!setup) return;
         if (!muted) getSound(id).play(volume);
 	}
 
 	public long loopSound(String id) {
+        if (!setup) return -1;
 		if (!muted)
 			return getSound(id).loop(volume);
 		return 0;
 	}
 
 	public void playSound(String id, Vector2 position, float speed) {
+        if (!setup) return;
 		if (!muted) {
 			float panning = ((position.x / 30.0f) - 0.5f)*2.0f;
 			long handle = getSound(id).play(volume);
@@ -73,6 +81,7 @@ public class SoundSystem {
 	}
 
 	public long loopSound(String id, Vector2 position, float speed) {
+        if (!setup) return -1;
 		if (!muted) {
 			float panning = ((position.x / 30.0f) - 0.5f)*2.0f;
 			long handle = getSound(id).loop(volume);
