@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
-<SequenceNode>
-<PickupHealth tag="health"/>
-<AttackNearest tag="health"/>
-<PickupWeapon tag="rifle"/>
-<PickupHealth tag="health"/>
-<AttackNearest tag="armor"/>
-</SequenceNode>
-</BehaviorTree>

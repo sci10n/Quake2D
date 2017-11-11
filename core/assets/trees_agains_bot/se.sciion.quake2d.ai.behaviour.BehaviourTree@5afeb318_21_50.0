@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
-<SequenceNode>
-<CheckHealth ratio="0.7726451"/>
-<PickupWeapon tag="rifle"/>
-</SequenceNode>
-</BehaviorTree>

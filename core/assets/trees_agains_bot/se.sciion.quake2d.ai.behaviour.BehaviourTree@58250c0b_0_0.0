@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
-<SelectorNode>
-<PickupHealth tag="health"/>
-<AttackNearest tag="health"/>
-<CheckHealth ratio="0.6792361"/>
-</SelectorNode>
-</BehaviorTree>

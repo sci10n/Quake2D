@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><BehaviorTree>
-<SelectorNode>
-<CheckHealth ratio="0.105504274"/>
-<CheckEntityDistance tag="health" threshold="3.0"/>
-<CheckEntityDistance tag="armor" threshold="0.0"/>
-</SelectorNode>
-</BehaviorTree>
