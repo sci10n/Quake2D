@@ -248,7 +248,14 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
             \label{fig:entity_component_system}
         \end{figure}
 
-        Outside the Entity, a set of systems are running, managing inter-entity communication such as path-finding, physics, and level design. These systems are passed as references to the components that are interested in them, allowing for the components to decide what to do with the data provided by the systems without caring about the systems implementation details. 
+        Outside the entity, a set of \emph{systems} are running, which manage inter-entity communication such as \emph{path-finding}, \emph{physics}, and \emph{gameplay}. As we touched upon before, these systems are passed as references to the components that are interested in them, allowing for the components to decide what to do with the data provided by the systems without caring about the system's implementation details.
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.7\linewidth]{share/path_finding_stack.png}
+            \caption{Visualization of the path finding stack \(\mathcal{S}\). If there are no obstacles in the way (light-of-sight check), the agent takes a straight-line path instead.}
+            \label{fig:path_finding_stack}
+        \end{figure}
 
         \twocolumn[{
         \begin{figure}[H]
@@ -391,16 +398,14 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
             \label{fig:behaviour_tree_screenshot}
         \end{figure}
 
+        For debugging and analyzing agent behaviour, we've also implemented a way to visualize BTs, the one in \cref{fig:hand_crafted_behaviour_tree} from the \cref{fig:path_finding_screenshot} situation, in real-time by using a \emph{Graphviz}\footnote{\url{https://github.com/nidi3/graphviz-java}} library. It opens in a separate window and runs in another thread, where we can see instant changes in the BT's nodes' state.
+
         \begin{figure}[H]
             \centering
             \includegraphics[width=\linewidth]{share/path_finding_screenshot.png}
             \caption{Screenshot of Path Finding in Quake 2-D}
             \label{fig:path_finding_screenshot}
         \end{figure}
-
-        For debugging and analyzing agent behaviour, we've also implemented a way to visualize BTs, the one in \cref{fig:hand_crafted_behaviour_tree} from the \cref{fig:path_finding_screenshot} situation, in real-time by using a \emph{Graphviz}\footnote{\url{https://github.com/nidi3/graphviz-java}} library. It opens in a separate window and runs in another thread, where we can see instant changes in the BT's nodes' state.
-
-        We've uploaded a video\footnote{\url{https://vimeo.com/Quake2D}} of our solution in action.
 
         \begin{figure}[H]
             \centering
@@ -409,9 +414,29 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
             \label{fig:hand_crafted_behaviour_tree}
         \end{figure}
 
+        We've uploaded a video\footnote{\url{https://vimeo.com/Quake2D}} of our solution in action.
+
         Finally, we present the results from our solution. After generating fifty random individuals for \(\mathcal{P}_0\), we applied genetic programming until we had \(\mathcal{P}_{50}\), the resulting pool of \emph{evolved behaviour trees}. The fitness for each individual in each generation was found by having a match against our crafted behaviour tree, and recording match statistics, used to calculate \(f_i\).
 
-        \newpage
+        \subsection{Generated Behaviours} \label{sec:generated_behaviours}
+
+        Each fitness evaluation was performed on a randomly selected hand-crafted level to prevent the behaviour trees getting overfitting to a specific level. 
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\linewidth]{share/tree-fitness-4750.png}
+            \caption{Generated tree with very high fitness (4750)}
+            \label{fig:tree_fitness_4075}
+        \end{figure}
+        As can be seen in the image above. The tree is way to big to provide any significant insight unless interactively evaluated during run time. The fitness score is very close to the limit for the levels used during the fitness evaluation.
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\linewidth]{share/tree-fitness-3780.png}
+            \caption{Generated tree with high fitness}
+            \label{fig:tree_fitness_3650}
+        \end{figure}
+        The smaller tree above in fig~\cref{fig:tree_fitness_3650} manages to defeat the hard coded bot on al levels without bloating to unmanageable size. Prior exploration of generated trees indicated that as long as the tree have a \textit{sequence} of \textit{pick-up shotgun} and \textit{attack player}, it would reach an fitness of around \(1000\).
 
         \twocolumn[{
         \subsection{Behaviour Fitness} \label{sec:behaviour_fitness}
@@ -455,26 +480,6 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
         }]
 
         \clearpage
-
-        \subsection{Generated Behaviours} \label{sec:generated_behaviours}
-
-        Each fitness evaluation was performed on a randomly selected hand-crafted level to prevent the behaviour trees getting overfitting to a specific level. 
-
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\linewidth]{share/tree-fitness-4750.png}
-            \caption{Generated tree with very high fitness (4750)}
-            \label{fig:tree_fitness_4075}
-        \end{figure}
-        As can be seen in the image above. The tree is way to big to provide any significant insight unless interactively evaluated during run time. The fitness score is very close to the limit for the levels used during the fitness evaluation.
-
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\linewidth]{share/tree-fitness-3780.png}
-            \caption{Generated tree with high fitness}
-            \label{fig:tree_fitness_3650}
-        \end{figure}
-        The smaller tree above in fig~\cref{fig:tree_fitness_3650} manages to defeat the hard coded bot on al levels without bloating to unmanageable size. Prior exploration of generated trees indicated that as long as the tree have a \textit{sequence} of \textit{pick-up shotgun} and \textit{attack player}, it would reach an fitness of around \(1000\).
 
     \section{Discussion and Outlook} \label{sec:discussion_and_outlook}
 
