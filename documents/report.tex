@@ -253,7 +253,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
         \begin{figure}[H]
             \centering
             \includegraphics[width=0.7\linewidth]{share/path_finding_stack.png}
-            \caption{Visualization of the path finding stack \(\mathcal{S}\). If there are no obstacles in the way (light-of-sight check), the agent takes a straight-line path instead.}
+            \caption{Visualization of the path finding stack \(\mathcal{S}\). If there are no obstacles in the way (line-of-sight check), the agent takes a straight-line path instead.}
             \label{fig:path_finding_stack}
         \end{figure}
 
@@ -368,8 +368,8 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
             \label{alg:fitness_function}
             \begin{algorithmic}
                 \REQUIRE {$damage$ being the damage given}
-                \REQUIRE {$armor$ begin the armour picked-up}
-                \REQUIRE {$weapon$ to be the weapon picked-up}
+                \REQUIRE {$armor$ being the armour picked-up}
+                \REQUIRE {$weapon$ to be the weapons picked-up}
                 \REQUIRE {$kills$ to be the number of agents killed}
                 $Score$ = $5 *damage$ + $2 * armor$ + $50 * weapon$ + $1000 * kills$
                 \IF {Individual Won}
