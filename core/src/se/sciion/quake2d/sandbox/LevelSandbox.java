@@ -129,18 +129,18 @@ public class LevelSandbox extends ApplicationAdapter {
 		}
 
 		String[] sounds = {
-			"audio/armor.wav",
-			"audio/damage.wav",
-			"audio/fight.wav",
-			"audio/health.wav",
-			"audio/hit.wav",
-			"audio/impressive.wav",
-			"audio/move1.wav",
-			"audio/move2.wav",
-			"audio/rifle.wav",
-			"audio/shotgun.wav",
-			"audio/sniper.wav",
-			"audio/weapon.wav",
+			// "audio/armor.wav",
+			// "audio/damage.wav",
+			// "audio/fight.wav",
+			// "audio/health.wav",
+			// "audio/hit.wav",
+			// "audio/impressive.wav",
+			// "audio/move1.wav",
+			// "audio/move2.wav",
+			// "audio/rifle.wav",
+			// "audio/shotgun.wav",
+			// "audio/sniper.wav",
+			// "audio/weapon.wav",
 		};
 
 		for (String soundPath : sounds) {
@@ -150,7 +150,7 @@ public class LevelSandbox extends ApplicationAdapter {
 		assets.finishLoading();
 		
 		// Map over the path file names to logical name.
-		SoundSystem.getInstance().setup(assets, sounds);
+		// SoundSystem.getInstance().setup(assets, sounds);
 	}
 	
 	private int counter1 = 0;
