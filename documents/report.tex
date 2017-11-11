@@ -102,7 +102,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         Defining an accurate \emph{automatic planner} model is often impractical and usually overkill for real-world applications. Especially in games, where very simple models are enough to give the illusion of intelligence. In games, the most well-known \emph{behaviour selection algorithms} are \emph{FSMs}, \emph{GOAPs}, \emph{HTNs} and \emph{BTs} \cite{dawe2014overview}.
 
-        \emph{Finite State Machines (FSMs)} are simple but hard to extend with additional states, resulting in an exponential increase of transitions \cite{dawe2014overview}. While both \emph{GOAP (Goal-Oriented Action Planner)} and \emph{HTN (Hierarchical Task Network)} are powerful models, these don't allow agents to explore new task definitions, and ``only'' provide an agent with novel ways of solving an already defined set of task. Planning has seen some use in the games industry. Most notably in the game \textit{F.E.A.R}~\cite{orkin2006three} where adversarial agents used a planning system to combat the player.
+        \emph{Finite State Machines (FSMs)} are simple but hard to extend with additional states, resulting in an exponential increase of transitions \cite{dawe2014overview}. While both \emph{GOAP (Goal-Oriented Action Planner)} and \emph{HTN (Hierarchical Task Network)} are powerful models, these don't allow agents to explore new task definitions, and ``only'' provide an agent with novel ways of solving an already defined set of tasks. Planning has seen some use in the games industry. Most notably in the game \textit{F.E.A.R}~\cite{orkin2006three} where adversarial agents used a planning system to combat the player.
 
         \emph{Behaviour Trees (BTs)} on the other hand, when comparing to FSMs, provide advantages in terms of modularity, reactiveness and scalability. And more importantly, since they are a type of tree, allow for integration with the genetic programming approach. They were first popularized in \emph{Halo 2} \cite{isla2005managing}, but are now applied in other area as well, such as robotics.
 
@@ -133,7 +133,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         At a high-level, this BT checks the agent's health and armour, and if it's below a threshold, it will go and pick up the crates which replenish these stats.
 
-        It does this by starting at the root node, \emph{selector}, and executing the left child, the \emph{sequence}. It will also execute its left child, which is the \emph{inverter}. At last we reach a leaf-node, the \emph{health condition node}. This will probe the world for the state of the agent, and return \emph{success} because we've found that it's above 50\%. This result will propagate upward to its parent, the inverter, which will set its state to \emph{failed} (inverting the result of the child). We're back at the left sequence, and because one of the children have failed (the inverter), the sequence has \emph{failed} as well, and won't run the right child (gray means the node has never been evaluated). Finally, because the selector's left child has \emph{failed}, we execute the right branch too (remember, at least one child must succeed!). We use the same process before, but get stuck in \emph{``pick up armor''} until that action has finished \emph{running} in the world (has succeeded or failed).
+        It does this by starting at the root node, \emph{selector}, and executing the left child, the \emph{sequence}. It will also execute its left child, which is the \emph{inverter}. At last we reach a leaf-node, the \emph{health condition node}. This will probe the world for the state of the agent, and return \emph{success} because we've found that it's above 50\%. This result will propagate upward to its parent, the inverter, which will set its state to \emph{failed} (inverting the result of the child). We're back at the left sequence, and because one of the children have failed (the inverter), the sequence has \emph{failed} as well, and won't run the right child (gray means the node has never been evaluated). Finally, because the selector's left child has \emph{failed}, we execute the right branch too (remember, at least one child must succeed!). We use the same steps as before, but get stuck in \emph{``pick up armor''} until that action has finished \emph{running} in the world (has succeeded or failed).
 
         \subsection{Path Finding with A*} \label{sec:path_finding}
 
@@ -208,7 +208,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
         P(x_i|f_i) = \frac{f_i}{\sum_{j = 1}^{N}f_j} \; \; \text{where} \; \; N = |\mathcal{P}_t|
     \end{equation*}
 
-    \textbf{Crossover} ~ \(\Phi_c(x_i,x_j) \rightarrow \hat{x}_i,\hat{x}_j\) ~ individuals from the new population which have been crossed over, in the case of \emph{genetic programming}, \emph{crossover} is done by swapping random \emph{sub-trees} in each BT. All sub-trees has an equal probability of being selected to crossover, creating new individuals in \(\mathcal{P}_{t+1}\).
+    \textbf{Crossover} ~ \(\Phi_c(x_i,x_j) \rightarrow \hat{x}_i,\hat{x}_j\) ~ individuals from the new population which have been crossed over, in the case of \emph{genetic programming}, \emph{crossover} is done by swapping random \emph{sub-trees} in each BT. All sub-trees have an equal probability of being selected to crossover, creating new individuals in \(\mathcal{P}_{t+1}\).
 
     \vspace{1em}
 
@@ -453,7 +453,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         \twocolumn[{
         \subsection{Behaviour Fitness} \label{sec:behaviour_fitness}
-        Looking at the general fitness over generations, we can observe that once the behaviour trees routinely starts defeating its adversary, the mean fitness plateaus and the variance fills the entire range of possible fitness values. When evaluating each tree against random peers, we see something similar but it converges with a slower rate. One possible hypothesis of why this happens is that the amount of ``junk'' behaviours that get by in \cref{fig:fitness-against-random} at the start are all also low-performing BTs. Therefore, there is no real competition at the start until one of them gets a good mutation or crossover. After that, this better BT will very likely pass on its genes onto the next generation and generate a lot better BTs than before. In our hard-coded bot, this happens quickly because the competition at the start is already quite high.
+        Looking at the general fitness over generations, we can observe that once the behaviour trees routinely starts defeating its adversary, the mean fitness plateaus and the variance fills the entire range of possible fitness values. When evaluating each tree against random peers, we see something similar but it converges with a slower rate. One possible hypothesis of why this happens is that the amount of ``junk'' behaviours that get by in \cref{fig:fitness-against-random} at the start are all also low-performing BTs. Therefore, there is no real competition at the start until one of them gets a good mutation or crossover. After that, this better BT will very likely pass on its genes onto the next generation and generate a lot better BTs than before. In our hard-coded behaviour tree, this happens quickly because the competition at the start is already quite high.
         \vspace{2em}
         \begin{figure}[H]
             \centering
@@ -473,8 +473,9 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     \twocolumn[{
         \subsection{Survival Ratio} \label{sec:survival_ratio}
-        In the ideal case, the survival rate follows as a consequence of the fitness score. In the two figures below we can see the same trend as in the fitness, the higher the fitness, the higher the survival rate. If this wasn't the case, our fitness evaluation wouldn't provide a good metric for evaluating combat performance.  
-        \vspace{4em}
+        In the ideal case, the survival rate follows as a consequence of the fitness score. In the two figures below we can see the same trend as in the fitness, the higher the fitness, the higher the survival rate. If this wasn't the case, our fitness evaluation wouldn't provide a good metric for evaluating combat performance. When playing against the hard-coded behaviour tree, it takes around 25 generations until 70\% of the individuals in the population are victorious against it. These results then seem to vary between 60\% and 90\% win-ratio in each generation. On the other hand, when playing against itself, it takes around 28 generations until the same can be said about it. However, it's actually able to achieve a high maximum win-ratio, and has less variation between each generation, usually staying between 76\% to 95\% win-ratio.
+
+        \vspace{2em}
         \begin{figure}[H]
             \centering
             \begin{minipage}{\textwidth}  
@@ -495,11 +496,13 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     \section{Discussion and Outlook} \label{sec:discussion_and_outlook}
 
-    There are some main areas of the project which merits further analysis, we start with the results section and what can be extrapolated from the fitness and survival score. Afterwards we look at some limitations of project, related work, and end with future improvements.
+    There are still some areas in the project which merit further analysis. We'll start with the results section, and see what we can extrapolate from the fitness and survival scores. Afterwards, we look at some limitations of our solution, compare it to related work, and then end with some future improvements.
 
     \subsection*{Convergence Rate}
 
-    As can be seen in the plots in the result section, the evolutionary algorithm converges to an high game proficiency in just a couple of generations. The fact that it manges to this can reflect poorly on our skills as game designers. Since we can expect that the more complex behaviours required to proficiently play a game, the more generations it will take until it produces such behaviour trees. It can also be viewed as the fitness function, tree mutation, and pool of possible actions being well tuned to the specific requirements of this project. Which one is the correct interpretation is left to the reader. 
+    As can be seen in the plots in the result section, the evolutionary algorithm converges to a high game proficiency in just a couple of generations, and manages to stay that throughout the evolution process.
+
+    The fact that it manages to this may reflect poorly on our skills as game designers. Since we can expect that the more complex behaviours required to proficiently play a game, the more generations it will take until it produces such behaviour trees. It can also be viewed as the fitness function, tree mutation, and pool of possible actions being well tuned to the specific requirements of this project. Which one is the correct interpretation is left to the reader as an exercise.
 
     A possible explanation to the different convergence rates when evaluating against a hard-coded tree or adversarial peers is the stochastic nature of both level selection and the randomized adversary. The adversarial peer should be much closer in performance compared to the hard-coded tree. Once trees which can defeat the hard-coded bot have been generated, additional fitness can only be reached by overfitting to the given level selection. The trees with peer evaluation on the other hand can't find a solution on how to reliably defeat the enemy. The adversary co-evolves with them which makes it very hard to find a ``holy-bullet'' since the generation after everyone has it.
 
@@ -515,7 +518,13 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     \subsection*{Future Work}
 
-    Extract the behaviour tree part and genetic programming as an independent library. Use heuristics during the creation of each new generation. Add additional behaviours and game mechanics to the project. Have it compete with it self instead of an hard-coded adversary. Have the fitness evaluation run in headless mode. \footnote{Repository: \url{https://github.com/sci10n/Quake2D}}
+    Extract the behaviour tree part and genetic programming as an independent library. Use heuristics during the creation of each new generation. Add additional behaviours and game mechanics to the project. Have it compete with it self instead of an hard-coded adversary. Have the fitness evaluation run in headless mode.
+
+    \subsection*{Source Code}
+
+    \footnote{Repository: \url{https://github.com/sci10n/Quake2D}}
+
+    \clearpage
 
     \nocite{*} % Include all.
     \bibliographystyle{abbrv}
