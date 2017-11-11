@@ -229,7 +229,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
         \subsection{Game Architecture} \label{sec:game_architecture}
 
-        Given the very limited implementation time of this project, the architecture of the game was designed to allow for fast prototyping iterations, and isn't necessarily based on strong and scalable software design philosophies. The structural design is based on the \textit{entity component system} design, which has seen high use in the contemporary games industry and is being used in high-profile projects such as the \textit{Unity} game engine. The primary reference implementation is taken from the book \textit{Game Programming Patterns} written by \textit{R. Nystrom}~\cite{nystrom2014game} remixed with the component system from \textit{M. Boström}s' \textit{Speed Coding Zelda}~\footnote{\url{www://github.com/MilleBo/SpeedCodingZelda}}. The resulting implementation can be seen in the source code in the package: \texttt{se.sciion.quake2d.level} and its sub-folders.
+        Given the very limited implementation time of this project, the architecture of the game was designed to allow for fast prototyping iterations, and isn't necessarily based on strong and scalable software design philosophies. The structural design is based on the \textit{entity component system} design, which has seen high use in the contemporary games industry and is being used in high-profile projects such as the \textit{Unity} game engine. The primary reference implementation is taken from the book \textit{Game Programming Patterns} written by \textit{R. Nystrom}~\cite{nystrom2014game} remixed with the component system from \textit{M. Boström}s' \textit{Speed Coding Zelda}\footnote{\url{https://github.com/MilleBo/SpeedCodingZelda}}. The resulting implementation can be seen in the source code in the package: \texttt{se.sciion.quake2d.level} and its sub-folders.
 
         An \textit{entity component system (E-C-S)}, as the name might suggest, consists of three interacting class types. The \textit{entity}, the \textit{component}, and the \textit{system}.
 
@@ -238,7 +238,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
         In \cref{fig:entity_component_system} are the three different types of entities in our game: \emph{user-controlled players}, \emph{AI-controlled agents} and \emph{health/armour/weapon crate pickups}. As can be seen, adding functionality to each entity is just a matter of adding/swapping a component. The only difference between a \emph{player} and an \emph{agent} is the method of input, \emph{UserInput} vs \emph{BotInput}, which in our opinion perfectly shows the benefits of a E-C-S.
 
         The \texttt{BotInputComponent} has a behaviour tree which is updated with \texttt{tick}, which executes the motions specified in the \emph{current target path} (basically a stack of locations to visit to reach the \emph{target location}) which were decided by the behaviour tree.
-
+        
         \begin{figure}[H]
             \centering
             \includegraphics[width=0.8\linewidth]{share/player_entity.eps}
