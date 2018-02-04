@@ -423,7 +423,7 @@ Linköping University, \today\endgraf\bigskip
         \begin{figure}[H]
             \centering
             \includegraphics[width=\linewidth]{share/hand_crafted_behaviour_tree.pdf}
-            \caption{Hand-Crafted BT (Larger in Appendix)}
+            \caption{Hand-crafted BT (larger in Appendix~\ref{app:hand_crafted})}
             \label{fig:hand_crafted_behaviour_tree}
         \end{figure}
 
@@ -459,7 +459,7 @@ Linköping University, \today\endgraf\bigskip
         \end{figure}
         Here is a smaller tree of the same generation in \cref{fig:tree_fitness_3650}, it manages to defeat the hard-coded bot on all levels without bloating to unmanageable size. Prior exploration of generated trees indicated that as long as the tree has a \textit{sequence} of \textit{pickup shotgun} and \textit{attack player}, it would reach a fitness of around \(1000\). Because this kind of sub-tree is quite common, it tends to appear in many BT crossovers.
 
-        Since this behaviour tree is a lot smaller, it's quite easy to analyse the expected behaviour in comparison to the one in \cref{fig:tree_fitness_4075}. At the end of this paper we've therefore provided a scaled-up version of this tree so the reader can look through it in more detail.
+        Since this behaviour tree is a lot smaller, it's quite easy to analyse the expected behaviour in comparison to the one in \cref{fig:tree_fitness_4075}. At the end of this paper we've therefore provided a scaled-up version in Appendix~\ref{app:generated} so the reader can look through it in more detail.
 
         \twocolumn[{
         \subsection{Behaviour Fitness} \label{sec:behaviour_fitness}
@@ -549,22 +549,24 @@ Linköping University, \today\endgraf\bigskip
     \onecolumn
     \clearpage
 
-    \appendix
+    \pagenumbering{gobble}
 
-    \thispagestyle{empty}
+    \appendix
+    % Remove the appendix titles from the index page.
+    \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+
+    \section{Appendix: Our Hand-Crafted Behaviour Tree} \label{app:hand_crafted}
 
     \begin{figure}[H]
         \centering
-        \includegraphics[angle=90,height=0.98\textheight]{share/hand_crafted_behaviour_tree.pdf}
+        \includegraphics[angle=90,height=0.92\textheight]{share/hand_crafted_behaviour_tree.pdf}
     \end{figure}
 
-    \clearpage
-
-    \thispagestyle{empty}
+    \section{Appendix: An Generated Behaviour Tree} \label{app:generated}
 
     \begin{figure}[H]
         \centering
-        \includegraphics[angle=90,height=0.98\textheight]{share/tree-fitness-3780.png}
+        \includegraphics[angle=90,height=0.92\textheight]{share/tree-fitness-3780.png}
     \end{figure}
 
 \end{document}
