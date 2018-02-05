@@ -58,10 +58,10 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 % Added course information using date-hijacking 
 \date{
 TNM095 -- Artificial Intelligence for Interactive Media\endgraf
-at Linköping University, \today\endgraf\bigskip
-\href{https://github.com/sci10n/Quake2D}{\textbf{GitHub Repository}}
+at Linköping University, \today\endgraf\bigskip --
+\href{https://github.com/sci10n/Quake2D}{\textbf{Repository Link}}
 $\bullet$
-\href{https://vimeo.com/242262802}{\textbf{Vimeo Video}}
+\href{https://vimeo.com/242262802}{\textbf{Video Link}} --
 }
 \author{{\textbf{Martin Estgren}} \;\;\;\;\;\;\;\;\;\, {\href{mailto:mares480@student.liu.se}
                                                        {\texttt{<mares480@student.liu.se>}}} \\
@@ -92,18 +92,18 @@ $\bullet$
 
     These techniques often require the bot behaviours to be manually defined, and in some cases, are quite hard to extend when new behaviours are needed later in the game development process. This has been shown to be true by industry researchers, such as \emph{Dawe et al}~\cite{dawe2014overview}, regarding the \emph{finite state machine architecture} (which we talk more about later).
 
-    In this project we have explored how one of the more widely used techniques, \emph{behaviour trees}, can be extended to allow for not only hand-crafted complex behaviours, but for organic behaviours, tailored to the specific game domain by using a \emph{reinforcement learning} approach. More specifically, we evolve the behaviour trees by using \emph{genetic programming}. It's by no means a novel approach, but there still has been relatively little research in the area. 
+    In this project we have explored how one of the more widely used techniques, \emph{behaviour trees}, can be extended to allow for not only hand-crafted complex behaviours, but for organic behaviours, tailored to the specific game domain by using a \emph{reinforcement learning} approach. More specifically, we evolve the behaviour trees by using \emph{genetic programming}. It's by no means a novel approach, but there still has been relatively little research in the area. In some previous work, such as in \emph{Ögren et al.}~\cite{colledanchise2015learning}, this method of pairing behaviour trees with genetic programming is called \emph{behaviour tree evolution (BTE)}.
 
-    % Moved to after background?
-    In our \emph{behaviour evolution algorithm}, based on the work of \emph{{\"O}gren et al.}~\cite{colledanchise2015learning}, we instead use \emph{high-level behaviours}, which removes the need for \emph{bloat control} or \emph{pruning}. This leads to a simpler algorithm than \emph{{\"O}gren et al.}~\cite{colledanchise2015learning}.
+    Our work was initially inspired by and based on the research of \emph{Ögren et al.}~\cite{colledanchise2015learning}, but our approaches diverged later on in the project for a couple of reasons. First of all, the domain in \emph{Ögren et al's} work allows for relatively simplistic agent actions and conditions (it's based on the \emph{MarioAI} project), which isn't suitable for our domain since the actions and conditions our agent needs are a lot more complex. Therefore, it wasn't viable to have \emph{low-level actions} with high granularity (e.g. move left, right or jump), but we instead needed \emph{high-level actions} (e.g. move to the enemy), otherwise the behaviour tree would quickly grow too deep and become unmanageable. The second reason we diverged from \emph{Ögren et al's.} work was because their method needs \emph{tree pruning} and \emph{bloat control} to remain viable, and we wanted our method to remain simple to implement in code.
+
+    Therefore, our method differs from \emph{Ögren et al.}~\cite{colledanchise2015learning} in the aspect that we specify actions and conditions using a high-level specification instead of a low-level one. This allows us to skip the pruning and bloat control steps in \emph{Ögren et al.} since the behaviour tree tends to converge faster and also not grow too deep, which gives us a somewhat simpler implementation as well. Another difference is that our selection, crossover and mutation steps in the GP are somewhat different than in \emph{Ögren et al.}, and that we also didn't need to use simulated annealing as a pre-process step to get a good generation diversity.
 
     Alongside the proposed method in \cref{sec:proposed_approach}, a testbed consisting of a top-down arena shooter was built. It features a sufficiently complex environment to support interesting behaviours by the enemy bot. We describe the features of our testbed in \cref{sec:results_and_screenshots}.
 
-    This report starts off in \cref{sec:background_theory} by giving a brief overview of the relevant techniques and related work necessary to follow our reasoning and findings. In \cref{sec:implementation_details} we describe the details needed to implement these techniques in practice, along with the testbed architecture we've used. This gives the reader information on any peculiarities and pit-falls. We follow this by showing in \cref{sec:results_and_screenshots} the testbed, and give some generated offspring generated by our method along with measurements of its efficiency. Finally, we reflect on our method, giving downsides, and present some possible future work in \cref{sec:discussion_and_outlook}.
+    This report starts off in \cref{sec:background_theory} by giving a brief overview of the relevant techniques and related work necessary to follow our reasoning and findings. In \cref{sec:implementation_details} we describe the details needed to implement these techniques in practice, along with the testbed architecture we have used. This gives the reader information about its potential pit-falls. We follow this by showing in \cref{sec:results_and_screenshots} the testbed, and give some generated offspring generated by our method along with measurements of its efficiency. Finally, we reflect and give downsides of our method, and present directions for future work in \cref{sec:discussion_and_outlook}.
 
     \subsection{Proposed Approach} \label{sec:proposed_approach}
 
-    % This should also be moved to after the background?
     Apply \emph{genetic programming} to the \emph{behaviours trees} by creating \emph{high-level actions and conditions} nodes. Ideally this should allow for faster convergence rates and somewhat shallower generated behaviour trees, eliminating the need for \emph{bloat control} and \emph{pruning}. Since BTs are trees, the \emph{mutation mechanism} should modify \emph{control-flow structure} and \emph{leaf-node settings}, while the \emph{crossover mechanism} will swap sub-trees.
 
     \section{Background Theory} \label{sec:background_theory}
