@@ -4,13 +4,12 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage[pdftex, hidelinks,
+\usepackage[pdftex,
             pdftitle={Behaviour Tree Evolution by Genetic Programming},
             pdfauthor={Martin Estgren and Erik S. V. Jansson},
             pdfsubject={Artificial Intelligence - Genetic Programming},
             pdfkeywords={artificial intelligence, genetic programming,
                          behaviour trees, a-star, shooter}]{hyperref}
-
 \usepackage{bm}
 \usepackage{caption}
 \usepackage{listings}
@@ -56,7 +55,12 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
 \title{\textbf{Behaviour Tree Evolution by Genetic Programming}\\
        \Large{\emph{-- Learning Novel Bot Behaviours in a 2D Top-Down Arena Shooter --}}}
-\date{Linköping University, \today}
+% Added course information using date-hijacking 
+\date{
+TNM095 - Artificial Intelligence for Interactive Media\endgraf\bigskip
+Linköping University, \today\endgraf\bigskip
+\href{https://github.com/sci10n/Quake2D}{\textbf{repository}} \href{https://vimeo.com/242262802}{\textbf{video}}
+}
 \author{{\textbf{Martin Estgren}} \;\;\;\;\;\;\;\;\;\, {\href{mailto:mares480@student.liu.se}
                                                        {\texttt{<mares480@student.liu.se>}}} \\
         {\textbf{Erik S. V. Jansson}} \;\;\;\;         {\href{mailto:erija578@student.liu.se}
@@ -65,6 +69,8 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
 \begin{document}
     \maketitle
+    
+
     \section*{Abstract}
 
     Behaviour trees are a popular model for representing the decision-making and plan execution process for NPCs in video games. These are built by hand, and often require expertise to craft into interesting and intelligent behaviours. These types of behaviour trees usually don't adapt well to new environments, and need many tailor-made trees for each situation.
@@ -84,7 +90,10 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     These techniques often require the bot behaviours to be manually defined, and in some cases, are quite hard to extend when new behaviours are needed later in the game development process. This has been shown to be true by industry researchers, such as \emph{Dawe et al}~\cite{dawe2014overview}, regarding the \emph{finite state machine architecture} (which we talk more about later).
 
-    In this project we have explored how one of the more widely used techniques, \emph{behaviour trees}, can be extended to allow for not only hand-crafted complex behaviours, but for organic behaviours, tailored to the specific game domain by using a \emph{reinforcement learning} approach. More specifically, we evolve the behaviour trees by using \emph{genetic programming}. It's by no means a novel approach, but there still has been relatively little research in the area. In our \emph{behaviour evolution algorithm}, based on the work of \emph{{\"O}gren et al.}~\cite{colledanchise2015learning}, we instead use \emph{high-level behaviours}, which removes the need for \emph{bloat control} or \emph{pruning}. Leading to a simpler algorithm than \emph{{\"O}gren et al.}~\cite{colledanchise2015learning}.
+    In this project we have explored how one of the more widely used techniques, \emph{behaviour trees}, can be extended to allow for not only hand-crafted complex behaviours, but for organic behaviours, tailored to the specific game domain by using a \emph{reinforcement learning} approach. More specifically, we evolve the behaviour trees by using \emph{genetic programming}. It's by no means a novel approach, but there still has been relatively little research in the area. 
+
+    % Moved to after background?
+    In our \emph{behaviour evolution algorithm}, based on the work of \emph{{\"O}gren et al.}~\cite{colledanchise2015learning}, we instead use \emph{high-level behaviours}, which removes the need for \emph{bloat control} or \emph{pruning}. This leads to a simpler algorithm than \emph{{\"O}gren et al.}~\cite{colledanchise2015learning}.
 
     Alongside the proposed method in \cref{sec:proposed_approach}, a testbed consisting of a top-down arena shooter was built. It features a sufficiently complex environment to support interesting behaviours by the enemy bot. We describe the features of our testbed in \cref{sec:results_and_screenshots}.
 
@@ -92,6 +101,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     \subsection{Proposed Approach} \label{sec:proposed_approach}
 
+    % This should also be moved to after the background?
     Apply \emph{genetic programming} to the \emph{behaviours trees} by creating \emph{high-level actions and conditions} nodes. Ideally this should allow for faster convergence rates and somewhat shallower generated behaviour trees, eliminating the need for \emph{bloat control} and \emph{pruning}. Since BTs are trees, the \emph{mutation mechanism} should modify \emph{control-flow structure} and \emph{leaf-node settings}, while the \emph{crossover mechanism} will swap sub-trees.
 
     \section{Background Theory} \label{sec:background_theory}
@@ -413,7 +423,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
         \begin{figure}[H]
             \centering
             \includegraphics[width=\linewidth]{share/hand_crafted_behaviour_tree.pdf}
-            \caption{Hand-Crafted BT (Larger in Appendix)}
+            \caption{Hand-crafted BT (larger in Appendix~\ref{app:hand_crafted})}
             \label{fig:hand_crafted_behaviour_tree}
         \end{figure}
 
@@ -449,7 +459,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
         \end{figure}
         Here is a smaller tree of the same generation in \cref{fig:tree_fitness_3650}, it manages to defeat the hard-coded bot on all levels without bloating to unmanageable size. Prior exploration of generated trees indicated that as long as the tree has a \textit{sequence} of \textit{pickup shotgun} and \textit{attack player}, it would reach a fitness of around \(1000\). Because this kind of sub-tree is quite common, it tends to appear in many BT crossovers.
 
-        Since this behaviour tree is a lot smaller, it's quite easy to analyse the expected behaviour in comparison to the one in \cref{fig:tree_fitness_4075}. At the end of this paper we've therefore provided a scaled-up version of this tree so the reader can look through it in more detail.
+        Since this behaviour tree is a lot smaller, it's quite easy to analyse the expected behaviour in comparison to the one in \cref{fig:tree_fitness_4075}. At the end of this paper we've therefore provided a scaled-up version in Appendix~\ref{app:generated} so the reader can look through it in more detail.
 
         \twocolumn[{
         \subsection{Behaviour Fitness} \label{sec:behaviour_fitness}
@@ -539,22 +549,24 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
     \onecolumn
     \clearpage
 
-    \appendix
+    \pagenumbering{gobble}
 
-    \thispagestyle{empty}
+    \appendix
+    % Remove the appendix titles from the index page.
+    \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+
+    \section{Appendix: Our Hand-Crafted Behaviour Tree} \label{app:hand_crafted}
 
     \begin{figure}[H]
         \centering
-        \includegraphics[angle=90,height=0.98\textheight]{share/hand_crafted_behaviour_tree.pdf}
+        \includegraphics[angle=90,height=0.92\textheight]{share/hand_crafted_behaviour_tree.pdf}
     \end{figure}
 
-    \clearpage
-
-    \thispagestyle{empty}
+    \section{Appendix: An Generated Behaviour Tree} \label{app:generated}
 
     \begin{figure}[H]
         \centering
-        \includegraphics[angle=90,height=0.98\textheight]{share/tree-fitness-3780.png}
+        \includegraphics[angle=90,height=0.92\textheight]{share/tree-fitness-3780.png}
     \end{figure}
 
 \end{document}
