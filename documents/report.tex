@@ -108,7 +108,7 @@ $\bullet$
 
     \section{Background Theory} \label{sec:background_theory}
 
-    For an autonomous agent to give the illusion of being intelligent, many different systems need to interact with each other. In this chapter we describe the theory behind our three primarily used techniques: \emph{behaviour trees}, \emph{path finding}, \emph{genetic programming}. There are entire books written on these techniques, hence we'll only describe each of these superficially, if you want a deeper treatment, see our references.
+    In this chapter we briefly describe the theory behind the three techniques used in this project: \emph{behaviour trees}, \emph{path finding} and \emph{genetic programming}. These techniques are only briefly described here to make the report self-contained. However, we also give many references in the bibliography for that readers that want to read these topic more in-depth.
 
         \subsection{Behaviour Trees} \label{sec:behaviour_trees}
 
@@ -116,11 +116,11 @@ $\bullet$
 
         \emph{Finite State Machines (FSMs)} are simple but hard to extend with additional states, resulting in an exponential increase of transitions \cite{dawe2014overview}. While both \emph{GOAP (Goal-Oriented Action Planner)} and \emph{HTN (Hierarchical Task Network)} are powerful models, these don't allow agents to explore new task definitions, and ``only'' provide an agent with novel ways of solving an already defined set of tasks. Planning has seen some use in the games industry. Most notably in the game \textit{F.E.A.R}~\cite{orkin2006three} where adversarial agents used a planning system to combat the player.
 
-        \emph{Behaviour Trees (BTs)} on the other hand, when comparing to FSMs, provide advantages in terms of modularity, reactiveness and scalability. And more importantly, since they are a type of tree, allow for integration with the genetic programming approach. They were first popularized in \emph{Halo 2} \cite{isla2005managing}, but are now applied in other area as well, such as robotics.
+        \emph{Behaviour Trees (BTs)} on the other hand, when comparing to FSMs, provide advantages in terms of modularity, reactiveness and scalability. And more importantly, since they are a type of tree, allow for integration with the genetic programming approach. They were first introduced in \emph{Halo 2} \cite{isla2005managing}, but are now applied in other area as well, such as robotics.
 
-        \emph{Behaviour Tree Evolution (BTE)} is a technique which uses some form of genetic programming on BTs. It's a relatively new technique that has been applied to \emph{strategy games} and \emph{platformers}. Some of the previous work is due to \emph{Lim et al.}~\cite{lim2010evolving}, \emph{Colledanchise et al.}~\cite{colledanchise2015learning} and a recent thesis by \emph{Hoff et al.}~\cite{hoff2016evolving}. To our knowledge, our paper is the first to attempt to apply BTE in a \emph{shooter game}, and the first to use \emph{high-level behaviours} for a simpler algorithm.
+        \emph{Behaviour Tree Evolution (BTE)} is a technique which uses some form of genetic programming on BTs. It's a relatively new technique that has been applied to \emph{strategy games} and \emph{platformers}. Some of the previous work is due to \emph{Lim et al.}~\cite{lim2010evolving}, \emph{Colledanchise et al.}~\cite{colledanchise2015learning} and a recent thesis by \emph{Hoff et al.}~\cite{hoff2016evolving}.
 
-        In the \emph{Behaviour Tree Starter Kit}~\cite{champandard2014behaviour} and in \emph{Chris Simpson's Gamasutra article}~\cite{simpson2014behavior}, the BT is a tree-like data structure which describes the decision-making process of the agent. It's evaluated pre-order from the root of the tree, in each logic update tick.
+        In the \emph{Behaviour Tree Starter Kit (BTSK)}~\cite{champandard2014behaviour} and in \emph{Chris Simpson's Gamasutra article}~\cite{simpson2014behavior}, the BT is a tree-like data structure which describes the decision-making process of the agent. It's evaluated pre-order from the root of the tree, in each logic update tick. There are many other ways to define BTs, but the one above is the most common one, and is very similar to the original, fairly informal one, in the GDC '05 Halo 2 talk by \emph{Damian Isla}~\cite{isla2005managing}.
 
         \begin{figure}[H]
             \centering
@@ -129,19 +129,21 @@ $\bullet$
             \label{fig:behaviour_tree}
         \end{figure}
 
-        In the coming page you'll find the most common types of \emph{concrete nodes} in a behaviour tree, in particular those found in the \emph{BTSK}~\cite{champandard2014behaviour}. Only \emph{action} and \emph{condition nodes} are \emph{leaf-nodes}, and are \emph{concrete nodes}. All others are either \emph{composite or decorators} (\emph{abstract nodes}), which need to be instantiated to become concrete, such as the \emph{sequence} or \emph{inverter}; that have one/more children (it's never a leaf node).
+        In the coming pages we attempt to summarize the most common types of nodes in a behaviour tree, in particular those found in the \emph{BTSK}~\cite{champandard2014behaviour}. There are two types of nodes, \emph{concrete nodes}, and \emph{abstract nodes}. \emph{Concrete nodes} are \emph{leaf-nodes}, and are suspended at the bottom of the BT. Furthermore, concrete nodes are divided into two types: \emph{action nodes} which allows the agent to change the world state, and \emph{condition nodes} which allow the agent to query the world state. On the other spectrum are \emph{abstract nodes}, which can either be \emph{composite nodes} (which usually deals in the control-flow of the BT, by changing the order in which its children are executed) or \emph{decorator nodes} (which modify existing child nodes).
+
+        Each node has a state attached to it: \emph{RUNNING}, \emph{SUCCEEDED} or \emph{FAILED}. If its \emph{running}, then this means the current action or condition hasn't been completely yet (this in turn also affects the parent node), but will eventually complete. If, once completed, the node \emph{succeeded} or \emph{failed} (according to some pre-defined convention), then the node's state becomes set to that (\emph{FAILED} or \emph{SUCCEEDED} state). We now summarize the common node types:
 
         \begin{itemize}
-            \item{\textbf{Selector:} executes children from left \(\rightarrow\) right until \emph{one child} is found to be either \emph{running} or has already \emph{succeeded}, and returns this status. Otherwise, if none matches, it returns a \emph{failure}.}
-            \item{\textbf{Sequence:} executes children from left \(\rightarrow\) right until \emph{one child} is found to be either \emph{running} or \emph{failed}, and returns this status. If \emph{all children} have \emph{succeeded}, then set status to \emph{success}.}
-            \item{\textbf{Inverter:} executes the child node and \emph{inverts the resulting state} when it has finished running.}
-            \item{\textbf{Succeeder:} when child has finished running, returns \emph{success} regardless of the child's status.}
-            \item{\textbf{Condition:} a leaf-node that queries the world state, if the query returns true, we give \emph{success}, if it's false, we instead give \emph{failure}. This node is usually instantaneous, and can't be \emph{running}.}
-            \item{\textbf{Action:} a leaf-node which modifies the world state, and returns \emph{success} if the action had the intended side-effect, \emph{failure} if couldn't complete or failed the action and \emph{running} if not done yet.}
+            \item{\textbf{Selector (composite node):} evaluates its child nodes from left to right, until \emph{one of the children} is \emph{RUNNING} or has \emph{SUCCEEDED}, and inherits its state. Otherwise, the selector receives a \emph{FAILURE} state.}
+            \item{\textbf{Sequence (composite node):} evaluates its child nodes from left to right, until \emph{one of the children} is \emph{RUNNING} or has \emph{FAILED}, and inherits its state. If all children succeed, then the sequence also \emph{SUCCEEDS}, otherwise it \emph{FAILS}.}
+            \item{\textbf{Inverter (decorator node):} evalutes its only child node and \emph{inverts the resulting state once it leaves} the \emph{RUNNING} state. i.e. \emph{SUCCEEDED} state becomes a \emph{FAILED} state, and vice-versa.}
+            \item{\textbf{Succeeder (decorator node):} regardless of what the child's state is once it has \emph{finished RUNNING}, we return only a \emph{SUCCESS} state.}
+            \item{\textbf{Condition (leaf node):} this node queries the world state, and if the query returns a positive answer (e.g. our agent has bullets for his weapon), we return a \emph{SUCCESS}, if it's negative, we give a \emph{FAILURE}. This node is usually instantaneous, and thus can't be in a \emph{RUNNING} state.}
+            \item{\textbf{Action (leaf node):} modifies the world state, and returns a \emph{SUCCESS} if the action had the intended side-effect (e.g. the agent is shooting at the enemy), or returns\emph{FAILURE} if it couldn't complete the action for some reason. If we are still performing the action on the world (e.g. aiming the gun), then the node is still \emph{RUNNING}.}
 
         \end{itemize}
 
-        We find that it's easier to understand behaviour trees with an example. We'll be using the tree in \cref{fig:behaviour_tree} as an example (it was produced within our testbed using a Graphviz library for Java). The yellow nodes means the node state is \emph{running}, the \emph{red} nodes have \emph{failed}, and \emph{green} nodes have \emph{succeeded}.
+        We find that it's easier to understand behaviour trees with an example. We'll be using the tree in \cref{fig:behaviour_tree} as an example (it was produced within our testbed using a Graphviz library for Java). The \emph{yellow} nodes means the node state is \emph{running}, the \emph{red} nodes have \emph{failed}, and \emph{green} nodes have \emph{succeeded}.
 
         At a high-level, this BT checks the agent's health and armour, and if it's below a threshold, it will go and pick up the crates which replenish these stats.
 
