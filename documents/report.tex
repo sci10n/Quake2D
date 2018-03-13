@@ -217,16 +217,16 @@ $\bullet$
 
     \vspace{1em}
 
-    \textbf{Selection} ~ \(\Phi_s(\mathcal{P}_t) \rightarrow x_i \in \mathcal{P}_t\) ~ individuals with high \emph{fitness score} in the new population \(\mathcal{P}_{t+1}\). In this project, \emph{selection} is done proportionally to the \emph{fitness score} for each individual. Each individual \(x_i\) has a probability \(P(x_i|f_i)\) to be selected for the next generation \(\mathcal{P}_{t+1}\) according to some random process.
+    \textbf{Selection} ~ \(\Phi_s(\mathcal{P}_t, \mathbf{R}) \rightarrow x_i \in \mathcal{P}_t\) ~ individuals with high \emph{fitness score} in the new population \(\mathcal{P}_{t+1}\). In this project, \emph{selection} is done proportionally to the \emph{fitness score} for each individual. Each individual \(x_i\) has a probability \(P(x_i|f_i)\) to be selected for the next generation \(\mathcal{P}_{t+1}\) according to some random process $\mathbf{R}$.
     \begin{equation*}
         P(x_i|f_i) = \frac{f_i}{\sum_{j = 1}^{N}f_j} \; \; \text{where} \; \; N = |\mathcal{P}_t|
     \end{equation*}
 
-    \textbf{Crossover} ~ \(\Phi_c(x_i,x_j) \rightarrow \hat{x}_i,\hat{x}_j\) ~ individuals from the new population which have been crossed over, in the case of \emph{genetic programming}, \emph{crossover} is done by swapping random \emph{sub-trees} in each BT. All sub-trees have an equal probability of being selected to crossover, creating new individuals in \(\mathcal{P}_{t+1}\).
+    \textbf{Crossover} ~ \(\Phi_c(x_i,x_j,\mathbf{R}) \rightarrow \hat{x}_i,\hat{x}_j\) ~ individuals from the new population which have been crossed over, in the case of \emph{genetic programming}, \emph{crossover} is done by swapping random \emph{sub-trees} in each BT. All sub-trees have an equal probability of being selected to crossover, creating new individuals in \(\mathcal{P}_{t+1}\). $\mathbf{R}$ represents the random seed for the crossover process.
 
     \vspace{1em}
 
-    \textbf{Mutation} ~ \(\Phi_m(x_i) \rightarrow \hat{x}_i\) ~ a subset of the new population, but slightly tweaked with a random parameter or by adding/removing random child nodes. If no mutation is done, then the genetic programming might converge to some local optima because of monoculture, and never reach a global optimum.
+    \textbf{Mutation} ~ \(\Phi_m(x_i,\mathbf{R}) \rightarrow \hat{x}_i\) ~ a subset of the new population, but slightly tweaked with a random parameter (based on the random seed $\mathbf{R}$) or by adding/removing random child nodes. If no mutation is done, then the genetic programming might converge to some local optima because of monoculture, and never reach a global optimum.
 
     \vspace{1em}
 
@@ -473,12 +473,12 @@ $\bullet$
             \centering
             \begin{minipage}{\textwidth}  
                 \includegraphics[width=\textwidth]{share/result-againts-bot.png}
-                \caption{Fitness over generations when evaluating against a hard-coded bot. Higher score is better.}
+                \caption{Fitness over generations when evaluating against a hard-coded bot. Higher score is better. The solid bar represents 75\% of the fitness variance.}
                 \label{fig:fitness-against-bot}
             \end{minipage}
             \begin{minipage}{\textwidth}  
                 \includegraphics[width=\textwidth]{share/result-random.png}
-                \caption{Fitness over generations when evaluating against 2 random peers. Higher score is better.}
+                \caption{Fitness over generations when evaluating against 2 random peers. Higher score is better. The solid bar represents 75\% of the fitness variance.}
                 \label{fig:fitness-against-random}
             \end{minipage}
         \end{figure}
