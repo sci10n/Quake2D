@@ -281,12 +281,14 @@ $\bullet$
 
         \subsection{Behaviour Trees} \label{sec:behaviour_trees_implementation}
 
-        Inside of \texttt{se.sciion.quake2d.ai.behaviour} you'll find the implementation of our BTs. They are specified using inheritance, as in the figure above. In our variant, only the leaves above are non-abstract.
+        Inside of the \emph{Java package} \texttt{se.sciion.quake2d.ai.behaviour} (can e found in the source code repository) you'll find the implementation of our BTs. They are specified using inheritance, as in the figure above. In our variant, only the leaves above are non-abstract.
 
-        All are derived from the \texttt{BehaviourNode}, which provides the \emph{State}, and methods for updating states, by evaluating it and its children (if it has any). This is done with the \texttt{tick} function, which is called for each agent's behaviour tree and once for each frame.
+        A behaviour tree is represented as a tree of behaviours where each node contains links to their respective child nodes. The tree is evaluated in a recursive fashion which makes it possible for each behaviour tree to only care about the root-behaviour.
+
+        All nodes are derived from the class \texttt{BehaviourNode}, which provides the framework for each node. Each node is processed for each step (tick) of the simulation though the \emph{tick} function.
 
         \begin{algorithm}[H]
-            \caption{Pseudo-Code for the BT's Tick Step}
+            \caption{Pseudo-Code for the BT's \emph{Tick} function}
             \label{alg:behaviour_tree_update}
             \begin{algorithmic}
                 \REQUIRE{some initial \(State\) to the behaviour tree}
@@ -299,8 +301,7 @@ $\bullet$
                 \ENDIF
             \end{algorithmic}
         \end{algorithm}
-
-        Each of these entities' behaviour tree are built from the bottom-up and linked. There is only one \texttt{root} node which needs to be evaluated, since it will recursively evaluate all it's children when requested.
+        The tree is evaluated recursively by the root-nodes \emph{tick} function being called, which in turn calls the \emph{tick} function in its children.
 
         The standard non-leaf nodes are implemented in a straight-forward way following \cref{sec:behaviour_trees}. Instead, we continue by explaining the \emph{actions} \& \emph{conditions} we have implemented, and how these communicate with the other systems to be able to query the world.
 
@@ -318,7 +319,7 @@ $\bullet$
         \end{itemize}
         \begin{itemize}
             \item{\textbf{CheckStatus(\emph{ratio, type}):} checks the entity owner's \emph{status} (\emph{health} or \emph{armour}), and returns \emph{Success} if above the \emph{ratio}, or \emph{fail} if its below.}
-            \item{\textbf{CheckWeapon(\emph{type}):} checks entity owner's \emph{inventory} for weapon \emph{type}. \emph{Success} if we got it.}
+            \item{\textbf{CheckWeapon(\emph{type}):} checks entity owner's \emph{inventory} for weapon \emph{type}. \emph{Success} if it gets it.}
             \item{\textbf{CheckDistance(\emph{tag, r})} checks if entity with \emph{tag} is above \emph{r} units away. \emph{Succeeds} query if so.}
         \end{itemize}
 
