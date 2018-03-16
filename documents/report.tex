@@ -435,7 +435,7 @@ $\bullet$
 
         Finally, we present the results from our solution. After generating fifty random individuals for \(\mathcal{P}_0\), we applied genetic programming until we had \(\mathcal{P}_{50}\), the resulting pool of \emph{evolved behaviour trees}. The fitness for each individual in each generation was found by having a match against our crafted behaviour tree, and recording match statistics, used to calculate \(f_i\).
 
-        We've attempted to evaluate individuals in a generation by pitting them against other individuals in the same generation (we call them \emph{peers} below). Therefore two results will be presented, one where the fitness \(f_i\) is evaluated against our \emph{hand-crafted tree} and one against its \emph{peers} in the same generation.
+        Each individual (BT) has been evaluated for each generation by pitting them against other individuals in the same generation (we call them \emph{peers} below). Therefore two results will be presented, one where the fitness \(f_i\) is evaluated against our \emph{hand-crafted tree} and one against its \emph{peers} in the same generation.
 
         In \cref{sec:generated_behaviours} we provide two behaviour trees generated with our solution at \(\mathcal{P}_{50}\) when playing against hand-crafted behaviour trees. We then give in \cref{sec:behaviour_fitness} graphs of the evolution of the fitness function per generation, for both the peer and the hand-crafted evaluation methods from \(\mathcal{P}_0\) up to \(\mathcal{P}_{50}\). In \cref{sec:survival_ratio} we measure the effectiveness of the behaviour tree by looking at the amount of individuals in the generation that have survived against our hand-crafted behaviour trees as the number of generation progresses forward.
 
@@ -451,7 +451,7 @@ $\bullet$
         \end{figure}
         As can be seen in figure \ref{fig:tree_fitness_4075}. This tree is way too big to provide any significant insight, unless interactively evaluated during run time. Therefore we've chosen not to provide a scaled-up variant of it. The fitness score is very close to the limit for the theoretical limit possible for the levels used during evaluation.
 
-        Here we see an example of a behaviour tree that is quite bloated, which is something we wanted to avoid with our method. But it seems after many generations the trees tend to crossover big sub-trees.
+        As the number of generations increase, the trees grow very large. This happens since no pruning is performed for the trees, neither as a post-process step nor in the disguise of reduced fitness score.
 
         While the depth of this tree is unsatisfactory, the performance it achieves against our hard-coded bot is quite good. It is able to consistently beat it on all different map arenas. In fact, it's actually hard for even the authors of this paper to beat it consistently.
 
@@ -461,7 +461,7 @@ $\bullet$
             \caption{Generated tree with high fitness (3650). This tree on the other hand is only fours levels deep.}
             \label{fig:tree_fitness_3650}
         \end{figure}
-        Here is a smaller tree of the same generation in \cref{fig:tree_fitness_3650}, it manages to defeat the hard-coded bot on all levels without bloating to unmanageable size. Prior exploration of generated trees indicated that as long as the tree has a \textit{sequence} of \textit{pickup shotgun} and \textit{attack player}, it would reach a fitness of around \(1000\). Because this kind of sub-tree is quite common, it tends to appear in many BT crossovers.
+        In figure \ref{fig:tree_fitness_3650} smaller tree of the same generation as the tree in figure \ref{fig:tree_fitness_4075} can be observed, it manages to defeat the hard-coded bot on all levels without bloating to unmanageable size. Prior exploration of generated trees indicated that as long as the tree has a \textit{sequence} of \textit{pickup shotgun} and \textit{attack player}, it would reach a fitness of around \(1000\). Because this kind of sub-tree is quite common, it tends to appear in many BT crossovers.
 
         Since this behaviour tree is a lot smaller, it's quite easy to analyse the expected behaviour in comparison to the one in \cref{fig:tree_fitness_4075}. At the end of this paper we've therefore provided a scaled-up version in Appendix~\ref{app:generated} so the reader can look through it in more detail.
 
