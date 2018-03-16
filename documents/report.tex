@@ -332,47 +332,34 @@ $\bullet$
 
         Each tree starts by first generating a random node \(n \in \mathcal{S}\) as the \emph{tree root}, and if the node is a \textit{composite}, continue recursively until a complete tree is formed.
 
-        All nodes have a \textit{randomization function} which for each node type randomizes it in different ways. \emph{Leaf nodes} have a trivial randomization function which only tweaks parameters such as \emph{thresholds} (e.g. 0.5 or 0.2) and \emph{game tags} (e.g. \emph{player} or \emph{crate}).
-        \begin{equation*}
-        \label{eq:leaf-randomization}
-            r(n) \rightarrow \hat{n}
-        \end{equation*}
-        is the randomization function for leaf node \(n\) to \(\hat{n}\).
-
-
-        \emph{Composite nodes} \(\mathcal{C} = \{n_0,...,n_i\}\) are \emph{randomized recursively}. First we randomize the set of children: \(\mathcal{C}_r = \{n_0,...,n_m\}, n \in \mathcal{C}\) and \(\mathcal{C}_a = \{n_0,...n_j\}, n \in \mathcal{S}\). \(\mathcal{C}\) is then redefined as \(\mathcal{C} = (\mathcal{C} \cup \mathcal{C}_a)/ \mathcal{C}_r\), adding the set \(\mathcal{C}_a\) and removing the nodes in the set \(\mathcal{C}_r\). Once this is done, each child nodes' respective \textit{randomize function} is called:
-        \begin{equation*}
-        \label{eq:composite-randomlization}
-            r(\mathcal{C}) \rightarrow \forall_{x} r(n),x \in \mathcal{C}
-        \end{equation*}
-         is a randomization for the composites' children \(n\).
+        All nodes have a \textit{randomization function} which for each node type randomizes it in different ways. \emph{Leaf nodes} have a trivial randomization function which only tweaks parameters such as \emph{thresholds} (e.g. 0.5 or 0.2) and \emph{game tags} (e.g. \emph{player} or \emph{crate}). \emph{Composite nodes} are randomized by picking a random number between 1 and 6 which represents the number of children. Each child is picked randomly from all possible behaviours. Finally, each child is randomized.
 
         \subsubsection*{Tree Mutation}
 
-        As with \textit{tree randomization}, the \emph{mutation of trees} is done in a recursive manner, where each node mutates itself, and in the case of composite nodes its children. The mutation only differs from the tree randomization in that nodes are only slightly changed with a certain probability, whereas the randomization can completely change all nodes in a tree. In \cref{fig:leaf_mutation} you can see \emph{leaf-node mutation} in action, and in \cref{fig:child_replacement} the \emph{mutation of composites}.
+        As with \textit{tree randomization}, the \emph{mutation of trees} is done in a recursive manner, where each node mutates itself, and in the case of composite nodes its children. The mutation only differs from the tree randomization in that nodes are only slightly changed with a certain probability, whereas the randomization can completely change all nodes in a tree. Figure \cref{fig:leaf_mutation} and \cref{fig:child_replacement} shows the mutation of a \emph{leaf} and \emph{composite} node, respectively. 
 
         \begin{figure}[H]
             \centering
             \includegraphics[width=\linewidth]{share/leaf_mutation.eps}
-            \caption{Example of Mutation for the Leaf Node}
+            \caption{Mutation for the Leaf Node}
             \label{fig:leaf_mutation}
         \end{figure}
 
         \begin{figure}[H]
             \centering
             \includegraphics[width=\linewidth]{share/child_replacement.eps}
-            \caption{Example of Mutation for Composite Node}
+            \caption{Mutation for Composite Node}
             \label{fig:child_replacement}
         \end{figure}
 
         \subsubsection*{Tree Crossover}
 
-        During \emph{tree crossover}, the tree is flattened to a list. This enables us to easily \emph{select two random nodes} uniformly from \emph{two different trees}, and swap them.
+        During \emph{tree crossover}, the tree is flattened to a list. This enables us to \emph{select two random nodes},where each node in the trees has the same probability to be selected, from \emph{two different trees}, and swap them.
 
         \begin{figure}[H]
             \centering
             \includegraphics[width=\linewidth]{share/node_swapping.eps}
-            \caption{Example of crossover between two trees.}
+            \caption{Crossover between two trees.}
             \label{fig:child_crossover}
         \end{figure}
 
@@ -398,7 +385,7 @@ $\bullet$
         \end{algorithm}
         \vspace{-0.6em}
 
-        The score is divided by the number of round each individual has played during a generation. This allows for a given individual to test its fitness against multiple adversaries to get a better estimated fitness, a useful detail when fitness evaluation is done against other peers from the same generation.
+        Since individuals can be tested more than once each generation, the final fitness score is averaged over all test. This allows for a more fair fitness evaluation since only testing each individual once might make some test unfair. For example a bad tree might score very high against an opponent which is broken and can't move.
 
     \section{Results and Screenshots} \label{sec:results_and_screenshots}
 
