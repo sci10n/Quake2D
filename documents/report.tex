@@ -104,7 +104,7 @@ $\bullet$
 
     \subsection{Proposed Approach} \label{sec:proposed_approach}
 
-    Apply \emph{genetic programming} to the \emph{behaviours trees} by creating \emph{high-level actions and conditions} nodes. Ideally this should allow for faster convergence rates and somewhat shallower generated behaviour trees, eliminating the need for \emph{bloat control} and \emph{pruning}. Since BTs are trees, the \emph{mutation mechanism} should modify \emph{control-flow structure} and \emph{leaf-node settings}, while the \emph{crossover mechanism} will swap sub-trees.
+    The primary approach during this project is to examine how \textit{genetic programming} applied to the generation \emph{behaviour trees} can serve as a substitute for behaviours hand-crafted by game designers. 
 
     \section{Background Theory} \label{sec:background_theory}
 
@@ -161,7 +161,7 @@ $\bullet$
 
         In this project, the \emph{Euclidean distance} is used as the heuristic \(h(n_k)\). This, since the path finding is performed in a search-space where each node is defined as a point in the testbed's 2-D world-space.
 
-    Additionally, compared to regular \emph{A*}, the path-finder utilizes an \emph{influence map} to help the agent avoid ``suicidal paths'', even if the selected path is optimal given the heuristic function. Our \emph{influence map}, like the ones shown in \emph{Dave Mark}~\cite{mark2015modular}, take into account the visibility of each node in relation to the adversarial game agents' line-of-sight, and therefore updates the expected cost as:
+    Additionally, compared to regular \emph{A*}, the path-finder utilizes an \emph{influence map} to help the agent seem more ``aware'' of it's surrounding, even if the selected path is optimal given the heuristic function. Our \emph{influence map}, like the ones shown in \emph{Dave Mark}~\cite{mark2015modular}, take into account the visibility of each node in relation to the adversarial game agents' line-of-sight, and therefore updates the expected cost as:
 	\begin{equation*}
 		f(n_k) = g(n_k) + h(n_k) + i(n_k)
 	\end{equation*} 
@@ -449,7 +449,7 @@ $\bullet$
             \caption{Generated tree with a very high fitness score (4750). This behaviour tree is 15 levels deep.}
             \label{fig:tree_fitness_4075}
         \end{figure}
-        As can be seen in the image above. This tree is way too big to provide any significant insight, unless interactively evaluated during run time. Therefore we've chosen not to provide a scaled-up variant of it. The fitness score is very close to the limit for the levels used during the fitness evaluation.
+        As can be seen in figure \ref{fig:tree_fitness_4075}. This tree is way too big to provide any significant insight, unless interactively evaluated during run time. Therefore we've chosen not to provide a scaled-up variant of it. The fitness score is very close to the limit for the theoretical limit possible for the levels used during evaluation.
 
         Here we see an example of a behaviour tree that is quite bloated, which is something we wanted to avoid with our method. But it seems after many generations the trees tend to crossover big sub-trees.
 
@@ -473,12 +473,12 @@ $\bullet$
             \centering
             \begin{minipage}{\textwidth}  
                 \includegraphics[width=\textwidth]{share/result-againts-bot.png}
-                \caption{Fitness over generations when evaluating against a hard-coded bot. Higher score is better. The solid bar represents 75\% of the fitness variance.}
+                \caption{Fitness over generations when evaluating against a hard-coded bot. Higher score is better. The solid bar represents 50\% of the fitness variance. The bar in each box represents the mean value and isolated points represents significant outliers.}
                 \label{fig:fitness-against-bot}
             \end{minipage}
             \begin{minipage}{\textwidth}  
                 \includegraphics[width=\textwidth]{share/result-random.png}
-                \caption{Fitness over generations when evaluating against 2 random peers. Higher score is better. The solid bar represents 75\% of the fitness variance.}
+                \caption{Fitness over generations when evaluating against 2 random peers. Higher score is better. The solid bar represents 50\% of the fitness variance. The bar in each box represents the mean value and isolated points represents significant outliers.}
                 \label{fig:fitness-against-random}
             \end{minipage}
         \end{figure}
@@ -526,7 +526,7 @@ $\bullet$
 
     \subsection*{Limitations}
 
-    Since we decided to have high level actions, the tree's behaviour often appears clunky compared to a human player. As an example, two bots might decide to walk to the same health pickup when both have a very low health instead of just shooting at each other. Current fitness evaluation is bound to the render thread, which severely limits the number of evaluations that can be done during one second., the amount of actions, object types, and levels have been fairly limited in this project to produce faster results and ease debugging. This leads to the BTs having a limited repertoire of behaviours.
+    Since we decided to have high level actions, the tree's behaviour often appears clunky compared to a human player. As an example, two bots might decide to walk to the same health pickup when both have a very low health instead of just shooting at each other. Current fitness evaluation is bound to the render thread, which severely limits the number of evaluations that can be done during one second, the amount of actions, object types, and levels have been fairly limited in this project to produce faster results and ease debugging. This leads to the BTs having a limited repertoire of behaviours.
 
     \vspace{-0.5em}
 
@@ -566,7 +566,7 @@ $\bullet$
         \includegraphics[angle=90,height=0.92\textheight]{share/hand_crafted_behaviour_tree.pdf}
     \end{figure}
 
-    \section{Appendix: An Generated Behaviour Tree} \label{app:generated}
+    \section{Appendix: A Generated Behaviour Tree} \label{app:generated}
 
     \begin{figure}[H]
         \centering
