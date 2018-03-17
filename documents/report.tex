@@ -136,6 +136,7 @@ $\bullet$
         \begin{itemize}
             \item{\textbf{Selector (composite node):} evaluates its child nodes from left to right, until \emph{one of the children} is \emph{RUNNING} or has \emph{SUCCEEDED}, and inherits its state. Otherwise, the selector receives a \emph{FAILURE} state.}
             \item{\textbf{Sequence (composite node):} evaluates its child nodes from left to right, until \emph{one of the children} is \emph{RUNNING} or has \emph{FAILED}, and inherits its state. If all children succeed, then the sequence also \emph{SUCCEEDS}, otherwise it \emph{FAILS}.}
+            \item{\textbf{Parallel (composite node):} evaluates its children concurrently and can be specified to either behave as a \emph{Selector} or a \emph{Sequence}. }
             \item{\textbf{Inverter (decorator node):} evalutes its only child node and \emph{inverts the resulting state once it leaves} the \emph{RUNNING} state. i.e. \emph{SUCCEEDED} state becomes a \emph{FAILED} state, and vice-versa.}
             \item{\textbf{Succeeder (decorator node):} regardless of what the child's state is once it has \emph{finished RUNNING}, we return only a \emph{SUCCESS} state.}
             \item{\textbf{Condition (leaf node):} this node queries the world state, and if the query returns a positive answer (e.g. our agent has bullets for his weapon), we return a \emph{SUCCESS}, if it's negative, we give a \emph{FAILURE}. This node is usually instantaneous, and thus can't be in a \emph{RUNNING} state.}
@@ -276,6 +277,7 @@ $\bullet$
             \centering
             \includegraphics[width=\textwidth]{share/behaviour_tree_uml.eps}
             \label{fig:behaviour_tree_hierarchy}
+            \caption{UML-diagram of the class structure for behaviour nodes.}
         \end{figure}
         }]
 
