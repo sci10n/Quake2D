@@ -152,13 +152,13 @@ $\bullet$
 
         \subsection{Path Finding with A*} \label{sec:path_finding}
 
-	Agent path finding is done using the \emph{A*} graph traversal algorithm proposed by Peter E. Hart, Nils J. Nilsson, and Bertram Raphael ~\cite{hart1968formal} as an extension to \emph{Dijkstra's algorithm} which, given an \emph{admissible heuristic} and non-negative costs, will find the path from a node \(n_0\) to a node \(n_g\), with the lowest cost.
+	Agent path finding is done using the \emph{A*} graph traversal algorithm proposed by Peter E. Hart, Nils J. Nilsson, and Bertram Raphael ~\cite{hart1968formal}. This algorithm is an extension to the \emph{Dijkstra's algorithm} which, given an \emph{admissible heuristic} and non-negative costs, finds the path from a node \(n_0\) to a node \(n_g\) with the lowest cost.
 	
     Calculating the expected cost of a path \(n_0 \rightarrow n_k \rightarrow n_g\), from \(n_0\) to \(n_g\) via \(n_k\) can be done with the following path finding cost function:
 	\begin{equation*}
 		f(n_k) = g(n_k) + h(n_k)
 	\end{equation*}	
-	where \(g(n_k)\) is the true cost from \(n_0\) to \(n_k\) and \(h(n_k)\) is a heuristic approximation of the cost from \(n_k\) to \(n_g\). This allows us to explore the potentially most optimal paths first before considering the others.
+	where \(g(n_k)\) is the true cost from \(n_0\) to \(n_k\) and \(h(n_k)\) is a heuristic approximation of the cost from \(n_k\) to \(n_g\). This allows us to explore the potentially optimal paths first before considering the others.
 
         In this project, the \emph{Euclidean distance} is used as the heuristic \(h(n_k)\). This, since the path finding is performed in a search-space where each node is defined as a point in the testbed's 2-D world-space.
 
@@ -189,8 +189,7 @@ $\bullet$
 \end{minipage}
 
 \vspace{0.5em}
-
-    Above are two example figures: \cref{fig:optimal_path} shows an optimal path using regular \emph{A*}, and the other, \cref{fig:smart_path} shows the optimal path when taking into account the influence map; sneaking behind cover.
+     Figure: \cref{fig:optimal_path} shows an optimal path using regular \emph{A*}, and figure \cref{fig:smart_path} shows the optimal path when taking into account the influence map; sneaking behind cover.
 	
 	\subsection{Genetic Programming} \label{sec:genetic_programming}
 
