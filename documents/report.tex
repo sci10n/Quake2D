@@ -302,9 +302,7 @@ $\bullet$
         \end{algorithm}
         The tree is evaluated recursively by the root-nodes \emph{tick} function being called, which in turn calls the \emph{tick} function in its children.
 
-        The standard non-leaf nodes are implemented in a straight-forward way following \cref{sec:behaviour_trees}. Instead, we continue by explaining the \emph{actions} \& \emph{conditions} we have implemented, and how these communicate with the other systems to be able to query the world.
-
-        We've adopted a fairly simple solution, where the leaf-node is given a reference to systems that it wants to communicate with, and the entity owner.
+        The composite nodes already defined have enough expressiveness to allow for very complex modelling. This means that the most focus is put on lead-nodes which models concrete actions and conditions highly coupled to the specific game mechanics used in this project. We've adopted a fairly simple solution to communication between leaf-nodes and game mechanics, where the leaf-node is given a reference to systems that it needs communication with. The leaf-nodes also have a reference to the entity owner of the input component which the specific behaviour tree is attached to. This reference provides a interface for querying other entity components for entity specific data such HP, armour, or carried weapons.
 
         For example, if a BT wants a \emph{AttackNearest} node beneath a \emph{Succeeder}, we'd first have to hand over a reference to the \emph{path finder} and a \emph{target tag} to the node's constructor, such as: \emph{AttackNearest(path-finder, tag)}. Only after that are we allowed to execute: \emph{SucceederNode(attack-nearest)}, which we can utilize to construct the next parent layer above it.
 
@@ -336,7 +334,7 @@ $\bullet$
 
         \subsubsection*{Tree Mutation}
 
-        As with \textit{tree randomization}, the \emph{mutation of trees} is done in a recursive manner, where each node mutates itself, and in the case of composite nodes its children. The mutation only differs from the tree randomization in that nodes are only slightly changed with a certain probability, whereas the randomization can completely change all nodes in a tree. Figure \cref{fig:leaf_mutation} and \cref{fig:child_replacement} shows the mutation of a \emph{leaf} and \emph{composite} node, respectively. 
+        As with \textit{tree randomization}, the \emph{mutation of trees} is done in a recursive manner, where each node mutates itself, and in the case of composite nodes its children. The mutation only differs from the tree randomization in that nodes are only slightly changed with a certain probability, whereas the randomization can completely change all nodes in a tree. \cref{fig:leaf_mutation} and \cref{fig:child_replacement} shows the mutation of a \emph{leaf} and \emph{composite} node, respectively. 
 
         \begin{figure}[H]
             \centering
